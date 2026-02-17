@@ -341,6 +341,127 @@ export const brandsData: BrandWithHours[] = [
     },
     hours: weekHours("05:00", "22:00", "05:00", "22:00", "06:00", "21:00"),
   },
+  // --- 30 new brands ---
+  {
+    brand: { id: "trader-joes", slug: "trader-joes", name: "Trader Joe's", category: "Grocery", emoji: "🛒", logoUrl: null, website: "https://www.traderjoes.com", is24h: false },
+    hours: weekHours("08:00", "21:00", "08:00", "21:00", "08:00", "21:00"),
+  },
+  {
+    brand: { id: "whole-foods", slug: "whole-foods", name: "Whole Foods", category: "Grocery", emoji: "🥑", logoUrl: null, website: "https://www.wholefoodsmarket.com", is24h: false },
+    hours: weekHours("08:00", "22:00", "08:00", "22:00", "08:00", "22:00"),
+  },
+  {
+    brand: { id: "panera-bread", slug: "panera-bread", name: "Panera Bread", category: "Fast Casual", emoji: "🥖", logoUrl: null, website: "https://www.panerabread.com", is24h: false },
+    hours: weekHours("07:00", "21:00", "07:00", "21:00", "08:00", "20:00"),
+  },
+  {
+    brand: { id: "five-guys", slug: "five-guys", name: "Five Guys", category: "Fast Food", emoji: "🍔", logoUrl: null, website: "https://www.fiveguys.com", is24h: false },
+    hours: weekHours("11:00", "22:00", "11:00", "22:00", "11:00", "22:00"),
+  },
+  {
+    brand: { id: "popeyes", slug: "popeyes", name: "Popeyes", category: "Fast Food", emoji: "🍗", logoUrl: null, website: "https://www.popeyes.com", is24h: false },
+    hours: weekHours("10:30", "22:00", "10:30", "23:00", "10:30", "22:00", { fridayClose: "23:00" }),
+  },
+  {
+    brand: { id: "sonic-drive-in", slug: "sonic-drive-in", name: "Sonic Drive-In", category: "Fast Food", emoji: "🌭", logoUrl: null, website: "https://www.sonicdrivein.com", is24h: false },
+    hours: weekHours("06:00", "23:00", "06:00", "00:00", "06:00", "23:00", { fridayClose: "00:00", spansMidnight: [5, 6] }),
+  },
+  {
+    brand: { id: "dairy-queen", slug: "dairy-queen", name: "Dairy Queen", category: "Fast Food", emoji: "🍦", logoUrl: null, website: "https://www.dairyqueen.com", is24h: false },
+    hours: weekHours("10:30", "22:00", "10:30", "22:00", "10:30", "21:00"),
+  },
+  {
+    brand: { id: "papa-johns", slug: "papa-johns", name: "Papa John's", category: "Pizza", emoji: "🍕", logoUrl: null, website: "https://www.papajohns.com", is24h: false },
+    hours: weekHours("10:00", "00:00", "10:00", "00:00", "10:00", "00:00", { spansMidnight: [0, 1, 2, 3, 4, 5, 6] }),
+  },
+  {
+    brand: { id: "little-caesars", slug: "little-caesars", name: "Little Caesars", category: "Pizza", emoji: "🍕", logoUrl: null, website: "https://www.littlecaesars.com", is24h: false },
+    hours: weekHours("11:00", "22:00", "11:00", "22:00", "11:00", "22:00"),
+  },
+  {
+    brand: { id: "panda-express", slug: "panda-express", name: "Panda Express", category: "Fast Food", emoji: "🥡", logoUrl: null, website: "https://www.pandaexpress.com", is24h: false },
+    hours: weekHours("10:00", "21:30", "10:00", "22:00", "10:00", "21:30", { fridayClose: "22:00" }),
+  },
+  {
+    brand: { id: "wingstop", slug: "wingstop", name: "Wingstop", category: "Fast Food", emoji: "🍗", logoUrl: null, website: "https://www.wingstop.com", is24h: false },
+    hours: weekHours("11:00", "23:00", "11:00", "00:00", "11:00", "23:00", { fridayClose: "00:00", spansMidnight: [5, 6] }),
+  },
+  {
+    brand: { id: "ihop", slug: "ihop", name: "IHOP", category: "Fast Food", emoji: "🥞", logoUrl: null, website: "https://www.ihop.com", is24h: false },
+    hours: weekHours("07:00", "22:00", "07:00", "22:00", "07:00", "22:00"),
+  },
+  {
+    brand: { id: "dennys", slug: "dennys", name: "Denny's", category: "Fast Food", emoji: "🍳", logoUrl: null, website: "https://www.dennys.com", is24h: true },
+    hours: weekHours("00:00", "00:00", "00:00", "00:00", "00:00", "00:00"),
+  },
+  {
+    brand: { id: "waffle-house", slug: "waffle-house", name: "Waffle House", category: "Fast Food", emoji: "🧇", logoUrl: null, website: "https://www.wafflehouse.com", is24h: true },
+    hours: weekHours("00:00", "00:00", "00:00", "00:00", "00:00", "00:00"),
+  },
+  {
+    brand: { id: "aldi", slug: "aldi", name: "Aldi", category: "Grocery", emoji: "🏪", logoUrl: null, website: "https://www.aldi.us", is24h: false },
+    hours: weekHours("09:00", "20:00", "09:00", "20:00", "09:00", "20:00"),
+  },
+  {
+    brand: { id: "kroger", slug: "kroger", name: "Kroger", category: "Grocery", emoji: "🛒", logoUrl: null, website: "https://www.kroger.com", is24h: false },
+    hours: weekHours("06:00", "23:00", "06:00", "23:00", "06:00", "23:00"),
+  },
+  {
+    brand: { id: "safeway", slug: "safeway", name: "Safeway", category: "Grocery", emoji: "🛒", logoUrl: null, website: "https://www.safeway.com", is24h: false },
+    hours: weekHours("06:00", "23:00", "06:00", "23:00", "06:00", "23:00"),
+  },
+  {
+    brand: { id: "publix", slug: "publix", name: "Publix", category: "Grocery", emoji: "🛒", logoUrl: null, website: "https://www.publix.com", is24h: false },
+    hours: weekHours("07:00", "22:00", "07:00", "22:00", "07:00", "21:00"),
+  },
+  {
+    brand: { id: "7-eleven", slug: "7-eleven", name: "7-Eleven", category: "Convenience", emoji: "🏪", logoUrl: null, website: "https://www.7-eleven.com", is24h: true },
+    hours: weekHours("00:00", "00:00", "00:00", "00:00", "00:00", "00:00"),
+  },
+  {
+    brand: { id: "dollar-general", slug: "dollar-general", name: "Dollar General", category: "Retail", emoji: "💲", logoUrl: null, website: "https://www.dollargeneral.com", is24h: false },
+    hours: weekHours("08:00", "22:00", "08:00", "22:00", "08:00", "22:00"),
+  },
+  {
+    brand: { id: "dollar-tree", slug: "dollar-tree", name: "Dollar Tree", category: "Retail", emoji: "🌳", logoUrl: null, website: "https://www.dollartree.com", is24h: false },
+    hours: weekHours("08:00", "21:00", "08:00", "21:00", "09:00", "21:00"),
+  },
+  {
+    brand: { id: "bath-body-works", slug: "bath-body-works", name: "Bath & Body Works", category: "Retail", emoji: "🛁", logoUrl: null, website: "https://www.bathandbodyworks.com", is24h: false },
+    hours: weekHours("10:00", "21:00", "10:00", "21:00", "10:00", "18:00"),
+  },
+  {
+    brand: { id: "best-buy", slug: "best-buy", name: "Best Buy", category: "Electronics", emoji: "💻", logoUrl: null, website: "https://www.bestbuy.com", is24h: false },
+    hours: weekHours("10:00", "21:00", "10:00", "21:00", "11:00", "19:00"),
+  },
+  {
+    brand: { id: "gamestop", slug: "gamestop", name: "GameStop", category: "Electronics", emoji: "🎮", logoUrl: null, website: "https://www.gamestop.com", is24h: false },
+    hours: weekHours("10:00", "21:00", "10:00", "21:00", "11:00", "18:00"),
+  },
+  {
+    brand: { id: "autozone", slug: "autozone", name: "AutoZone", category: "Auto", emoji: "🔧", logoUrl: null, website: "https://www.autozone.com", is24h: false },
+    hours: weekHours("07:30", "22:00", "07:30", "22:00", "08:00", "21:00"),
+  },
+  {
+    brand: { id: "bank-of-america", slug: "bank-of-america", name: "Bank of America", category: "Banking", emoji: "🏦", logoUrl: null, website: "https://www.bankofamerica.com", is24h: false },
+    hours: weekHours("09:00", "17:00", "09:00", "13:00", "00:00", "00:00", { sundayClosed: true }),
+  },
+  {
+    brand: { id: "chase-bank", slug: "chase-bank", name: "Chase Bank", category: "Banking", emoji: "🏦", logoUrl: null, website: "https://www.chase.com", is24h: false },
+    hours: weekHours("09:00", "17:00", "09:00", "13:00", "00:00", "00:00", { sundayClosed: true }),
+  },
+  {
+    brand: { id: "ups-store", slug: "ups-store", name: "UPS Store", category: "Shipping", emoji: "📦", logoUrl: null, website: "https://www.theupsstore.com", is24h: false },
+    hours: weekHours("08:00", "18:30", "09:00", "15:00", "00:00", "00:00", { sundayClosed: true }),
+  },
+  {
+    brand: { id: "fedex-office", slug: "fedex-office", name: "FedEx Office", category: "Shipping", emoji: "📬", logoUrl: null, website: "https://www.fedex.com/en-us/office.html", is24h: false },
+    hours: weekHours("08:00", "20:00", "09:00", "18:00", "00:00", "00:00", { sundayClosed: true }),
+  },
+  {
+    brand: { id: "planet-fitness", slug: "planet-fitness", name: "Planet Fitness", category: "Gym", emoji: "💪", logoUrl: null, website: "https://www.planetfitness.com", is24h: false },
+    hours: weekHours("05:00", "23:00", "07:00", "21:00", "07:00", "21:00"),
+  },
 ];
 
 // Saturday closed for stock market (safe lookup by slug)

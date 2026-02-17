@@ -1,6 +1,8 @@
 import { supabase } from "./supabase";
 import type { BrandData, HoursData } from "./types";
 
+// Guard: if supabase is null (missing env vars), all functions return empty results gracefully.
+
 export interface SupaBrand {
   id: string;
   slug: string;
@@ -57,6 +59,7 @@ function toHoursData(row: SupaBrandHour): HoursData {
 
 /** Fetch all brands from Supabase */
 export async function fetchAllBrands(): Promise<BrandData[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from("brands")
     .select("*")
@@ -68,6 +71,7 @@ export async function fetchAllBrands(): Promise<BrandData[]> {
 
 /** Fetch a single brand by slug */
 export async function fetchBrandBySlug(slug: string): Promise<BrandData | null> {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from("brands")
     .select("*")
@@ -83,6 +87,7 @@ export async function fetchBrandHours(
   brandId: string,
   country: string = "US"
 ): Promise<HoursData[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from("brand_hours")
     .select("*")
@@ -111,6 +116,7 @@ export async function fetchReports(
   brandSlug: string,
   limit: number = 10
 ): Promise<SupaUserReport[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from("user_reports")
     .select("*")
@@ -124,6 +130,7 @@ export async function fetchReports(
 
 /** Fetch all brand slugs (for generateStaticParams) */
 export async function fetchAllSlugs(): Promise<string[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from("brands")
     .select("slug");
@@ -137,6 +144,7 @@ export async function fetchUpcomingHolidays(
   country: string = "US",
   withinDays: number = 14
 ): Promise<{ date: string; name: string }[]> {
+  if (!supabase) return [];
   const today = new Date();
   const future = new Date(today);
   future.setDate(future.getDate() + withinDays);

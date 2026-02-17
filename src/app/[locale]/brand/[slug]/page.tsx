@@ -106,7 +106,7 @@ export default async function LocaleBrandPage({ params }: PageProps) {
 
             <StatusHero brand={brand} initialStatus={translatedStatus} />
             <HolidayAlert brandName={brand.name} />
-            <HoursTable hours={hours} timezone={timezone} />
+            <HoursTable hours={hours} />
             <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
             <RelatedBrands brands={related} />

@@ -21,39 +21,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Write to Supabase
     const supabase = createServerClient();
-    const { data, error } = await supabase.from("user_reports").insert({
-      brand_slug: brandSlug,
-      report_type: reportType,
-      message: message || null,
-    }).select().single();
 
-    if (error) {
-      console.error("Supabase insert error:", error);
-      // Still return success to user even if DB fails (graceful degradation)
-      return NextResponse.json(
-        {
-          success: true,
-          report: {
-            brandSlug,
-            reportType,
-            message: message || null,
-            reportedAt: new Date().toISOString(),
-          },
-        },
-        { status: 201 }
-      );
+    if (supabase) {
+      const { data, error } = await supabase.from("user_reports").insert({
+        brand_slug: brandSlug,
+        report_type: reportType,
+        message: message || null,
+      }).select().single();
+
+      if (!error && data) {
+        return NextResponse.json({ success: true, report: data }, { status: 201 });
+      }
+      if (error) console.error("Supabase insert error:", error);
     }
 
+    // Graceful degradation: return success even if DB unavailable
     return NextResponse.json(
-      { success: true, report: data },
+      {
+        success: true,
+        report: {
+          id: crypto.randomUUID(),
+          brand_slug: brandSlug,
+          report_type: reportType,
+          message: message || null,
+          reported_at: new Date().toISOString(),
+          upvotes: 0,
+        },
+      },
       { status: 201 }
     );
   } catch {
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 }

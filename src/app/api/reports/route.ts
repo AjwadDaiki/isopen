@@ -7,10 +7,13 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 50);
 
   if (!brandSlug) {
-    return NextResponse.json(
-      { error: "Missing 'brand' query parameter" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing 'brand' query parameter" }, { status: 400 });
+  }
+
+  if (!supabase) {
+    return NextResponse.json({ reports: [] }, {
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+    });
   }
 
   const { data, error } = await supabase
@@ -21,18 +24,13 @@ export async function GET(request: NextRequest) {
     .limit(limit);
 
   if (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch reports" },
-      { status: 500 }
-    );
+    return NextResponse.json({ reports: [] }, {
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+    });
   }
 
   return NextResponse.json(
     { reports: data || [] },
-    {
-      headers: {
-        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
-      },
-    }
+    { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
   );
 }

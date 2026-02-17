@@ -150,7 +150,7 @@ export default async function DayPage({ params }: PageProps) {
             </div>
 
             <h2 className="text-lg font-bold mb-3">Full week hours</h2>
-            <HoursTable hours={hours} timezone="America/New_York" />
+            <HoursTable hours={hours} />
 
             <Link
               href={`/is-${slug}-open`}

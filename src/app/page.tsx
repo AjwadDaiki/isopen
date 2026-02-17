@@ -26,21 +26,54 @@ export default function Home() {
       <Navbar />
       <div className="min-h-screen">
         {/* Hero */}
-        <div className="relative overflow-hidden pt-16 pb-14">
+        <div className="relative overflow-hidden" style={{ padding: "72px 48px 56px" }}>
           {/* Green gradient glow */}
-          <div className="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(0,232,122,0.06) 0%, transparent 70%)" }} />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: -120,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 600,
+              height: 300,
+              background: "radial-gradient(ellipse, rgba(0,232,122,0.06) 0%, transparent 70%)",
+            }}
+          />
 
-          <div className="max-w-[1100px] mx-auto px-6 sm:px-10 relative z-10">
-            <div className="inline-flex items-center gap-2 bg-green-dim border border-green/20 rounded-full px-3.5 py-1 font-mono text-[12px] text-green tracking-[0.06em] uppercase font-semibold mb-7">
-              <span className="w-[5px] h-[5px] rounded-full bg-green animate-pulse-dot" />
+          <div className="relative z-10" style={{ maxWidth: 700 }}>
+            <div
+              className="inline-flex items-center font-mono font-semibold uppercase text-green"
+              style={{
+                gap: 8,
+                background: "var(--color-green-dim)",
+                border: "1px solid rgba(0,232,122,0.2)",
+                borderRadius: 100,
+                padding: "5px 14px",
+                fontSize: 12,
+                letterSpacing: "0.06em",
+                marginBottom: 28,
+              }}
+            >
+              <span
+                className="rounded-full bg-green animate-pulse-dot"
+                style={{ width: 5, height: 5 }}
+              />
               Real-time status
             </div>
-            <h1 className="font-heading font-extrabold tracking-[-0.04em] leading-[1] mb-5" style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
-              Is it{" "}
-              <span className="text-green">open</span>{" "}
+            <h1
+              className="font-heading font-extrabold text-text"
+              style={{
+                fontSize: "clamp(42px, 6vw, 72px)",
+                letterSpacing: "-0.04em",
+                lineHeight: 1.0,
+                marginBottom: 20,
+              }}
+            >
+              Is it <span className="text-green">open</span>
+              <br />
               right now?
             </h1>
-            <p className="text-[16px] text-muted2 leading-relaxed max-w-[480px]">
+            <p className="text-muted2" style={{ fontSize: 17, lineHeight: 1.6, maxWidth: 480, marginBottom: 40 }}>
               Instantly check if any store, restaurant, or service is open.
               Real-time status, weekly hours, holiday schedules.
             </p>
@@ -48,72 +81,92 @@ export default function Home() {
         </div>
 
         {/* Brand grid by category */}
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-10 pb-16">
+        <div style={{ padding: "0 48px 48px" }}>
           {categories.map((cat, i) => {
             const catSlug = cat.toLowerCase().replace(/\s+/g, "-");
             return (
               <div key={cat}>
-                {i > 0 && <div className="h-px bg-border mx-0 mb-12" />}
-                <div className="mb-12">
-                  <div className="flex items-baseline justify-between mb-5">
-                    <span className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+                {i > 0 && (
+                  <div style={{ height: 1, background: "var(--color-border)", margin: "0 0 48px" }} />
+                )}
+                <div style={{ marginBottom: 48 }}>
+                  <div className="flex items-baseline justify-between" style={{ marginBottom: 20 }}>
+                    <span
+                      className="font-mono font-medium uppercase text-muted"
+                      style={{ fontSize: 11, letterSpacing: "0.12em" }}
+                    >
                       {cat}
                     </span>
                     <Link
                       href={`/category/${catSlug}`}
-                      className="text-[13px] text-muted2 no-underline flex items-center gap-1 hover:text-green transition-colors"
+                      className="text-muted2 no-underline flex items-center hover:text-green transition-colors"
+                      style={{ fontSize: 13, gap: 4 }}
                     >
                       View all <span>&rarr;</span>
                     </Link>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(5, 1fr)",
+                      gap: 12,
+                    }}
+                  >
                     {brandsData
                       .filter((b) => b.brand.category === cat)
                       .map(({ brand, hours }) => {
-                        const status = computeOpenStatus(
-                          hours,
-                          "America/New_York",
-                          brand.is24h
-                        );
+                        const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
                         const isOpen = status.isOpen;
                         return (
                           <Link
                             key={brand.slug}
                             href={`/is-${brand.slug}-open`}
-                            className={`rounded-[14px] p-5 flex flex-col items-center gap-2.5 text-center no-underline transition-all cursor-pointer hover:-translate-y-0.5 border ${
-                              isOpen
-                                ? "border-green/20 hover:border-green/40"
-                                : "border-border opacity-65 hover:opacity-100 hover:border-border2"
-                            }`}
+                            className="no-underline transition-all"
                             style={{
                               background: isOpen
                                 ? "linear-gradient(135deg, var(--color-bg1) 0%, rgba(0,232,122,0.04) 100%)"
                                 : "var(--color-bg1)",
-                              boxShadow: "none",
+                              border: `1px solid ${isOpen ? "rgba(0,232,122,0.2)" : "var(--color-border)"}`,
+                              borderRadius: 14,
+                              padding: "20px 16px",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              gap: 10,
+                              textAlign: "center",
+                              cursor: "pointer",
+                              position: "relative",
+                              overflow: "hidden",
+                              opacity: isOpen ? 1 : 0.65,
                             }}
                           >
-                            <span className="text-[28px] leading-none">{brand.emoji || "🏪"}</span>
-                            <span className="font-heading font-bold text-[13px] tracking-[-0.01em] text-text">
+                            <span style={{ fontSize: 28, lineHeight: 1 }}>{brand.emoji || "🏪"}</span>
+                            <span
+                              className="font-heading font-bold text-text"
+                              style={{ fontSize: 13, letterSpacing: "-0.01em" }}
+                            >
                               {brand.name}
                             </span>
-                            <div className="flex items-center gap-[5px] text-xs font-semibold">
+                            <div className="flex items-center font-semibold" style={{ gap: 5, fontSize: 12 }}>
                               <span
-                                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                                  isOpen ? "bg-green animate-pulse-dot" : "bg-red"
-                                }`}
-                                style={isOpen ? { boxShadow: "0 0 6px var(--color-green-glow)" } : {}}
+                                className={`rounded-full shrink-0 ${isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`}
+                                style={{
+                                  width: 6,
+                                  height: 6,
+                                  ...(isOpen ? { boxShadow: "0 0 6px var(--color-green-glow)" } : {}),
+                                }}
                               />
                               <span className={isOpen ? "text-green" : "text-red"}>
                                 {isOpen ? "Open" : "Closed"}
                               </span>
                             </div>
                             {isOpen && status.closesIn && (
-                              <span className="text-[11px] font-mono text-muted">
+                              <span className="font-mono text-muted" style={{ fontSize: 11 }}>
                                 closes in {status.closesIn}
                               </span>
                             )}
                             {!isOpen && status.opensAt && (
-                              <span className="text-[11px] font-mono text-muted">
+                              <span className="font-mono text-muted" style={{ fontSize: 11 }}>
                                 opens at {status.opensAt}
                               </span>
                             )}
@@ -127,12 +180,24 @@ export default function Home() {
           })}
 
           {/* SEO text block */}
-          <div className="h-px bg-border mb-12" />
-          <div className="max-w-3xl">
-            <h2 className="font-heading text-xl font-bold tracking-tight mb-4 text-text">
+          <div style={{ height: 1, background: "var(--color-border)", marginBottom: 48 }} />
+          <div style={{ maxWidth: 720 }}>
+            <h2
+              className="font-heading font-bold text-text"
+              style={{ fontSize: 20, letterSpacing: "-0.02em", marginBottom: 16 }}
+            >
               Check store hours in real-time
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-muted2 leading-relaxed">
+            <div
+              className="text-muted2"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 24,
+                fontSize: 14,
+                lineHeight: 1.7,
+              }}
+            >
               <p>
                 IsItOpen helps you instantly find out if a store, restaurant, or service
                 is open right now. We track opening hours for major brands like
@@ -147,14 +212,26 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-8">
-              <h3 className="font-mono text-[11px] font-medium text-muted uppercase tracking-[0.12em] mb-3">Popular searches</h3>
-              <div className="flex flex-wrap gap-2">
+            <div style={{ marginTop: 32 }}>
+              <h3
+                className="font-mono font-medium text-muted uppercase"
+                style={{ fontSize: 11, letterSpacing: "0.12em", marginBottom: 12 }}
+              >
+                Popular searches
+              </h3>
+              <div className="flex flex-wrap" style={{ gap: 8 }}>
                 {brandsData.slice(0, 12).map(({ brand }) => (
                   <Link
                     key={brand.slug}
                     href={`/is-${brand.slug}-open`}
-                    className="text-xs font-mono bg-bg1 border border-border rounded-lg px-3 py-1.5 text-muted2 no-underline hover:border-border2 hover:text-text transition-colors"
+                    className="font-mono text-muted2 no-underline hover:text-text hover:border-border2 transition-colors"
+                    style={{
+                      fontSize: 12,
+                      background: "var(--color-bg1)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: 8,
+                      padding: "6px 12px",
+                    }}
                   >
                     Is {brand.name} open?
                   </Link>

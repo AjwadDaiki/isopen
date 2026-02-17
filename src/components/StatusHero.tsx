@@ -79,15 +79,26 @@ export default function StatusHero({ brand, initialStatus }: Props) {
 
   return (
     <div
-      className={`rounded-[20px] overflow-hidden border relative ${
-        isOpen ? "border-green/25" : "border-red/20"
-      }`}
       style={{
+        borderRadius: 20,
+        overflow: "hidden",
+        border: `1px solid ${isOpen ? "rgba(0,232,122,0.25)" : "rgba(255,71,87,0.2)"}`,
         boxShadow: isOpen ? "0 0 60px rgba(0,232,122,0.06)" : "none",
+        position: "relative",
       }}
     >
       {/* Main hero area */}
-      <div className="bg-bg1 relative p-6 sm:p-8">
+      <div
+        style={{
+          padding: "32px 36px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 32,
+          background: "var(--color-bg1)",
+          position: "relative",
+        }}
+      >
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -97,97 +108,170 @@ export default function StatusHero({ brand, initialStatus }: Props) {
           }}
         />
 
-        <div className="relative z-10 flex items-center gap-5 mb-5">
-          <div className="w-[56px] h-[56px] rounded-xl bg-bg2 border border-border2 flex items-center justify-center text-3xl shrink-0">
+        {/* Left: icon + name */}
+        <div style={{ display: "flex", alignItems: "center", gap: 24, position: "relative", zIndex: 1 }}>
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: 16,
+              background: "var(--color-bg2)",
+              border: "1px solid var(--color-border2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 36,
+              flexShrink: 0,
+            }}
+          >
             {brand.emoji || "🏪"}
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="font-heading font-extrabold text-2xl sm:text-[28px] tracking-[-0.03em] leading-[1.1] text-text">
-                {brand.name}
-              </h1>
-              <div
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-heading font-extrabold text-sm tracking-[0.04em] border-2 ${
-                  isOpen
-                    ? "text-green border-green/35"
-                    : "text-red border-red/30"
-                }`}
-                style={{
-                  background: isOpen
-                    ? "rgba(0,232,122,0.12)"
-                    : "rgba(255,71,87,0.1)",
-                }}
-              >
-                <span
-                  className={`w-2 h-2 rounded-full shrink-0 ${
-                    isOpen ? "bg-green animate-pulse-dot" : "bg-red"
-                  }`}
-                  style={isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : {}}
-                />
-                {isOpen ? "OPEN" : "CLOSED"}
-              </div>
-            </div>
-            <p className="text-[13px] text-muted2 flex items-center gap-2 mt-1">
+          <div>
+            <h1
+              className="font-heading font-extrabold text-text"
+              style={{ fontSize: 32, letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: 4 }}
+            >
+              {brand.name}
+            </h1>
+            <div className="text-muted2 flex items-center" style={{ fontSize: 13, gap: 8 }}>
               {brand.category}
               {brand.is24h && (
                 <>
-                  <span className="text-border2">&middot;</span>
+                  <span style={{ color: "var(--color-border2)" }}>&middot;</span>
                   <span className="text-muted">24/7 locations available</span>
                 </>
               )}
-              {isOpen && status.closesIn && (
-                <>
-                  <span className="text-border2">&middot;</span>
-                  <span className="font-mono text-muted">
-                    Closes in <strong className="text-text">{status.closesIn}</strong>
-                  </span>
-                </>
-              )}
-              {!isOpen && status.opensAt && (
-                <>
-                  <span className="text-border2">&middot;</span>
-                  <span className="font-mono text-muted">
-                    Opens at <strong className="text-text">{status.opensAt}</strong>
-                  </span>
-                </>
-              )}
-            </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: status badge + countdown */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            gap: 12,
+            position: "relative",
+            zIndex: 1,
+            flexShrink: 0,
+          }}
+        >
+          <div
+            className="font-heading font-extrabold flex items-center"
+            style={{
+              gap: 10,
+              padding: "12px 24px",
+              borderRadius: 100,
+              fontSize: 20,
+              letterSpacing: "0.04em",
+              background: isOpen ? "rgba(0,232,122,0.12)" : "rgba(255,71,87,0.1)",
+              border: `2px solid ${isOpen ? "rgba(0,232,122,0.35)" : "rgba(255,71,87,0.3)"}`,
+              color: isOpen ? "var(--color-green)" : "var(--color-red)",
+            }}
+          >
+            <span
+              className={`rounded-full shrink-0 ${isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`}
+              style={{
+                width: 10,
+                height: 10,
+                ...(isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : {}),
+              }}
+            />
+            {isOpen ? "OPEN" : "CLOSED"}
+          </div>
+          <div className="font-mono text-muted2" style={{ fontSize: 13, textAlign: "right" }}>
+            {isOpen && status.closesIn && (
+              <>
+                Closes in{" "}
+                <strong className="text-text" style={{ fontSize: 15 }}>{status.closesIn}</strong>
+              </>
+            )}
+            {!isOpen && status.opensAt && (
+              <>
+                Opens at{" "}
+                <strong className="text-text" style={{ fontSize: 15 }}>{status.opensAt}</strong>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-border bg-bg2">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          borderTop: "1px solid var(--color-border)",
+          background: "var(--color-bg2)",
+        }}
+      >
         <StatCell label="Today's Hours" value={status.todayHours || "—"} />
         <StatCell label="Local Time" value={localTime} />
         <StatCell
           label="Holiday Today?"
           value={status.holidayName || "No"}
-          color={status.holidayName ? "text-orange" : "text-green"}
+          color={status.holidayName ? "var(--color-orange)" : "var(--color-green)"}
         />
         <StatCell label="Updated" value="Feb 2026" muted />
       </div>
 
       {/* Action buttons */}
-      <div className="flex gap-2.5 px-8 py-4 bg-bg1 border-t border-border flex-wrap">
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          padding: "16px 36px",
+          background: "var(--color-bg1)",
+          borderTop: "1px solid var(--color-border)",
+          flexWrap: "wrap",
+        }}
+      >
         <a
           href={brand.website || canonicalPath}
           target={brand.website ? "_blank" : undefined}
           rel={brand.website ? "noopener noreferrer" : undefined}
-          className="bg-green text-black rounded-lg px-5 py-2.5 font-semibold text-sm cursor-pointer hover:opacity-90 transition-all no-underline"
+          className="no-underline"
+          style={{
+            background: "var(--color-green)",
+            color: "#000",
+            borderRadius: 8,
+            padding: "10px 20px",
+            fontWeight: 600,
+            fontSize: 14,
+            cursor: "pointer",
+          }}
         >
           Official website
         </a>
         <a
           href="#user-reports"
-          className="bg-transparent text-muted2 border border-border2 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer hover:bg-bg2 hover:text-text transition-all no-underline"
+          className="no-underline text-muted2 hover:text-text transition-all"
+          style={{
+            background: "transparent",
+            border: "1px solid var(--color-border2)",
+            borderRadius: 8,
+            padding: "10px 20px",
+            fontWeight: 500,
+            fontSize: 14,
+            cursor: "pointer",
+          }}
         >
           Report hours issue
         </a>
         <button
           type="button"
           onClick={handleShare}
-          className="bg-transparent text-muted2 border border-border2 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer hover:bg-bg2 hover:text-text transition-all"
+          className="text-muted2 hover:text-text transition-all"
+          style={{
+            background: "transparent",
+            border: "1px solid var(--color-border2)",
+            borderRadius: 8,
+            padding: "10px 20px",
+            fontWeight: 500,
+            fontSize: 14,
+            cursor: "pointer",
+          }}
         >
           {shareState === "done" ? "Link copied" : "Share"}
         </button>
@@ -208,14 +292,20 @@ function StatCell({
   muted?: boolean;
 }) {
   return (
-    <div className="px-6 py-[18px] border-r border-border last:border-r-0">
-      <div className="font-mono text-[10px] text-muted uppercase tracking-[0.12em] mb-1">
+    <div style={{ padding: "18px 24px", borderRight: "1px solid var(--color-border)" }}>
+      <div
+        className="font-mono uppercase text-muted"
+        style={{ fontSize: 10, letterSpacing: "0.12em", marginBottom: 4 }}
+      >
         {label}
       </div>
       <div
-        className={`font-heading font-bold tracking-[-0.02em] ${
-          muted ? "text-sm text-muted2" : `text-[17px] ${color || "text-text"}`
-        }`}
+        className="font-heading font-bold"
+        style={{
+          letterSpacing: "-0.02em",
+          fontSize: muted ? 14 : 17,
+          color: muted ? "var(--color-muted2)" : (color || "var(--color-text)"),
+        }}
       >
         {value}
       </div>

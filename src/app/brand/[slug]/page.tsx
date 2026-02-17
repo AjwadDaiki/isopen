@@ -70,9 +70,8 @@ export default async function BrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-10">
         {/* Breadcrumb */}
-        <nav className="pt-4 flex items-center gap-2 text-[13px] text-muted">
+        <nav className="flex items-center text-muted" style={{ padding: "16px 48px 0", gap: 8, fontSize: 13 }}>
           <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
           <span className="text-muted">/</span>
           <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">{brand.category}</Link>
@@ -84,12 +83,15 @@ export default async function BrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
         {/* Hero - full width */}
-        <div className="mt-6">
+        <div style={{ margin: "24px 48px" }}>
           <StatusHero brand={brand} initialStatus={status} />
         </div>
 
         {/* Body grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 py-6 items-start">
+        <div
+          style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 24, padding: "0 48px 48px" }}
+          className="max-lg:!grid-cols-1 max-lg:!p-6"
+        >
           {/* Left column */}
           <div className="flex flex-col gap-4 min-w-0">
             <HolidayAlert brandName={brand.name} />
@@ -183,7 +185,6 @@ export default async function BrandPage({ params }: PageProps) {
               </div>
             )}
           </aside>
-        </div>
         </div>
       </div>
       <Footer />

@@ -4,8 +4,8 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border py-8 px-4 sm:px-6">
-      <div className="max-w-[1200px] mx-auto">
+    <footer className="border-t border-border" style={{ padding: "32px 48px" }}>
+      <div>
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
           <Link href="/" className="font-heading font-extrabold text-lg text-green tracking-tight no-underline">
             isopenow

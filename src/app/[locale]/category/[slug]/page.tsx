@@ -1,4 +1,4 @@
-﻿import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -94,45 +94,49 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
       <div className="min-h-screen">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 items-start" style={{ paddingTop: 32, paddingBottom: 64 }}>
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start" style={{ paddingTop: 32, paddingBottom: 64 }}>
           <main className="min-w-0 lg:pr-10">
             <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
-              <Link href={`/${loc}`} className="text-muted2 no-underline hover:text-text">
+              <Link href={`/${loc}`} className="text-muted2 no-underline hover:text-text transition-colors">
                 {t(loc, "home")}
               </Link>
-              <span className="opacity-40">/</span>
+              <span className="text-muted">/</span>
               <span>{category}</span>
             </nav>
 
             <h1 className="font-heading text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-text">
               {t(loc, "categoryTitle", { category })}
             </h1>
-            <p className="text-muted2 mb-8 max-w-lg">
-              {t(loc, "categoryDesc", { category: category.toLowerCase() })}
-            </p>
+            <p className="text-muted2 mb-8 max-w-lg">{t(loc, "categoryDesc", { category: category.toLowerCase() })}</p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {categoryBrands.map(({ brand, hours }) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {categoryBrands.map(({ brand, hours }, i) => {
                 const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
+                const isOpen = status.isOpen;
                 return (
                   <Link
                     key={brand.slug}
                     href={buildBrandUrl(loc, brand.slug)}
-                    className={`rounded-xl p-5 border no-underline transition-all hover:-translate-y-0.5 hover:border-border2 ${
-                      status.isOpen ? "bg-green-dim border-green/20" : "bg-red-dim border-red/20"
-                    }`}
+                    className="brand-card-link brand-card-premium p-5 no-underline"
+                    style={{
+                      border: `1px solid ${isOpen ? "rgba(68,209,141,0.38)" : "var(--color-border)"}`,
+                      animationDelay: `${Math.min(i * 0.035, 0.28)}s`,
+                    }}
                   >
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-3 mb-2.5">
                       <span className="text-2xl">{brand.emoji || "Store"}</span>
                       <div className="flex-1">
-                        <div className="text-lg font-heading font-bold text-text">{brand.name}</div>
+                        <div className="text-lg font-heading font-bold text-text tracking-[-0.01em]">{brand.name}</div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2.5 h-2.5 rounded-full ${status.isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`} />
-                        <span className={`text-sm font-bold ${status.isOpen ? "text-green" : "text-red"}`}>
-                          {status.isOpen ? t(loc, "open") : t(loc, "closed")}
-                        </span>
-                      </div>
+                      <span className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}>
+                        {isOpen ? t(loc, "open") : t(loc, "closed")}
+                      </span>
+                    </div>
+
+                    <div className="text-xs text-muted2">
+                      {status.todayHours
+                        ? `${t(loc, "todayHours")}: ${status.todayHours}`
+                        : t(loc, "closedToday")}
                     </div>
                   </Link>
                 );

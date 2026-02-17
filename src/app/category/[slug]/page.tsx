@@ -77,10 +77,8 @@ export default async function CategoryPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+
         <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start" style={{ paddingTop: 32, paddingBottom: 64 }}>
           <main className="min-w-0">
             <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
@@ -90,62 +88,46 @@ export default async function CategoryPage({ params }: PageProps) {
             </nav>
 
             <h1 className="font-heading text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-text">
-              {category} — What&apos;s Open Now?
+              {category} - What&apos;s Open Now?
             </h1>
             <p className="text-muted2 mb-8 max-w-lg">
-              Real-time opening status for major {category.toLowerCase()} brands.
-              Updated every 5 minutes.
+              Real-time opening status for major {category.toLowerCase()} brands. Updated frequently.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {categoryBrands.map(({ brand, hours }) => {
+              {categoryBrands.map(({ brand, hours }, i) => {
                 const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
                 const isOpen = status.isOpen;
+
                 return (
                   <Link
                     key={brand.slug}
                     href={`/is-${brand.slug}-open`}
-                    className={`rounded-[14px] p-5 border no-underline transition-all hover:-translate-y-0.5 ${
-                      isOpen
-                        ? "border-green/20"
-                        : "border-border opacity-75 hover:opacity-100"
-                    }`}
+                    className="brand-card-link brand-card-premium p-5 no-underline"
                     style={{
-                      background: isOpen
-                        ? "linear-gradient(135deg, var(--color-bg1) 0%, rgba(0,232,122,0.04) 100%)"
-                        : "var(--color-bg1)",
+                      border: `1px solid ${isOpen ? "rgba(68,209,141,0.38)" : "var(--color-border)"}`,
+                      animationDelay: `${Math.min(i * 0.035, 0.28)}s`,
                     }}
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{brand.emoji || "🏪"}</span>
+                      <span className="text-2xl">{brand.emoji || "Store"}</span>
                       <div className="flex-1">
-                        <div className="text-lg font-heading font-bold text-text">{brand.name}</div>
+                        <div className="text-lg font-heading font-bold text-text tracking-[-0.01em]">{brand.name}</div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`w-2 h-2 rounded-full ${
-                            isOpen ? "bg-green animate-pulse-dot" : "bg-red"
-                          }`}
-                          style={isOpen ? { boxShadow: "0 0 6px var(--color-green-glow)" } : {}}
-                        />
-                        <span
-                          className={`text-sm font-bold ${isOpen ? "text-green" : "text-red"}`}
-                        >
-                          {isOpen ? "OPEN" : "CLOSED"}
-                        </span>
-                      </div>
+                      <span className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}>
+                        {isOpen ? "OPEN" : "CLOSED"}
+                      </span>
                     </div>
-                    <div className="flex gap-4 text-xs text-muted2">
+
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted2">
                       {status.todayHours && (
                         <span>
-                          <span className="font-mono text-muted">Today:</span>{" "}
-                          {status.todayHours}
+                          <span className="font-mono text-muted">Today:</span> {status.todayHours}
                         </span>
                       )}
                       {isOpen && status.closesIn && (
                         <span>
-                          <span className="font-mono text-muted">Closes in:</span>{" "}
-                          {status.closesIn}
+                          <span className="font-mono text-muted">Closes in:</span> {status.closesIn}
                         </span>
                       )}
                     </div>
@@ -155,9 +137,7 @@ export default async function CategoryPage({ params }: PageProps) {
             </div>
 
             {categoryBrands.length === 0 && (
-              <p className="text-muted text-center py-12">
-                No brands found in this category yet.
-              </p>
+              <p className="text-muted text-center py-12">No brands found in this category yet.</p>
             )}
           </main>
 

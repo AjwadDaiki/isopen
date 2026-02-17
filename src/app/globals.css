@@ -106,6 +106,64 @@ body::after {
   opacity: 1 !important;
 }
 
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.brand-card-premium {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(170deg, rgba(21,28,37,0.98) 0%, rgba(15,20,28,0.98) 100%);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 14px 34px rgba(4,10,18,0.3);
+  transform-origin: center;
+  animation: cardIn .36s ease both;
+}
+
+.brand-card-premium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(130deg, rgba(255,255,255,0.05), transparent 45%);
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+
+.brand-card-premium:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: var(--color-border2);
+  box-shadow: 0 22px 46px rgba(4,10,18,0.42);
+}
+
+.brand-card-premium:hover::before {
+  opacity: 1;
+}
+
+.brand-status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.brand-status-pill-open {
+  color: var(--color-green);
+  background: var(--color-green-dim);
+  border: 1px solid rgba(68,209,141,0.2);
+}
+
+.brand-status-pill-closed {
+  color: var(--color-red);
+  background: var(--color-red-dim);
+  border: 1px solid rgba(255,111,118,0.2);
+}
+
 /* Search focus glow */
 .search-wrap:focus-within {
   border-color: var(--color-green) !important;
@@ -149,6 +207,10 @@ body::after {
   .page-pad {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .brand-card-premium {
+    border-radius: 14px;
   }
 }
 

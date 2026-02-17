@@ -63,36 +63,31 @@ export default async function LocaleHomePage({ params }: PageProps) {
 
         <section className="page-pad" style={{ paddingBottom: 30 }}>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 12 }}>
-            {featured.map(({ brand, hours }) => {
+            {featured.map(({ brand, hours }, i) => {
               const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
               return (
                 <Link
                   key={brand.slug}
                   href={buildBrandUrl(loc, brand.slug)}
-                  className="brand-card-link no-underline"
+                  className="brand-card-link brand-card-premium no-underline"
                   style={{
-                    background: "linear-gradient(170deg, rgba(18,22,29,0.98) 0%, rgba(14,16,23,0.98) 100%)",
                     border: `1px solid ${status.isOpen ? "rgba(68,209,141,0.38)" : "var(--color-border)"}`,
-                    borderRadius: 14,
                     padding: "16px 14px",
                     display: "flex",
                     flexDirection: "column",
                     gap: 8,
                     minHeight: 120,
+                    animationDelay: `${Math.min(i * 0.03, 0.3)}s`,
                   }}
                 >
                   <div className="flex items-center justify-between">
                     <span style={{ fontSize: 23, lineHeight: 1 }}>{brand.emoji || "Store"}</span>
-                    <span
-                      className={`text-[11px] font-semibold px-2 py-[2px] rounded-full ${
-                        status.isOpen ? "text-green bg-green-dim" : "text-red bg-red-dim"
-                      }`}
-                    >
+                    <span className={`brand-status-pill ${status.isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}>
                       {status.isOpen ? t(loc, "open") : t(loc, "closed")}
                     </span>
                   </div>
-                  <span className="font-heading font-bold text-[14px] text-text leading-tight">{brand.name}</span>
-                  <span className="text-[11px] text-muted2">{brand.category}</span>
+                  <span className="font-heading font-bold text-[15px] text-text leading-tight tracking-[-0.01em]">{brand.name}</span>
+                  <span className="text-[11px] text-muted2 uppercase tracking-[0.08em]">{brand.category}</span>
                 </Link>
               );
             })}

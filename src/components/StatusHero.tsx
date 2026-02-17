@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import type { OpenStatus, BrandData } from "@/lib/types";
+import { t, type Locale } from "@/lib/i18n/translations";
 
 interface Props {
   brand: BrandData;
   initialStatus: OpenStatus;
+  locale?: Locale;
 }
 
-export default function StatusHero({ brand, initialStatus }: Props) {
+export default function StatusHero({ brand, initialStatus, locale = "en" }: Props) {
   const [status, setStatus] = useState(initialStatus);
   const [localTime, setLocalTime] = useState(initialStatus.localTime);
   const [shareState, setShareState] = useState<"idle" | "done">("idle");
@@ -56,10 +58,12 @@ export default function StatusHero({ brand, initialStatus }: Props) {
   }, []);
 
   const isOpen = status.isOpen;
-  const canonicalPath = `/is-${brand.slug}-open`;
+  const nearestLine = isOpen
+    ? t(locale, "nearestOpen", { brand: brand.name })
+    : t(locale, "nearestClosed", { brand: brand.name });
 
   async function handleShare() {
-    const shareUrl = `${window.location.origin}${canonicalPath}`;
+    const shareUrl = window.location.href;
 
     try {
       if (navigator.share) {
@@ -132,7 +136,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
                 className={`w-2.5 h-2.5 rounded-full shrink-0 ${isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`}
                 style={isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : undefined}
               />
-              {isOpen ? "OPEN NOW" : "CLOSED NOW"}
+              {isOpen ? t(locale, "openNowLabel") : t(locale, "closedNowLabel")}
             </div>
 
             <div className="font-mono text-sm text-muted2 md:text-right">
@@ -149,6 +153,10 @@ export default function StatusHero({ brand, initialStatus }: Props) {
             </div>
           </div>
         </div>
+
+        <p className="relative z-[1] mt-4 text-sm md:text-[15px] text-text font-semibold">
+          {nearestLine}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-bg2">
@@ -164,12 +172,12 @@ export default function StatusHero({ brand, initialStatus }: Props) {
 
       <div className="px-5 py-4 md:px-7 md:py-5 bg-bg1 border-t border-border flex flex-wrap gap-2.5">
         <a
-          href={brand.website || canonicalPath}
+          href={brand.website || `/is-${brand.slug}-open`}
           target={brand.website ? "_blank" : undefined}
           rel={brand.website ? "noopener noreferrer" : undefined}
           className="no-underline rounded-lg px-4 py-2.5 text-sm font-semibold bg-green text-black hover:opacity-90 transition-opacity"
         >
-          Official website
+          {t(locale, "officialWebsite")}
         </a>
 
         <a
@@ -184,7 +192,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
           onClick={handleShare}
           className="rounded-lg px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
-          {shareState === "done" ? "Link copied" : "Share page"}
+          {shareState === "done" ? "Link copied" : t(locale, "sharePage")}
         </button>
       </div>
     </section>

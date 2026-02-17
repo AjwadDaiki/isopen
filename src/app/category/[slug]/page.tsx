@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { brandsData } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
@@ -139,6 +140,10 @@ export default async function CategoryPage({ params }: PageProps) {
             {categoryBrands.length === 0 && (
               <p className="text-muted text-center py-12">No brands found in this category yet.</p>
             )}
+
+            <div className="mt-6">
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={92} />
+            </div>
           </main>
 
           <aside className="hidden lg:block sticky top-[72px]">

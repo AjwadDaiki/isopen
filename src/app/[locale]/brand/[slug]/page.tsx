@@ -102,7 +102,7 @@ export default async function LocaleBrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
         <div className="page-pad" style={{ paddingTop: 16 }}>
-          <StatusHero brand={brand} initialStatus={status} />
+          <StatusHero brand={brand} initialStatus={status} locale={loc} />
         </div>
 
         <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]" style={{ gap: 22, paddingTop: 20, paddingBottom: 52 }}>

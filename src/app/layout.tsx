@@ -1,6 +1,8 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Script from "next/script";
+import { headers } from "next/headers";
 import { Syne, DM_Sans, DM_Mono } from "next/font/google";
+import { LOCALES, type Locale } from "@/lib/i18n/translations";
 import "./globals.css";
 
 const syne = Syne({
@@ -48,16 +50,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const hdrs = await headers();
+  const localeHeader = hdrs.get("x-locale");
+  const htmlLang =
+    localeHeader && LOCALES.includes(localeHeader as Locale)
+      ? localeHeader
+      : "en";
+
   const adsClient =
     process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "ca-pub-9657496359488658";
 
   return (
-    <html lang="en">
+    <html lang={htmlLang}>
       <head>
         <meta name="google-adsense-account" content={adsClient} />
         <script

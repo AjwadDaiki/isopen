@@ -41,8 +41,8 @@ export default function HoursTable({ hours }: Props) {
               key={day.dayOfWeek}
               className={`rounded-xl border px-4 py-3.5 md:px-5 md:py-4 grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start sm:items-center gap-2.5 sm:gap-3 ${
                 isToday
-                  ? "border-green/35 bg-green-dim"
-                  : "border-border bg-bg2/65"
+                  ? "ui-border-green-35 bg-green-dim"
+                  : "border-border ui-bg-2-65"
               }`}
             >
               <div className="min-w-0">
@@ -51,7 +51,7 @@ export default function HoursTable({ hours }: Props) {
                     {DAY_NAMES[day.dayOfWeek]}
                   </p>
                   {isToday && (
-                    <span className="text-[10px] uppercase tracking-[0.1em] font-mono text-green bg-green/10 border border-green/25 rounded-full px-2 py-[2px]">
+                    <span className="text-[10px] uppercase tracking-[0.1em] font-mono text-green ui-bg-green-10 border ui-border-green-25 rounded-full px-2 py-[2px]">
                       Today
                     </span>
                   )}
@@ -68,7 +68,7 @@ export default function HoursTable({ hours }: Props) {
               >
                 {isClosed ? "Closed" : `${formatTime(day.openTime!)} - ${formatTime(day.closeTime!)}`}
                 {!isClosed && day.spansMidnight && (
-                  <span className="ml-1.5 text-[10px] text-orange bg-orange-dim border border-orange/30 rounded px-1.5 py-px">+1</span>
+                  <span className="ml-1.5 text-[10px] text-orange bg-orange-dim border ui-border-orange-30 rounded px-1.5 py-px">+1</span>
                 )}
               </div>
             </article>

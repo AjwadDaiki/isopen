@@ -31,7 +31,7 @@ export default function TrendingSidebar() {
             <Link
               key={slug}
               href={`/is-${slug}-open`}
-              className="no-underline rounded-xl border border-border bg-bg2/55 hover:bg-bg2 hover:border-border2 transition-colors px-4 py-3.5 grid grid-cols-[auto_1fr_auto] items-center gap-3"
+              className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-4 py-3.5 grid grid-cols-[auto_1fr_auto] items-center gap-3"
             >
               <span className="font-mono text-[11px] text-muted w-6 text-right shrink-0">
                 {String(i + 1).padStart(2, "0")}

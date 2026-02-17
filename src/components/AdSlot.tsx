@@ -40,7 +40,7 @@ export default function AdSlot({
   if (!slot) {
     return (
       <section className={`ui-panel overflow-hidden ${className}`}>
-        <div className="px-4 py-2.5 border-b border-border bg-bg1/60">
+        <div className="px-4 py-2.5 border-b border-border ui-bg-1-60">
           <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
             {label}
           </p>
@@ -57,7 +57,7 @@ export default function AdSlot({
 
   return (
     <section className={`ui-panel overflow-hidden ${className}`}>
-      <div className="px-4 py-2.5 border-b border-border bg-bg1/60">
+      <div className="px-4 py-2.5 border-b border-border ui-bg-1-60">
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
           {label}
         </p>

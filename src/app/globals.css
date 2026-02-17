@@ -379,6 +379,103 @@ body::after {
   padding: 22px 20px;
 }
 
+/* Deterministic color/opacity tokens to avoid utility opacity edge cases */
+.ui-bg-1-60 {
+  background-color: rgba(11, 12, 16, 0.6);
+}
+
+.ui-bg-2-50 {
+  background-color: rgba(17, 19, 26, 0.5);
+}
+
+.ui-bg-2-55 {
+  background-color: rgba(17, 19, 26, 0.55);
+}
+
+.ui-bg-2-65 {
+  background-color: rgba(17, 19, 26, 0.65);
+}
+
+.ui-border-soft {
+  border-color: rgba(255, 255, 255, 0.055);
+}
+
+.ui-text-muted-soft {
+  color: rgba(94, 100, 117, 0.7);
+}
+
+.ui-bg-orange-soft {
+  background-color: rgba(255, 180, 84, 0.07);
+}
+
+.ui-bg-green-10 {
+  background-color: rgba(24, 242, 142, 0.1);
+}
+
+.ui-bg-red-10 {
+  background-color: rgba(255, 90, 103, 0.1);
+}
+
+.ui-bg-orange-10 {
+  background-color: rgba(255, 180, 84, 0.1);
+}
+
+.ui-bg-orange-dim-60 {
+  background-color: rgba(255, 180, 84, 0.072);
+}
+
+.ui-border-70 {
+  border-color: rgba(255, 255, 255, 0.056);
+}
+
+.ui-border-green-20 {
+  border-color: rgba(24, 242, 142, 0.2);
+}
+
+.ui-border-green-25 {
+  border-color: rgba(24, 242, 142, 0.25);
+}
+
+.ui-border-green-30 {
+  border-color: rgba(24, 242, 142, 0.3);
+}
+
+.ui-border-green-35 {
+  border-color: rgba(24, 242, 142, 0.35);
+}
+
+.ui-border-green-40 {
+  border-color: rgba(24, 242, 142, 0.4);
+}
+
+.ui-border-orange-20 {
+  border-color: rgba(255, 180, 84, 0.2);
+}
+
+.ui-border-orange-25 {
+  border-color: rgba(255, 180, 84, 0.25);
+}
+
+.ui-border-orange-30 {
+  border-color: rgba(255, 180, 84, 0.3);
+}
+
+.ui-border-red-20 {
+  border-color: rgba(255, 90, 103, 0.2);
+}
+
+.ui-border-red-25 {
+  border-color: rgba(255, 90, 103, 0.25);
+}
+
+.ui-border-red-30 {
+  border-color: rgba(255, 90, 103, 0.3);
+}
+
+.ui-focus-border-green-40:focus {
+  border-color: rgba(24, 242, 142, 0.4);
+}
+
 @media (max-width: 1024px) {
   .page-pad {
     padding-left: 28px;

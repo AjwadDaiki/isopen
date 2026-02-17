@@ -31,7 +31,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-7 pt-4 border-t border-border text-center font-mono text-[11px] text-muted/70">
+        <div className="mt-7 pt-4 border-t border-border text-center font-mono text-[11px] ui-text-muted-soft">
           Real-time opening hours for any store - {year}
         </div>
       </div>

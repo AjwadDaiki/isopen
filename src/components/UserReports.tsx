@@ -108,13 +108,13 @@ export default function UserReports({ brandSlug }: Props) {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="panel-body border-b border-border bg-bg1/60">
+        <form onSubmit={handleSubmit} className="panel-body border-b border-border ui-bg-1-60">
           <div className="flex flex-wrap gap-2 mb-3.5">
             {(
               [
-                ["confirmed_open", "Open", "bg-green/10 text-green border-green/20"],
-                ["confirmed_closed", "Closed", "bg-red/10 text-red border-red/20"],
-                ["wrong_hours", "Wrong hours", "bg-orange/10 text-orange border-orange/20"],
+                ["confirmed_open", "Open", "ui-bg-green-10 text-green ui-border-green-20"],
+                ["confirmed_closed", "Closed", "ui-bg-red-10 text-red ui-border-red-20"],
+                ["wrong_hours", "Wrong hours", "ui-bg-orange-10 text-orange ui-border-orange-20"],
               ] as const
             ).map(([type, label, classes]) => (
               <button
@@ -134,7 +134,7 @@ export default function UserReports({ brandSlug }: Props) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Optional: Add details about what you found..."
-            className="w-full bg-bg2 border border-border rounded-xl px-4 py-3.5 text-[14px] text-text resize-none h-24 outline-none focus:border-green/40 transition-colors font-sans placeholder:text-muted"
+            className="w-full bg-bg2 border border-border rounded-xl px-4 py-3.5 text-[14px] text-text resize-none h-24 outline-none ui-focus-border-green-40 transition-colors font-sans placeholder:text-muted"
           />
 
           <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
@@ -158,9 +158,9 @@ export default function UserReports({ brandSlug }: Props) {
 
       <div className="panel-body">
         {loading ? (
-          <div className="rounded-xl border border-border bg-bg2/50 px-4 py-6 text-center text-muted text-[14px]">Loading reports...</div>
+          <div className="rounded-xl border border-border ui-bg-2-50 px-4 py-6 text-center text-muted text-[14px]">Loading reports...</div>
         ) : reports.length === 0 ? (
-          <div className="rounded-xl border border-border bg-bg2/50 px-4 py-6 text-center text-muted text-[13px]">
+          <div className="rounded-xl border border-border ui-bg-2-50 px-4 py-6 text-center text-muted text-[13px]">
             No reports yet. Be the first to report.
           </div>
         ) : (
@@ -168,7 +168,7 @@ export default function UserReports({ brandSlug }: Props) {
             {reports.map((report) => (
               <article
                 key={report.id}
-                className="rounded-xl border border-border bg-bg2/55 px-4 py-3.5 md:px-5 md:py-4 grid grid-cols-[10px_1fr_auto] items-start gap-3"
+                className="rounded-xl border border-border ui-bg-2-55 px-4 py-3.5 md:px-5 md:py-4 grid grid-cols-[10px_1fr_auto] items-start gap-3"
               >
                 <div
                   className={`w-[8px] h-[8px] rounded-full mt-1.5 ${
@@ -192,7 +192,7 @@ export default function UserReports({ brandSlug }: Props) {
         )}
       </div>
 
-      <div className="panel-body border-t border-border bg-bg1/60 grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <div className="panel-body border-t border-border ui-bg-1-60 grid grid-cols-1 sm:grid-cols-3 gap-2">
         {quickActions.map(([type, label]) => (
           <button
             key={type}

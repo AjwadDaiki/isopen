@@ -171,7 +171,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {editorial.bullets.map((line) => (
-                      <div key={line} className="rounded-xl border border-border bg-bg2/55 px-3.5 py-3 text-[12px] text-muted2">
+                      <div key={line} className="rounded-xl border border-border ui-bg-2-55 px-3.5 py-3 text-[12px] text-muted2">
                         {line}
                       </div>
                     ))}

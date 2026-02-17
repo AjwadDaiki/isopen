@@ -33,7 +33,7 @@ export default function AffiliateUnit({ brandName, category, isOpen }: Props) {
       className="ui-panel no-underline overflow-hidden block transition-[border-color,transform,box-shadow] duration-200 hover:border-orange hover:-translate-y-px"
     >
       <div className="panel-body flex items-center gap-4">
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-[11px] font-bold tracking-[0.08em] text-orange shrink-0 bg-orange-dim border border-orange/30">
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-[11px] font-bold tracking-[0.08em] text-orange shrink-0 bg-orange-dim border ui-border-orange-30">
           {iconLabel}
         </div>
 

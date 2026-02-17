@@ -147,10 +147,10 @@ export default async function DayPage({ params }: PageProps) {
                   <div
                     className={`inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-2 text-[12px] font-semibold ${
                       isHoliday
-                        ? "border-orange/30 bg-orange-dim text-orange"
+                        ? "ui-border-orange-30 bg-orange-dim text-orange"
                         : isOpenOnDay
-                          ? "border-green/30 bg-green-dim text-green"
-                          : "border-red/30 bg-red-dim text-red"
+                          ? "ui-border-green-30 bg-green-dim text-green"
+                          : "ui-border-red-30 bg-red-dim text-red"
                     }`}
                   >
                     <span className={`w-[7px] h-[7px] rounded-full ${isOpenOnDay && !isHoliday ? "bg-green animate-pulse-dot" : isHoliday ? "bg-orange" : "bg-red"}`} />

@@ -24,8 +24,8 @@ export default function HolidayAlert({ country = "US", brandName }: Props) {
   const isTomorrow = daysUntil === 1;
 
   return (
-    <section className="ui-panel border-orange/25 overflow-hidden">
-      <div className="panel-body border-l-[3px] border-l-orange bg-orange-dim/60 flex items-start gap-3">
+    <section className="ui-panel ui-border-orange-25 overflow-hidden">
+      <div className="panel-body border-l-[3px] border-l-orange ui-bg-orange-dim-60 flex items-start gap-3">
         <div className="w-2 h-2 rounded-full bg-orange mt-2 shrink-0" />
         <p className="text-[13px] md:text-[13.5px] leading-relaxed text-orange font-medium">
           {isToday

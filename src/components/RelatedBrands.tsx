@@ -32,13 +32,13 @@ export default function RelatedBrands({ brands }: Props) {
             <Link
               key={b.slug}
               href={`/is-${b.slug}-open`}
-              className="no-underline rounded-xl border border-border bg-bg2/55 hover:bg-bg2 hover:border-border2 transition-colors p-3.5 flex flex-col items-start gap-2"
+              className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors p-3.5 flex flex-col items-start gap-2"
             >
               <div className="w-full flex items-center justify-between gap-2">
                 <span className="text-[22px] leading-none">{b.emoji || "Store"}</span>
                 <span
                   className={`inline-flex rounded-full px-2 py-[2px] text-[10px] font-semibold uppercase tracking-[0.08em] ${
-                    isOpen ? "text-green bg-green-dim border border-green/25" : "text-red bg-red-dim border border-red/25"
+                    isOpen ? "text-green bg-green-dim border ui-border-green-25" : "text-red bg-red-dim border ui-border-red-25"
                   }`}
                 >
                   {isOpen ? "Open" : "Closed"}

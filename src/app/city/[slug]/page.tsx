@@ -117,7 +117,7 @@ export default async function CityPage({ params }: PageProps) {
                   <p className="text-muted2 text-[15px] leading-relaxed mt-4 max-w-[68ch]">
                     Live store and service status using {city.timezone} timezone. Use this page for quick local checks before visiting a branch.
                   </p>
-                  <div className="mt-5 inline-flex items-center gap-2 rounded-full px-3.5 py-2 border border-green/30 bg-green-dim text-[12px] text-green font-semibold">
+                  <div className="mt-5 inline-flex items-center gap-2 rounded-full px-3.5 py-2 border ui-border-green-30 bg-green-dim text-[12px] text-green font-semibold">
                     <span className="w-[7px] h-[7px] rounded-full bg-green animate-pulse-dot" />
                     {openCount} / {statuses.length} featured brands open now
                   </div>
@@ -167,7 +167,7 @@ export default async function CityPage({ params }: PageProps) {
                   <p className="text-[14px] text-muted2 leading-relaxed">{editorial.intro}</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {editorial.bullets.map((line) => (
-                      <div key={line} className="rounded-xl border border-border bg-bg2/55 px-3.5 py-3 text-[12px] text-muted2">
+                      <div key={line} className="rounded-xl border border-border ui-bg-2-55 px-3.5 py-3 text-[12px] text-muted2">
                         {line}
                       </div>
                     ))}
@@ -215,7 +215,7 @@ export default async function CityPage({ params }: PageProps) {
                     <Link
                       key={entry.slug}
                       href={`/city/${entry.slug}`}
-                      className="no-underline rounded-xl border border-border bg-bg2/55 hover:bg-bg2 hover:border-border2 transition-colors px-4 py-3"
+                      className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-4 py-3"
                     >
                       <p className="text-[14px] font-semibold text-text leading-tight">{entry.name}, {entry.state}</p>
                       <p className="text-[12px] text-muted2 mt-1">Live status in {entry.timezone}</p>

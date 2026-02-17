@@ -158,12 +158,12 @@ export default async function BrandPage({ params }: PageProps) {
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-border/70 flex flex-wrap gap-2.5">
+                  <div className="pt-3 border-t ui-border-70 flex flex-wrap gap-2.5">
                     {HOLIDAY_SLUGS.map((holiday) => (
                       <Link
                         key={holiday}
                         href={buildDayUrl("en", slug, holiday as CanonicalDay)}
-                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-orange/30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
+                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border ui-border-orange-30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
                       >
                         {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
                       </Link>
@@ -200,7 +200,7 @@ export default async function BrandPage({ params }: PageProps) {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {editorial.bullets.map((line) => (
-                      <div key={line} className="rounded-xl border border-border bg-bg2/55 px-3.5 py-3 text-[12px] text-muted2">
+                      <div key={line} className="rounded-xl border border-border ui-bg-2-55 px-3.5 py-3 text-[12px] text-muted2">
                         {line}
                       </div>
                     ))}

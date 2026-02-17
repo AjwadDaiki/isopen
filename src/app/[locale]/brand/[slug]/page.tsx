@@ -160,12 +160,12 @@ export default async function LocaleBrandPage({ params }: PageProps) {
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-border/70 flex flex-wrap gap-2.5">
+                  <div className="pt-3 border-t ui-border-70 flex flex-wrap gap-2.5">
                     {HOLIDAY_SLUGS.map((holiday) => (
                       <Link
                         key={holiday}
                         href={buildDayUrl(loc, slug, holiday as CanonicalDay)}
-                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-orange/30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
+                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border ui-border-orange-30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
                       >
                         {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
                       </Link>

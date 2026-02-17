@@ -63,6 +63,7 @@ const en = {
   realTimeStatus: "REAL-TIME STATUS",
   reportIssue: "Report hours issue",
   liveReports: "Live user reports",
+  viewAll: "View all",
   confirmedOpen: "Confirmed open",
   confirmedClosed: "Confirmed closed",
   wrongHours: "Wrong hours reported",

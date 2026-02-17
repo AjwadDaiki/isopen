@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import type { HoursData } from "@/lib/types";
 
@@ -7,11 +7,6 @@ interface Props {
 }
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-function timeToMinutes(t: string): number {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
-}
 
 function formatTime(t: string): string {
   const [h, m] = t.split(":").map(Number);
@@ -30,74 +25,56 @@ export default function HoursTable({ hours }: Props) {
   });
 
   return (
-    <div className="ui-panel overflow-hidden">
+    <section className="ui-panel overflow-hidden">
       <div className="card-title-row">
-        <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
-          <span>Hours</span> Opening hours
-        </h3>
-        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">Updated Feb 2026</span>
+        <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Opening hours</h3>
+        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">Local schedule</span>
       </div>
 
-      <div className="py-2">
+      <div className="px-4 py-3 md:px-6 md:py-4 flex flex-col gap-2.5">
         {sorted.map((day) => {
           const isToday = day.dayOfWeek === today;
           const isClosed = day.isClosed || !day.openTime || !day.closeTime;
 
-          let barLeft = 0;
-          let barWidth = 0;
-          if (!isClosed && day.openTime && day.closeTime) {
-            const open = timeToMinutes(day.openTime);
-            let close = timeToMinutes(day.closeTime);
-            if (day.spansMidnight || close <= open) close += 1440;
-            barLeft = (open / 1440) * 100;
-            barWidth = ((close - open) / 1440) * 100;
-          }
-
           return (
-            <div
+            <article
               key={day.dayOfWeek}
-              className={`flex items-center py-2.5 px-4 md:px-6 gap-3 md:gap-4 transition-colors ${
-                isToday ? "bg-green-dim border-l-[3px] border-l-green" : "hover:bg-bg2"
+              className={`rounded-xl border px-3.5 py-3 md:px-4 md:py-3.5 grid grid-cols-[1fr_auto] items-center gap-3 ${
+                isToday
+                  ? "border-green/35 bg-green-dim"
+                  : "border-border bg-bg2/65"
               }`}
             >
-              <div
-                className={`text-[12px] md:text-[13px] w-[74px] md:w-[90px] shrink-0 ${
-                  isToday ? "text-green font-bold" : "text-muted2 font-medium"
-                }`}
-              >
-                {DAY_NAMES[day.dayOfWeek]}
-                {isToday && " <-"}
-              </div>
-
-              <div className="flex-1 h-1 bg-bg3 rounded-sm relative overflow-hidden hidden sm:block">
-                {!isClosed && (
-                  <div
-                    className={`absolute top-0 h-full rounded-sm ${isToday ? "bg-green opacity-50" : "bg-border2"}`}
-                    style={{ left: `${barLeft}%`, width: `${barWidth}%` }}
-                  />
-                )}
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className={`text-[13px] md:text-[14px] font-semibold ${isToday ? "text-green" : "text-text"}`}>
+                    {DAY_NAMES[day.dayOfWeek]}
+                  </p>
+                  {isToday && (
+                    <span className="text-[10px] uppercase tracking-[0.1em] font-mono text-green bg-green/10 border border-green/25 rounded-full px-2 py-[2px]">
+                      Today
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-muted2 mt-0.5">
+                  {isClosed ? "Usually closed" : day.spansMidnight ? "Open late (overnight)" : "Regular hours"}
+                </p>
               </div>
 
               <div
-                className={`font-mono text-[11px] md:text-[13px] font-medium whitespace-nowrap text-right w-[112px] md:w-[150px] shrink-0 ${
-                  isToday ? "text-green" : isClosed ? "text-red" : "text-text"
+                className={`font-mono text-[12px] md:text-[13px] font-semibold text-right whitespace-nowrap ${
+                  isClosed ? "text-red" : isToday ? "text-green" : "text-text"
                 }`}
               >
-                {isClosed ? (
-                  "Closed"
-                ) : (
-                  <>
-                    {formatTime(day.openTime!)} - {formatTime(day.closeTime!)}
-                    {day.spansMidnight && (
-                      <span className="ml-1.5 text-[11px] text-orange bg-orange-dim rounded px-1.5 py-px font-mono">+1</span>
-                    )}
-                  </>
+                {isClosed ? "Closed" : `${formatTime(day.openTime!)} - ${formatTime(day.closeTime!)}`}
+                {!isClosed && day.spansMidnight && (
+                  <span className="ml-1.5 text-[10px] text-orange bg-orange-dim border border-orange/30 rounded px-1.5 py-px">+1</span>
                 )}
               </div>
-            </div>
+            </article>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

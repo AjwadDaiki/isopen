@@ -127,7 +127,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           : "0 18px 46px rgba(0,0,0,0.45)",
       }}
     >
-      <div className="relative px-7 py-9 md:px-11 md:py-11">
+      <div className="relative panel-body-lg">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -137,11 +137,11 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           }}
         />
 
-        <div className="relative z-[1] flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
+        <div className="relative z-[1] flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-5 md:gap-6 min-w-0">
             <div
-              className="w-[74px] h-[74px] rounded-2xl border border-border2 bg-bg2 flex items-center justify-center shrink-0"
-              style={{ fontSize: 36 }}
+              className="w-[68px] h-[68px] md:w-[74px] md:h-[74px] rounded-2xl border border-border2 bg-bg2 flex items-center justify-center shrink-0"
+              style={{ fontSize: 34 }}
             >
               {brand.emoji || "Store"}
             </div>
@@ -170,10 +170,9 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
             </div>
           </div>
 
-          <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
+          <div className="flex flex-col items-start md:items-end gap-2.5 shrink-0">
             <span
-              className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}
-              style={{ padding: "8px 14px 8px 10px", fontSize: 12 }}
+              className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"} text-[12px]`}
             >
               <span className="status-led" />
               {isOpen ? t(locale, "openNowLabel") : t(locale, "closedNowLabel")}
@@ -194,7 +193,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           </div>
         </div>
 
-        <div className="relative z-[1] mt-6 flex flex-col gap-1.5">
+        <div className="relative z-[1] mt-5 flex flex-col gap-1.5">
           <p className="text-[13px] md:text-[14px] text-text font-semibold">{nearestLine}</p>
           <p className="text-[12px] text-muted">
             {locationMode === "gps"
@@ -222,7 +221,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <StatCell label={t(locale, "updated")} value={t(locale, "live")} muted />
       </div>
 
-      <div className="px-7 py-5 md:px-11 md:py-6 border-t border-border flex flex-wrap gap-2.5">
+      <div className="panel-body border-t border-border flex flex-wrap gap-2.5">
         <a
           href={brand.website || `/is-${brand.slug}-open`}
           target={brand.website ? "_blank" : undefined}

@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 interface Props {
   brandName: string;
   category: string | null;
@@ -7,49 +5,50 @@ interface Props {
 }
 
 export default function AffiliateUnit({ brandName, category, isOpen }: Props) {
-  const isFoodBrand = ["Fast Food", "Pizza", "Coffee", "Fast Casual"].includes(
-    category || ""
-  );
-  const isRetailBrand = [
-    "Retail",
-    "Wholesale",
-    "Home Improvement",
-    "Pharmacy",
-  ].includes(category || "");
+  const isFoodBrand = ["Fast Food", "Pizza", "Coffee", "Fast Casual"].includes(category || "");
+  const isRetailBrand = ["Retail", "Wholesale", "Home Improvement", "Pharmacy"].includes(category || "");
 
   if (!isFoodBrand && !isRetailBrand) return null;
 
-  const icon = isFoodBrand ? "🛵" : "🛒";
+  const provider = isFoodBrand ? "Uber Eats" : "Amazon";
+  const href = isFoodBrand ? "https://www.ubereats.com/" : "https://www.amazon.com/";
+  const iconLabel = isFoodBrand ? "DLV" : "WEB";
   const title = isFoodBrand
     ? isOpen
-      ? `${brandName} too far? Order delivery`
-      : `${brandName} is closed — order delivery instead`
+      ? `${brandName} too far? Get delivery instead`
+      : `${brandName} is closed. Order delivery instead`
     : isOpen
-      ? `Shop ${brandName} online instead`
-      : `${brandName} is closed — shop online now`;
-  const sub = isFoodBrand
-    ? "Uber Eats · Delivered in 20 min · Free on first order"
-    : "Amazon · Same-day delivery available · Millions of products";
-  const cta = isFoodBrand ? "Order now →" : "Shop now →";
+      ? `Prefer online shopping? Compare ${brandName} deals`
+      : `${brandName} is closed. Shop online now`;
+  const subtitle = isFoodBrand
+    ? "Fast checkout, live tracking, and local delivery windows."
+    : "Same-day options, wide inventory, and price comparisons.";
+  const cta = isFoodBrand ? "Order now" : "Shop now";
 
   return (
-    <Link
-      href="#"
-      className="bg-bg1 border border-border rounded-[14px] p-[18px] flex items-center gap-4 no-underline cursor-pointer transition-all hover:border-orange hover:-translate-y-px"
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      className="ui-panel no-underline overflow-hidden block transition-[border-color,transform,box-shadow] duration-200 hover:border-orange hover:-translate-y-px"
     >
-      <div className="w-11 h-11 rounded-[10px] flex items-center justify-center text-xl shrink-0" style={{ background: "var(--color-orange-dim)" }}>
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[10px] font-semibold text-orange uppercase tracking-[0.1em] mb-0.5">
-          Affiliate · {isFoodBrand ? "Uber Eats" : "Amazon"}
+      <div className="panel-body flex items-center gap-4">
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-[11px] font-bold tracking-[0.08em] text-orange shrink-0 bg-orange-dim border border-orange/30">
+          {iconLabel}
         </div>
-        <div className="font-heading font-bold text-sm text-text">{title}</div>
-        <div className="text-xs text-muted2">{sub}</div>
+
+        <div className="flex-1 min-w-0">
+          <div className="text-[10px] font-semibold text-orange uppercase tracking-[0.1em] mb-1">
+            Sponsored - {provider}
+          </div>
+          <div className="font-heading font-bold text-[14px] md:text-[15px] text-text leading-snug">{title}</div>
+          <div className="text-[12px] text-muted2 mt-1">{subtitle}</div>
+        </div>
+
+        <div className="bg-orange text-black font-bold text-[12px] px-3.5 py-2 rounded-xl whitespace-nowrap shrink-0">
+          {cta}
+        </div>
       </div>
-      <div className="bg-orange text-black font-bold text-xs px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0">
-        {cta}
-      </div>
-    </Link>
+    </a>
   );
 }

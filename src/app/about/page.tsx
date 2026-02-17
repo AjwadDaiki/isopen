@@ -24,54 +24,58 @@ export default function AboutPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="page-pad" style={{ paddingTop: 48, paddingBottom: 64 }}>
-          <div style={{ maxWidth: 760 }}>
-            <h1
-              className="font-heading font-extrabold text-text"
-              style={{ fontSize: 34, letterSpacing: "-0.04em", marginBottom: 16 }}
-            >
-              About IsItOpen
-            </h1>
+        <div className="page-pad pt-12 pb-14">
+          <div className="max-w-[760px] content-stack">
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body-lg">
+                <h1 className="font-heading font-extrabold text-[34px] tracking-[-0.04em] text-text">
+                  About IsItOpen
+                </h1>
+                <p className="text-muted2 text-[15px] leading-relaxed mt-4">
+                  IsItOpen helps people answer one question fast: is a place open right now? We publish brand-level hours,
+                  live open or closed status, and day-specific checks in one page.
+                </p>
+              </div>
+            </section>
 
-            <p className="text-muted2" style={{ fontSize: 15, lineHeight: 1.75, marginBottom: 28 }}>
-              IsItOpen helps people answer one question fast: is a place open right now? We publish brand-level hours,
-              live open or closed status, and day-specific checks in one page.
-            </p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <section className="ui-panel" style={{ padding: 24 }}>
-                <h2 className="font-heading font-bold text-text" style={{ fontSize: 19, marginBottom: 12 }}>
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body">
+                <h2 className="font-heading font-bold text-[19px] text-text mb-3">
                   What we publish
                 </h2>
-                <ul className="legal-content text-muted2" style={{ fontSize: 14, lineHeight: 1.7 }}>
+                <ul className="legal-content text-muted2 text-[14px] leading-relaxed">
                   <li>Current open or closed status</li>
                   <li>Weekly opening hours by day</li>
                   <li>Holiday and special-day checks</li>
                   <li>User-reported issues used for quality review</li>
                 </ul>
-              </section>
+              </div>
+            </section>
 
-              <section className="ui-panel" style={{ padding: 24 }}>
-                <h2 className="font-heading font-bold text-text" style={{ fontSize: 19, marginBottom: 12 }}>
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body">
+                <h2 className="font-heading font-bold text-[19px] text-text mb-3">
                   How quality is handled
                 </h2>
-                <p className="text-muted2" style={{ fontSize: 14, lineHeight: 1.75 }}>
+                <p className="text-muted2 text-[14px] leading-relaxed">
                   We combine schedule data, timezone-aware calculations, and report moderation to reduce errors.
                   Opening hours can still vary by specific location, temporary closures, or seasonal changes. For
                   critical visits, always confirm directly with the location.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              <section className="ui-panel" style={{ padding: 24 }}>
-                <h2 className="font-heading font-bold text-text" style={{ fontSize: 19, marginBottom: 12 }}>
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body">
+                <h2 className="font-heading font-bold text-[19px] text-text mb-3">
                   Contact and policies
                 </h2>
-                <p className="text-muted2" style={{ fontSize: 14, lineHeight: 1.75 }}>
+                <p className="text-muted2 text-[14px] leading-relaxed">
                   You can reach us for data corrections or partnership requests on the <Link href="/contact" className="text-green no-underline hover:underline">contact page</Link>.
                   Please also review our <Link href="/privacy" className="text-green no-underline hover:underline">privacy policy</Link> and <Link href="/terms" className="text-green no-underline hover:underline">terms of service</Link>.
                 </p>
-              </section>
-            </div>
+              </div>
+            </section>
           </div>
         </div>
         <Footer />

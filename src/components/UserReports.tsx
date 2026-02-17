@@ -108,7 +108,7 @@ export default function UserReports({ brandSlug }: Props) {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="px-5 py-4 md:px-6 md:py-5 border-b border-border bg-bg1/60">
+        <form onSubmit={handleSubmit} className="panel-body border-b border-border bg-bg1/60">
           <div className="flex flex-wrap gap-2 mb-3.5">
             {(
               [
@@ -121,7 +121,7 @@ export default function UserReports({ brandSlug }: Props) {
                 key={type}
                 type="button"
                 onClick={() => setReportType(type)}
-                className={`text-[13px] font-semibold px-3 py-2 rounded-lg border transition-all cursor-pointer ${
+                className={`text-[13px] font-semibold px-3.5 py-2 rounded-xl border transition-colors cursor-pointer ${
                   reportType === type ? classes : "bg-bg2 text-muted2 border-border"
                 }`}
               >
@@ -134,7 +134,7 @@ export default function UserReports({ brandSlug }: Props) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Optional: Add details about what you found..."
-            className="w-full bg-bg2 border border-border rounded-xl px-3.5 py-3 text-[14px] text-text resize-none h-24 outline-none focus:border-green/40 transition-colors font-sans placeholder:text-muted"
+            className="w-full bg-bg2 border border-border rounded-xl px-4 py-3.5 text-[14px] text-text resize-none h-24 outline-none focus:border-green/40 transition-colors font-sans placeholder:text-muted"
           />
 
           <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
@@ -142,7 +142,7 @@ export default function UserReports({ brandSlug }: Props) {
             <button
               type="submit"
               disabled={submitting}
-              className="bg-green text-black rounded-lg px-4 py-2.5 text-[13px] font-semibold cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="bg-green text-black rounded-xl px-4 py-2.5 text-[13px] font-semibold cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {submitting ? "Submitting..." : "Submit report"}
             </button>
@@ -151,12 +151,12 @@ export default function UserReports({ brandSlug }: Props) {
       )}
 
       {submitted && (
-        <div className="px-5 py-3 md:px-6 bg-green-dim text-green text-sm font-semibold border-b border-border">
+        <div className="panel-body bg-green-dim text-green text-sm font-semibold border-b border-border">
           Report submitted. Thank you.
         </div>
       )}
 
-      <div className="px-4 py-4 md:px-5 md:py-5">
+      <div className="panel-body">
         {loading ? (
           <div className="rounded-xl border border-border bg-bg2/50 px-4 py-6 text-center text-muted text-[14px]">Loading reports...</div>
         ) : reports.length === 0 ? (
@@ -168,7 +168,7 @@ export default function UserReports({ brandSlug }: Props) {
             {reports.map((report) => (
               <article
                 key={report.id}
-                className="rounded-xl border border-border bg-bg2/55 px-3.5 py-3.5 md:px-4 md:py-4 grid grid-cols-[10px_1fr_auto] items-start gap-3"
+                className="rounded-xl border border-border bg-bg2/55 px-4 py-3.5 md:px-5 md:py-4 grid grid-cols-[10px_1fr_auto] items-start gap-3"
               >
                 <div
                   className={`w-[8px] h-[8px] rounded-full mt-1.5 ${
@@ -192,7 +192,7 @@ export default function UserReports({ brandSlug }: Props) {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 px-5 py-4 md:px-6 border-t border-border bg-bg1/60">
+      <div className="panel-body border-t border-border bg-bg1/60 grid grid-cols-1 sm:grid-cols-3 gap-2">
         {quickActions.map(([type, label]) => (
           <button
             key={type}
@@ -200,7 +200,7 @@ export default function UserReports({ brandSlug }: Props) {
               setShowForm(true);
               setReportType(type);
             }}
-            className="py-2.5 px-3 rounded-lg border border-border2 bg-bg2 text-muted2 font-medium text-[13px] cursor-pointer transition-all hover:border-green hover:text-green hover:bg-green-dim"
+            className="py-2.5 px-3.5 rounded-xl border border-border2 bg-bg2 text-muted2 font-medium text-[13px] cursor-pointer transition-colors hover:border-green hover:text-green hover:bg-green-dim"
           >
             {label}
           </button>
@@ -209,4 +209,3 @@ export default function UserReports({ brandSlug }: Props) {
     </section>
   );
 }
-

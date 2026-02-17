@@ -21,72 +21,74 @@ export default function TermsPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="page-pad" style={{ paddingTop: 48, paddingBottom: 64 }}>
-          <div style={{ maxWidth: 760 }}>
-            <h1
-              className="font-heading font-extrabold text-text"
-              style={{ fontSize: 34, letterSpacing: "-0.04em", marginBottom: 16 }}
-            >
-              Terms of Service
-            </h1>
-
-            <p className="font-mono text-muted" style={{ fontSize: 12, marginBottom: 24 }}>
-              Last updated: February 17, 2026
-            </p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-              <Section title="1. Service Description">
-                <p>
-                  IsItOpen provides opening-hours information for reference purposes. Hours may vary by location,
-                  season, and special events.
+        <div className="page-pad pt-12 pb-14">
+          <div className="max-w-[760px] content-stack">
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body-lg">
+                <h1 className="font-heading font-extrabold text-[34px] tracking-[-0.04em] text-text">
+                  Terms of Service
+                </h1>
+                <p className="font-mono text-muted text-[12px] mt-4">
+                  Last updated: February 17, 2026
                 </p>
-              </Section>
+              </div>
+            </section>
 
-              <Section title="2. Accuracy Disclaimer">
-                <p>
-                  We work to keep information accurate, but no uptime or accuracy guarantee is provided. For critical
-                  visits, verify directly with the business.
-                </p>
-              </Section>
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body flex flex-col gap-6">
+                <Section title="1. Service Description">
+                  <p>
+                    IsItOpen provides opening-hours information for reference purposes. Hours may vary by location,
+                    season, and special events.
+                  </p>
+                </Section>
 
-              <Section title="3. User Reports">
-                <ul>
-                  <li>Reports must be truthful and non-spam</li>
-                  <li>Submitted reports may be displayed for quality and moderation purposes</li>
-                  <li>Abuse may lead to report filtering or blocking</li>
-                </ul>
-              </Section>
+                <Section title="2. Accuracy Disclaimer">
+                  <p>
+                    We work to keep information accurate, but no uptime or accuracy guarantee is provided. For critical
+                    visits, verify directly with the business.
+                  </p>
+                </Section>
 
-              <Section title="4. Intellectual Property">
-                <p>
-                  IsItOpen branding and site content are protected. Third-party brand names and trademarks belong to
-                  their respective owners.
-                </p>
-              </Section>
+                <Section title="3. User Reports">
+                  <ul>
+                    <li>Reports must be truthful and non-spam</li>
+                    <li>Submitted reports may be displayed for quality and moderation purposes</li>
+                    <li>Abuse may lead to report filtering or blocking</li>
+                  </ul>
+                </Section>
 
-              <Section title="5. Limitation of Liability">
-                <p>
-                  The service is provided as is without warranties. We are not liable for damages caused by reliance on
-                  opening-hours information.
-                </p>
-              </Section>
+                <Section title="4. Intellectual Property">
+                  <p>
+                    IsItOpen branding and site content are protected. Third-party brand names and trademarks belong to
+                    their respective owners.
+                  </p>
+                </Section>
 
-              <Section title="6. Advertising">
-                <p>
-                  The site displays third-party ads. We are not responsible for external advertiser claims or offers.
-                </p>
-              </Section>
+                <Section title="5. Limitation of Liability">
+                  <p>
+                    The service is provided as is without warranties. We are not liable for damages caused by reliance on
+                    opening-hours information.
+                  </p>
+                </Section>
 
-              <Section title="7. Changes to Terms">
-                <p>We may update these terms at any time. Continued use implies acceptance of the updated terms.</p>
-              </Section>
+                <Section title="6. Advertising">
+                  <p>
+                    The site displays third-party ads. We are not responsible for external advertiser claims or offers.
+                  </p>
+                </Section>
 
-              <Section title="8. Contact">
-                <p>
-                  For legal questions: <strong className="text-text">legal@isopenow.com</strong>
-                </p>
-              </Section>
-            </div>
+                <Section title="7. Changes to Terms">
+                  <p>We may update these terms at any time. Continued use implies acceptance of the updated terms.</p>
+                </Section>
+
+                <Section title="8. Contact">
+                  <p>
+                    For legal questions: <strong className="text-text">legal@isopenow.com</strong>
+                  </p>
+                </Section>
+              </div>
+            </section>
           </div>
         </div>
         <Footer />
@@ -98,10 +100,10 @@ export default function TermsPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="font-heading font-bold text-text" style={{ fontSize: 18, marginBottom: 12 }}>
+      <h2 className="font-heading font-bold text-text text-[18px] mb-3">
         {title}
       </h2>
-      <div className="text-muted2 legal-content" style={{ fontSize: 14, lineHeight: 1.7, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div className="text-muted2 legal-content text-[14px] leading-relaxed flex flex-col gap-2">
         {children}
       </div>
     </section>

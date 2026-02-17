@@ -31,7 +31,7 @@ export default function HoursTable({ hours }: Props) {
         <span className="font-mono text-[10px] text-muted tracking-[0.06em]">Local schedule</span>
       </div>
 
-      <div className="px-4 py-4 md:px-6 md:py-5 flex flex-col gap-2.5">
+      <div className="panel-body flex flex-col gap-3">
         {sorted.map((day) => {
           const isToday = day.dayOfWeek === today;
           const isClosed = day.isClosed || !day.openTime || !day.closeTime;
@@ -39,7 +39,7 @@ export default function HoursTable({ hours }: Props) {
           return (
             <article
               key={day.dayOfWeek}
-              className={`rounded-xl border px-3.5 py-3 md:px-4 md:py-3.5 grid grid-cols-[1fr_auto] items-center gap-3 ${
+              className={`rounded-xl border px-4 py-3.5 md:px-5 md:py-4 grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start sm:items-center gap-2.5 sm:gap-3 ${
                 isToday
                   ? "border-green/35 bg-green-dim"
                   : "border-border bg-bg2/65"
@@ -62,7 +62,7 @@ export default function HoursTable({ hours }: Props) {
               </div>
 
               <div
-                className={`font-mono text-[12px] md:text-[13px] font-semibold text-right whitespace-nowrap ${
+                className={`font-mono text-[12px] md:text-[13px] font-semibold text-left sm:text-right whitespace-nowrap ${
                   isClosed ? "text-red" : isToday ? "text-green" : "text-text"
                 }`}
               >

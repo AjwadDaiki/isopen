@@ -98,15 +98,17 @@ export default async function BrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 20, paddingBottom: 4, gap: 8, fontSize: 13 }}>
-          <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
-          <span>/</span>
-          <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">
-            {brand.category}
-          </Link>
-          <span>/</span>
-          <span className="text-text">{brand.name}</span>
-        </nav>
+        <div className="page-pad">
+          <nav className="breadcrumb-row">
+            <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
+            <span>/</span>
+            <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">
+              {brand.category}
+            </Link>
+            <span>/</span>
+            <span className="text-text">{brand.name}</span>
+          </nav>
+        </div>
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
@@ -114,86 +116,83 @@ export default async function BrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad" style={{ paddingTop: 16 }}>
+        <div className="page-pad pt-2">
           <StatusHero brand={brand} initialStatus={status} locale="en" />
         </div>
 
-        {/* Ad banner after hero */}
-        <div className="page-pad" style={{ paddingTop: 20, paddingBottom: 0 }}>
+        <div className="page-pad pt-4">
           <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={90} />
         </div>
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px]" style={{ gap: 28, paddingTop: 28, paddingBottom: 48 }}>
-          <main className="min-w-0 flex flex-col" style={{ gap: 20 }}>
-            <HolidayAlert brandName={brand.name} />
-            <HoursTable hours={hours} />
+        <div className="page-pad pt-7 pb-14">
+          <div className="content-grid-shell">
+            <main className="min-w-0 content-stack">
+              <HolidayAlert brandName={brand.name} />
+              <HoursTable hours={hours} />
 
-            {/* Affiliate unit */}
-            <AffiliateUnit brandName={brand.name} category={brand.category || null} isOpen={status.isOpen} />
+              <AffiliateUnit brandName={brand.name} category={brand.category || null} isOpen={status.isOpen} />
 
-            {/* Inline ad between content */}
-            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={100} />
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={100} />
 
-            <UserReports brandSlug={slug} />
+              <UserReports brandSlug={slug} />
 
-            <section className="ui-panel overflow-hidden">
-              <div className="card-title-row">
-                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Quick checks</h3>
-              </div>
-
-              <div className="px-5 py-5 md:px-7 md:py-6 flex flex-col gap-4">
-                <div className="flex flex-wrap gap-2">
-                  {DAY_SLUGS.map((day) => (
-                    <Link
-                      key={day}
-                      href={buildDayUrl("en", slug, day as CanonicalDay)}
-                      className="text-[12px] font-medium px-3.5 py-2 rounded-lg border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
-                    >
-                      {day.charAt(0).toUpperCase() + day.slice(1)}
-                    </Link>
-                  ))}
+              <section className="ui-panel overflow-hidden">
+                <div className="card-title-row">
+                  <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Quick checks</h3>
                 </div>
 
-                <div className="pt-1 border-t border-border/70 flex flex-wrap gap-2">
-                  {HOLIDAY_SLUGS.map((holiday) => (
-                    <Link
-                      key={holiday}
-                      href={buildDayUrl("en", slug, holiday as CanonicalDay)}
-                      className="text-[12px] font-medium px-3.5 py-2 rounded-lg border border-orange/30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
-                    >
-                      {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
-                    </Link>
-                  ))}
+                <div className="panel-body flex flex-col gap-4">
+                  <div className="flex flex-wrap gap-2.5">
+                    {DAY_SLUGS.map((day) => (
+                      <Link
+                        key={day}
+                        href={buildDayUrl("en", slug, day as CanonicalDay)}
+                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                      >
+                        {day.charAt(0).toUpperCase() + day.slice(1)}
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="pt-3 border-t border-border/70 flex flex-wrap gap-2.5">
+                    {HOLIDAY_SLUGS.map((holiday) => (
+                      <Link
+                        key={holiday}
+                        href={buildDayUrl("en", slug, holiday as CanonicalDay)}
+                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-orange/30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
+                      >
+                        {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            <section className="ui-panel overflow-hidden">
-              <div className="card-title-row">
-                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Frequently asked questions</h3>
-              </div>
-              <div>
-                <FaqItem q={`Is ${brand.name} open right now?`} a={status.isOpen ? `Yes, ${brand.name} is currently open.` : `No, ${brand.name} is currently closed.`} />
-                <FaqItem q={`What are ${brand.name} hours today?`} a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`} />
-                <FaqItem q={`What time does ${brand.name} close today?`} a={status.closesIn ? `${brand.name} closes in ${status.closesIn}.` : `${brand.name} opens at ${status.opensAt || "unknown"}.`} />
-              </div>
-            </section>
+              <section className="ui-panel overflow-hidden">
+                <div className="card-title-row">
+                  <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Frequently asked questions</h3>
+                </div>
+                <div>
+                  <FaqItem q={`Is ${brand.name} open right now?`} a={status.isOpen ? `Yes, ${brand.name} is currently open.` : `No, ${brand.name} is currently closed.`} />
+                  <FaqItem q={`What are ${brand.name} hours today?`} a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`} />
+                  <FaqItem q={`What time does ${brand.name} close today?`} a={status.closesIn ? `${brand.name} closes in ${status.closesIn}.` : `${brand.name} opens at ${status.opensAt || "unknown"}.`} />
+                </div>
+              </section>
 
-            {/* Bottom inline ad */}
-            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
-          </main>
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
+            </main>
 
-          {/* Sidebar: visible on all screen sizes, stacks below main on mobile */}
-          <aside className="flex flex-col" style={{ gap: 20 }}>
-            <div className="hidden lg:block">
-              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={250} />
-            </div>
-            <TrendingSidebar />
-            <RelatedBrands brands={related} />
-            <div className="hidden lg:block">
-              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={200} />
-            </div>
-          </aside>
+            <aside className="sidebar-stack">
+              <div className="hidden lg:block">
+                <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={250} />
+              </div>
+              <TrendingSidebar />
+              <RelatedBrands brands={related} />
+              <div className="hidden lg:block">
+                <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={200} />
+              </div>
+            </aside>
+          </div>
         </div>
       </div>
       <Footer />
@@ -203,7 +202,7 @@ export default async function BrandPage({ params }: PageProps) {
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <article className="border-b border-border last:border-b-0 px-5 py-4.5 md:px-6 md:py-5">
+    <article className="border-b border-border last:border-b-0 px-5 py-4 md:px-6 md:py-5">
       <h3 className="font-heading font-bold text-[14px] md:text-[15px] mb-1.5 text-text leading-snug">{q}</h3>
       <p className="text-[14px] text-muted2 leading-relaxed">{a}</p>
     </article>

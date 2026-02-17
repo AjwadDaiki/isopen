@@ -23,18 +23,19 @@ export default function ContactPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="page-pad" style={{ paddingTop: 48, paddingBottom: 64 }}>
-          <div style={{ maxWidth: 760 }}>
-            <h1
-              className="font-heading font-extrabold text-text"
-              style={{ fontSize: 34, letterSpacing: "-0.04em", marginBottom: 14 }}
-            >
-              Contact IsItOpen
-            </h1>
-            <p className="text-muted2" style={{ fontSize: 15, lineHeight: 1.7, marginBottom: 28 }}>
-              Need to report inaccurate hours, request a brand update, or ask a business question? Reach out and the
-              team will review your request.
-            </p>
+        <div className="page-pad pt-12 pb-14">
+          <div className="max-w-[760px] content-stack">
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body-lg">
+                <h1 className="font-heading font-extrabold text-[34px] tracking-[-0.04em] text-text">
+                  Contact IsItOpen
+                </h1>
+                <p className="text-muted2 text-[15px] leading-relaxed mt-4">
+                  Need to report inaccurate hours, request a brand update, or ask a business question? Reach out and the
+                  team will review your request.
+                </p>
+              </div>
+            </section>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <ContactCard
@@ -82,16 +83,18 @@ function ContactCard({
   href: string;
 }) {
   return (
-    <article className="ui-panel" style={{ padding: "20px 20px 18px" }}>
-      <h2 className="font-heading font-bold text-text" style={{ fontSize: 17, marginBottom: 8 }}>
-        {title}
-      </h2>
-      <p className="text-muted2" style={{ fontSize: 13, lineHeight: 1.65, marginBottom: 14 }}>
-        {description}
-      </p>
-      <a href={href} className="text-green font-semibold no-underline hover:underline">
-        {value}
-      </a>
+    <article className="ui-panel overflow-hidden">
+      <div className="panel-body">
+        <h2 className="font-heading font-bold text-text text-[17px] mb-2">
+          {title}
+        </h2>
+        <p className="text-muted2 text-[13px] leading-relaxed mb-3.5">
+          {description}
+        </p>
+        <a href={href} className="text-green font-semibold no-underline hover:underline">
+          {value}
+        </a>
+      </div>
     </article>
   );
 }

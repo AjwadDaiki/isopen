@@ -22,7 +22,7 @@ export default function SearchPageClient() {
 
   return (
     <>
-      <div className="relative mb-8">
+      <div className="relative mb-6">
         <input
           type="text"
           placeholder="Search by name or category..."
@@ -36,7 +36,7 @@ export default function SearchPageClient() {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {results.map(({ brand, hours }) => {
           const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
           const isOpen = status.isOpen;
@@ -45,7 +45,7 @@ export default function SearchPageClient() {
             <Link
               key={brand.slug}
               href={buildBrandUrl("en", brand.slug)}
-              className={`brand-card-link brand-card-premium p-4 no-underline flex items-center gap-3 ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
+              className={`brand-card-link brand-card-premium p-5 no-underline flex items-center gap-3 ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
             >
               <span className="text-2xl">{brand.emoji || "Store"}</span>
 

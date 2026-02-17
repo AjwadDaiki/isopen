@@ -22,12 +22,23 @@ export default function SearchPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="page-pad" style={{ maxWidth: 848, paddingTop: 48, paddingBottom: 48 }}>
-          <h1 className="font-heading text-3xl font-extrabold tracking-tight mb-2 text-text">Search stores</h1>
-          <p className="text-sm text-muted2 mb-8">
-            Find any store, restaurant, or service and check if it is open right now.
-          </p>
-          <SearchPageClient />
+        <div className="page-pad pt-12 pb-14">
+          <div className="mx-auto w-full max-w-[920px] content-stack">
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body-lg">
+                <h1 className="font-heading text-3xl sm:text-4xl font-extrabold tracking-[-0.03em] text-text">Search stores</h1>
+                <p className="text-sm text-muted2 mt-3">
+                  Find any store, restaurant, or service and check if it is open right now.
+                </p>
+              </div>
+            </section>
+
+            <section className="ui-panel overflow-hidden">
+              <div className="panel-body">
+                <SearchPageClient />
+              </div>
+            </section>
+          </div>
         </div>
         <Footer />
       </div>

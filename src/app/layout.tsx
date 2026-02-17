@@ -24,25 +24,58 @@ const dmMono = DM_Mono({
   weight: ["400", "500"],
 });
 
+const languageAlternates = Object.fromEntries(
+  LOCALES.map((locale) => [locale === "en" ? "en" : locale, locale === "en" ? "/" : `/${locale}`])
+);
+
 export const metadata: Metadata = {
   title: {
     default: "IsItOpen - Check if any store is open right now",
     template: "%s | IsItOpen",
   },
+  applicationName: "IsItOpen",
   description:
     "Real-time opening hours for any store, restaurant, or service. Check if it's open right now, today's hours, holiday schedules, and closing time countdown.",
+  keywords: [
+    "is it open",
+    "store hours",
+    "opening hours",
+    "open now",
+    "business hours today",
+    "holiday hours",
+    "restaurant hours",
+  ],
+  creator: "IsItOpen",
+  publisher: "IsItOpen",
+  authors: [{ name: "IsItOpen" }],
   metadataBase: new URL("https://isopenow.com"),
   alternates: {
     canonical: "/",
+    languages: {
+      ...languageAlternates,
+      "x-default": "/",
+    },
   },
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "IsItOpen",
+    url: "https://isopenow.com",
     title: "IsItOpen - Check if any store is open right now",
     description: "Real-time opening hours for any store, restaurant, or service.",
   },
   category: "business",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   twitter: {
     card: "summary_large_image",
     title: "IsItOpen - Check if any store is open right now",

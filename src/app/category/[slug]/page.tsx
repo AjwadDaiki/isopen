@@ -45,6 +45,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: `https://isopenow.com/category/${slug}`,
     },
+    openGraph: {
+      type: "website",
+      url: `https://isopenow.com/category/${slug}`,
+      title: `${category} Open Now`,
+      description: `Real-time opening status for ${category.toLowerCase()} brands.`,
+    },
   };
 }
 
@@ -65,75 +71,82 @@ export default async function CategoryPage({ params }: PageProps) {
       <div className="min-h-screen">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start" style={{ paddingTop: 32, paddingBottom: 64 }}>
-          <main className="min-w-0">
-            <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
-              <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
-              <span className="text-muted">/</span>
-              <span className="text-text">{category}</span>
-            </nav>
+        <div className="page-pad">
+          <nav className="breadcrumb-row">
+            <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
+            <span>/</span>
+            <span className="text-text">{category}</span>
+          </nav>
+        </div>
 
-            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-text">
-              {category} - What&apos;s Open Now?
-            </h1>
-            <p className="text-muted2 mb-8 max-w-lg">
-              Real-time opening status for major {category.toLowerCase()} brands. Updated frequently.
-            </p>
+        <div className="page-pad pt-3 pb-14">
+          <div className="content-grid-shell">
+            <main className="min-w-0 content-stack">
+              <section className="ui-panel overflow-hidden">
+                <div className="panel-body-lg">
+                  <h1 className="font-heading text-3xl sm:text-4xl font-extrabold tracking-[-0.03em] text-text">
+                    {category} - What&apos;s Open Now?
+                  </h1>
+                  <p className="text-muted2 mt-3 max-w-[64ch]">
+                    Real-time opening status for major {category.toLowerCase()} brands. Updated frequently.
+                  </p>
+                </div>
+              </section>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {categoryBrands.map(({ brand, hours }, i) => {
-                const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
-                const isOpen = status.isOpen;
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {categoryBrands.map(({ brand, hours }, i) => {
+                  const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
+                  const isOpen = status.isOpen;
 
-                return (
-                  <Link
-                    key={brand.slug}
-                    href={`/is-${brand.slug}-open`}
-                    className={`brand-card-link brand-card-premium p-5 no-underline ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
-                    style={{
-                      animationDelay: `${Math.min(i * 0.035, 0.28)}s`,
-                    }}
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{brand.emoji || "Store"}</span>
-                      <div className="flex-1">
-                        <div className="text-lg font-heading font-bold text-text tracking-[-0.01em]">{brand.name}</div>
+                  return (
+                    <Link
+                      key={brand.slug}
+                      href={`/is-${brand.slug}-open`}
+                      className={`brand-card-link brand-card-premium p-5 no-underline ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
+                      style={{
+                        animationDelay: `${Math.min(i * 0.035, 0.28)}s`,
+                      }}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-2xl">{brand.emoji || "Store"}</span>
+                        <div className="flex-1">
+                          <div className="text-lg font-heading font-bold text-text tracking-[-0.01em]">{brand.name}</div>
+                        </div>
+                        <span className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}>
+                          <span className="status-led" />
+                          {isOpen ? "OPEN" : "CLOSED"}
+                        </span>
                       </div>
-                      <span className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}>
-                        <span className="status-led" />
-                        {isOpen ? "OPEN" : "CLOSED"}
-                      </span>
-                    </div>
 
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted2">
-                      {status.todayHours && (
-                        <span>
-                          <span className="font-mono text-muted">Today:</span> {status.todayHours}
-                        </span>
-                      )}
-                      {isOpen && status.closesIn && (
-                        <span>
-                          <span className="font-mono text-muted">Closes in:</span> {status.closesIn}
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted2">
+                        {status.todayHours && (
+                          <span>
+                            <span className="font-mono text-muted">Today:</span> {status.todayHours}
+                          </span>
+                        )}
+                        {isOpen && status.closesIn && (
+                          <span>
+                            <span className="font-mono text-muted">Closes in:</span> {status.closesIn}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
 
-            {categoryBrands.length === 0 && (
-              <p className="text-muted text-center py-12">No brands found in this category yet.</p>
-            )}
+              {categoryBrands.length === 0 && (
+                <p className="text-muted text-center py-12">No brands found in this category yet.</p>
+              )}
 
-            <div className="mt-6">
               <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={92} />
-            </div>
-          </main>
+            </main>
 
-          <aside className="hidden lg:block sticky top-[72px]">
-            <TrendingSidebar />
-          </aside>
+            <aside className="sidebar-stack">
+              <TrendingSidebar />
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={220} />
+            </aside>
+          </div>
         </div>
       </div>
       <Footer />

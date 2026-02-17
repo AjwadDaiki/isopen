@@ -71,6 +71,7 @@ export default function Navbar() {
         setShowMenu(false);
       }
     }
+
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
@@ -107,32 +108,16 @@ export default function Navbar() {
   }
 
   return (
-    <nav
-      className="sticky top-0 z-50 page-pad"
-      style={{
-        minHeight: 74,
-        display: "grid",
-        gridTemplateColumns: "auto 1fr auto",
-        alignItems: "center",
-        columnGap: 16,
-        paddingTop: 10,
-        paddingBottom: 10,
-        background: "rgba(14,19,25,0.92)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderBottom: "1px solid var(--color-border)",
-      }}
-    >
+    <nav className="sticky top-0 z-50 page-pad navbar-shell">
       <Link
         href={homeHref}
-        className="font-heading font-extrabold no-underline text-text flex items-center shrink-0"
-        style={{ fontSize: 20, letterSpacing: "-0.04em", gap: 9 }}
+        className="font-heading font-extrabold no-underline text-text flex items-center shrink-0 text-[21px] tracking-[-0.04em] gap-2"
       >
         <span
           className="rounded-full bg-green animate-pulse-dot"
-          style={{ width: 8, height: 8, boxShadow: "0 0 12px var(--color-green-glow)" }}
+          style={{ width: 8, height: 8, boxShadow: "0 0 10px var(--color-green-glow)" }}
         />
-        IsOpenNow
+        Is<span className="text-green">Open</span>Now
       </Link>
 
       <div className="hidden lg:flex items-center gap-3 min-w-0">
@@ -140,26 +125,25 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setShowMenu((v) => !v)}
-            className="text-[13px] font-semibold text-text bg-bg2 border border-border2 rounded-xl px-4 py-2.5 cursor-pointer hover:border-border transition-colors"
+            className="nav-chip cursor-pointer"
           >
             {t(locale, "brandsMenu")}
           </button>
 
           {showMenu && (
-            <div
-              className="absolute top-full left-0 mt-2 w-[680px] ui-panel p-4 z-50"
-              style={{ borderRadius: 14 }}
-            >
+            <div className="absolute top-full left-0 mt-2.5 w-[700px] dropdown-panel rounded-2xl p-4 z-50">
               <div className="grid grid-cols-[220px_1fr] gap-4">
                 <div className="pr-3 border-r border-border">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted mb-2">{t(locale, "topBrands")}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted mb-2.5">
+                    {t(locale, "topBrands")}
+                  </p>
                   <div className="flex flex-col gap-1.5">
                     {topBrands.map(({ brand }) => (
                       <button
                         key={brand.slug}
                         type="button"
                         onClick={() => navigate(brand.slug)}
-                        className="text-left text-sm text-text bg-bg2 border border-border rounded-lg px-3 py-2 hover:border-border2 cursor-pointer"
+                        className="text-left text-sm text-text bg-bg2 border border-border rounded-lg px-3 py-2 hover:border-border2 hover:bg-bg3 cursor-pointer transition-colors"
                       >
                         {brand.emoji || "Store"} {brand.name}
                       </button>
@@ -168,7 +152,9 @@ export default function Navbar() {
                 </div>
 
                 <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted mb-2">{t(locale, "byCategory")}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted mb-2.5">
+                    {t(locale, "byCategory")}
+                  </p>
                   <div className="grid grid-cols-2 gap-x-4 gap-y-2 max-h-[320px] overflow-auto pr-1">
                     {categories.map(([cat, list]) => (
                       <div key={cat} className="min-w-0">
@@ -179,7 +165,7 @@ export default function Navbar() {
                               key={brand.slug}
                               type="button"
                               onClick={() => navigate(brand.slug)}
-                              className="text-[12px] text-text bg-bg2 border border-border rounded-md px-2 py-1 hover:border-border2 cursor-pointer"
+                              className="text-[12px] text-text bg-bg2 border border-border rounded-md px-2.5 py-1 hover:border-border2 hover:bg-bg3 cursor-pointer transition-colors"
                             >
                               {brand.name}
                             </button>
@@ -195,17 +181,7 @@ export default function Navbar() {
         </div>
 
         <div className="relative min-w-0 flex-1" ref={dropdownRef}>
-          <div
-            className="search-wrap flex items-center overflow-hidden"
-            style={{
-              width: "100%",
-              maxWidth: 560,
-              background: "rgba(27,36,48,0.9)",
-              border: "1px solid var(--color-border2)",
-              borderRadius: 14,
-              transition: "border-color 0.2s, box-shadow 0.2s",
-            }}
-          >
+          <div className="search-wrap nav-search flex items-center overflow-hidden">
             <input
               type="text"
               placeholder={t(locale, "searchPlaceholder")}
@@ -219,47 +195,26 @@ export default function Navbar() {
                 if (e.key === "Enter") handleSearch();
                 if (e.key === "Escape") setShowDropdown(false);
               }}
-              className="bg-transparent border-none outline-none text-text placeholder:text-muted"
-              style={{ fontSize: 14, padding: "11px 14px", flex: 1, minWidth: 0 }}
+              className="nav-search-input bg-transparent border-none outline-none text-text placeholder:text-muted flex-1 min-w-0"
             />
-            <button
-              onClick={handleSearch}
-              className="border-none cursor-pointer whitespace-nowrap hover:opacity-90 transition-opacity"
-              style={{
-                background: "var(--color-green)",
-                color: "#08120d",
-                padding: "11px 18px",
-                fontWeight: 700,
-                fontSize: 13,
-              }}
-            >
+            <button onClick={handleSearch} className="nav-search-cta whitespace-nowrap">
               {t(locale, "checkCta")}
             </button>
           </div>
 
           {showDropdown && filtered.length > 0 && (
-            <div
-              className="absolute top-full left-0 right-0 mt-1 overflow-hidden z-50"
-              style={{
-                background: "var(--color-bg1)",
-                borderRadius: 12,
-                border: "1px solid var(--color-border2)",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.35)",
-              }}
-            >
+            <div className="absolute top-full left-0 right-0 mt-1.5 overflow-hidden z-50 dropdown-panel rounded-xl">
               {filtered.map((b) => (
                 <button
                   key={b.brand.slug}
                   onClick={() => navigate(b.brand.slug)}
                   className="w-full flex items-center cursor-pointer border-none bg-transparent text-left transition-colors hover:bg-bg2"
-                  style={{ padding: "10px 16px", gap: 12 }}
+                  style={{ padding: "11px 16px", gap: 12 }}
                 >
                   <span style={{ fontSize: 18 }}>{b.brand.emoji || "Store"}</span>
-                  <div className="flex-1">
-                    <div className="text-sm font-semibold text-text">{b.brand.name}</div>
-                    <div style={{ fontSize: 11 }} className="text-muted2">
-                      {b.brand.category}
-                    </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-text truncate">{b.brand.name}</div>
+                    <div className="text-[11px] text-muted2 truncate">{b.brand.category}</div>
                   </div>
                 </button>
               ))}
@@ -268,14 +223,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      <Link href="/search" className="lg:hidden text-muted2 no-underline text-sm font-medium">
+      <Link href="/search" className="lg:hidden text-muted2 no-underline text-sm font-medium hover:text-text transition-colors">
         {t(locale, "searchNav")}
       </Link>
 
       <div className="hidden md:flex items-center justify-end shrink-0">
-        <span className="font-mono text-muted2" style={{ fontSize: 13, letterSpacing: "0.05em" }}>
-          {clock}
-        </span>
+        <span className="font-mono text-muted2 text-[13px] tracking-[0.05em]">{clock}</span>
       </div>
     </nav>
   );

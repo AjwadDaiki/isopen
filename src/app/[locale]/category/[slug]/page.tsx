@@ -118,9 +118,8 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
                   <Link
                     key={brand.slug}
                     href={buildBrandUrl(loc, brand.slug)}
-                    className="brand-card-link brand-card-premium p-5 no-underline"
+                    className={`brand-card-link brand-card-premium p-5 no-underline ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
                     style={{
-                      border: `1px solid ${isOpen ? "rgba(68,209,141,0.38)" : "var(--color-border)"}`,
                       animationDelay: `${Math.min(i * 0.035, 0.28)}s`,
                     }}
                   >
@@ -130,6 +129,7 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
                         <div className="text-lg font-heading font-bold text-text tracking-[-0.01em]">{brand.name}</div>
                       </div>
                       <span className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}>
+                        <span className="status-led" />
                         {isOpen ? t(loc, "open") : t(loc, "closed")}
                       </span>
                     </div>
@@ -158,3 +158,4 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
     </>
   );
 }
+

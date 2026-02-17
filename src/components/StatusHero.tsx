@@ -28,10 +28,12 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           brand: brand.slug,
           timezone: tz,
         });
+
         if (coords) {
           qs.set("lat", String(coords.lat));
           qs.set("lng", String(coords.lng));
         }
+
         const res = await fetch(`/api/open-status?${qs.toString()}`);
         if (res.ok && !cancelled) {
           const data = await res.json();
@@ -83,16 +85,12 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
             (pos) => {
               setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
             },
-            () => {
-              // On refusal, API will try IP-based fallback.
-            },
+            () => {},
             { enableHighAccuracy: false, timeout: 3500 }
           );
         }
       })
-      .catch(() => {
-        // Ignore permission API failures.
-      });
+      .catch(() => {});
   }, []);
 
   const isOpen = status.isOpen;
@@ -102,7 +100,6 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
 
   async function handleShare() {
     const shareUrl = window.location.href;
-
     try {
       if (navigator.share) {
         await navigator.share({
@@ -113,11 +110,10 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
       } else {
         await navigator.clipboard.writeText(shareUrl);
       }
-
       setShareState("done");
       setTimeout(() => setShareState("idle"), 2000);
     } catch {
-      // User canceled
+      // Ignore cancellation and clipboard errors.
     }
   }
 
@@ -125,35 +121,48 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
     <section
       className="ui-panel overflow-hidden"
       style={{
-        borderColor: isOpen ? "rgba(0,232,122,0.25)" : "rgba(255,71,87,0.22)",
-        boxShadow: isOpen ? "0 0 56px rgba(0,232,122,0.08)" : "0 14px 40px rgba(0,0,0,0.28)",
+        borderColor: isOpen ? "rgba(24,242,142,0.2)" : "rgba(255,90,103,0.2)",
+        boxShadow: isOpen
+          ? "0 18px 46px rgba(0,0,0,0.45), 0 0 22px rgba(24,242,142,0.08)"
+          : "0 18px 46px rgba(0,0,0,0.45)",
       }}
     >
-      <div className="relative px-5 py-7 md:px-8 md:py-9 bg-bg1">
+      <div className="relative px-7 py-9 md:px-11 md:py-11">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: isOpen
-              ? "linear-gradient(130deg, rgba(0,232,122,0.08) 0%, transparent 62%)"
-              : "linear-gradient(130deg, rgba(255,71,87,0.08) 0%, transparent 62%)",
+              ? "linear-gradient(140deg, rgba(24,242,142,0.06) 0%, transparent 60%)"
+              : "linear-gradient(140deg, rgba(255,90,103,0.06) 0%, transparent 60%)",
           }}
         />
 
-        <div className="relative z-[1] flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-          <div className="flex items-start gap-4 md:gap-5 min-w-0">
-            <div className="w-16 h-16 md:w-[72px] md:h-[72px] rounded-2xl border border-border2 bg-bg2 flex items-center justify-center text-3xl md:text-4xl shrink-0">
+        <div className="relative z-[1] flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-5 md:gap-6 min-w-0">
+            <div
+              className="w-[74px] h-[74px] rounded-2xl border border-border2 bg-bg2 flex items-center justify-center shrink-0"
+              style={{ fontSize: 36 }}
+            >
               {brand.emoji || "Store"}
             </div>
 
             <div className="min-w-0">
-              <h1 className="font-heading font-extrabold text-text text-[30px] leading-[1.02] tracking-[-0.04em] md:text-[38px]">
+              <h1
+                className="font-heading font-extrabold text-text"
+                style={{
+                  fontSize: "clamp(30px, 4vw, 42px)",
+                  letterSpacing: "-0.04em",
+                  lineHeight: 0.95,
+                }}
+              >
                 {brand.name}
               </h1>
-              <div className="mt-2 text-sm text-muted2 flex flex-wrap items-center gap-x-2 gap-y-1">
+
+              <div className="mt-2 text-[13px] text-muted2 flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span>{brand.category}</span>
                 {brand.is24h && (
                   <>
-                    <span className="text-border2">|</span>
+                    <span style={{ color: "var(--color-border2)" }}>&middot;</span>
                     <span className="text-muted">24/7 locations available</span>
                   </>
                 )}
@@ -161,23 +170,16 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
             </div>
           </div>
 
-          <div className="flex flex-col items-start md:items-end gap-2">
-            <div
-              className="font-heading font-extrabold inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 text-[18px] tracking-[0.03em]"
-              style={{
-                background: isOpen ? "rgba(0,232,122,0.12)" : "rgba(255,71,87,0.1)",
-                border: `2px solid ${isOpen ? "rgba(0,232,122,0.35)" : "rgba(255,71,87,0.3)"}`,
-                color: isOpen ? "var(--color-green)" : "var(--color-red)",
-              }}
+          <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
+            <span
+              className={`brand-status-pill ${isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}
+              style={{ padding: "8px 14px 8px 10px", fontSize: 12 }}
             >
-              <span
-                className={`w-2.5 h-2.5 rounded-full shrink-0 ${isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`}
-                style={isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : undefined}
-              />
+              <span className="status-led" />
               {isOpen ? t(locale, "openNowLabel") : t(locale, "closedNowLabel")}
-            </div>
+            </span>
 
-            <div className="font-mono text-sm text-muted2 md:text-right">
+            <div className="font-mono text-[13px] text-muted2 md:text-right">
               {isOpen && status.closesIn && (
                 <>
                   {t(locale, "closesIn")} <strong className="text-text text-[15px]">{status.closesIn}</strong>
@@ -192,21 +194,21 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           </div>
         </div>
 
-        <p className="relative z-[1] mt-4 text-sm md:text-[15px] text-text font-semibold">
-          {nearestLine}
-        </p>
-        <p className="relative z-[1] mt-1.5 text-[12px] text-muted2">
-          {locationMode === "gps"
-            ? t(locale, "statusBasedOnLocation")
-            : locationMode === "ip"
-              ? t(locale, "statusBasedOnIp")
-              : t(locale, "statusBasedOnTimezone")}
-        </p>
-        {nearest && (
-          <p className="relative z-[1] mt-1 text-[12px] text-muted2">
-            {t(locale, "nearestBranch")}: {nearest.city || t(locale, "nearestUnknownCity")} ({nearest.distanceKm} km)
+        <div className="relative z-[1] mt-6 flex flex-col gap-1.5">
+          <p className="text-[13px] md:text-[14px] text-text font-semibold">{nearestLine}</p>
+          <p className="text-[12px] text-muted">
+            {locationMode === "gps"
+              ? t(locale, "statusBasedOnLocation")
+              : locationMode === "ip"
+                ? t(locale, "statusBasedOnIp")
+                : t(locale, "statusBasedOnTimezone")}
           </p>
-        )}
+          {nearest && (
+            <p className="text-[12px] text-muted">
+              {t(locale, "nearestBranch")}: {nearest.city || t(locale, "nearestUnknownCity")} ({nearest.distanceKm} km)
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 stats-grid-responsive border-t border-border bg-bg2">
@@ -220,19 +222,19 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <StatCell label={t(locale, "updated")} value={t(locale, "live")} muted />
       </div>
 
-      <div className="px-5 py-5 md:px-8 md:py-5 bg-bg1 border-t border-border flex flex-wrap gap-2.5">
+      <div className="px-7 py-5 md:px-11 md:py-6 border-t border-border flex flex-wrap gap-2.5">
         <a
           href={brand.website || `/is-${brand.slug}-open`}
           target={brand.website ? "_blank" : undefined}
           rel={brand.website ? "noopener noreferrer" : undefined}
-          className="no-underline rounded-lg px-4 py-2.5 text-sm font-semibold bg-green text-black hover:opacity-90 transition-opacity"
+          className="no-underline rounded-xl px-5 py-2.5 text-sm font-semibold bg-green text-black hover:brightness-95 transition-[filter]"
         >
           {t(locale, "officialWebsite")}
         </a>
 
         <a
           href="#user-reports"
-          className="no-underline rounded-lg px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
+          className="no-underline rounded-xl px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
           {t(locale, "reportIssueCta")}
         </a>
@@ -240,7 +242,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <button
           type="button"
           onClick={handleShare}
-          className="rounded-lg px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
+          className="rounded-xl px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
           {shareState === "done" ? t(locale, "linkCopied") : t(locale, "sharePage")}
         </button>
@@ -261,10 +263,10 @@ function StatCell({
   muted?: boolean;
 }) {
   return (
-    <div className="px-4 py-4 md:px-6 md:py-[18px] border-r border-border last:border-r-0">
+    <div className="px-5 py-[19px] md:px-6 md:py-[19px] border-r border-border last:border-r-0">
       <div className="font-mono uppercase text-muted text-[10px] tracking-[0.12em] mb-1">{label}</div>
       <div
-        className="font-heading font-bold tracking-[-0.02em]"
+        className="font-heading font-extrabold tracking-[-0.02em]"
         style={{
           fontSize: muted ? 14 : 17,
           color: muted ? "var(--color-muted2)" : color || "var(--color-text)",

@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { headers } from "next/headers";
-import { Syne, DM_Sans, DM_Mono } from "next/font/google";
+import { Inter, Manrope, DM_Mono } from "next/font/google";
 import { LOCALES, type Locale } from "@/lib/i18n/translations";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
   display: "swap",
 });
@@ -75,7 +75,7 @@ export default async function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}>
+      <body className={`${inter.variable} ${manrope.variable} ${dmMono.variable}`}>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8MWJB8TTNY"
           strategy="afterInteractive"
@@ -91,3 +91,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

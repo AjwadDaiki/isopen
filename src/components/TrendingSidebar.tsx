@@ -21,7 +21,7 @@ export default function TrendingSidebar() {
         </h3>
       </div>
 
-      <div className="panel-body flex flex-col gap-3">
+      <div className="panel-body flex flex-col gap-3.5">
         {TRENDING_SLUGS.map((slug, i) => {
           const data = brandsData.find((b) => b.brand.slug === slug);
           if (!data) return null;
@@ -31,7 +31,7 @@ export default function TrendingSidebar() {
             <Link
               key={slug}
               href={`/is-${slug}-open`}
-              className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-4 py-3.5 grid grid-cols-[auto_1fr_auto] items-center gap-3"
+              className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-5 py-4 grid grid-cols-[auto_1fr_auto] items-center gap-3.5"
             >
               <span className="font-mono text-[11px] text-muted w-6 text-right shrink-0">
                 {String(i + 1).padStart(2, "0")}

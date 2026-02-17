@@ -43,14 +43,14 @@ export default function CityIndexPage() {
           </nav>
         </div>
 
-        <div className="page-pad pt-3 pb-14">
+        <div className="page-pad pt-4 pb-16">
           <div className="mx-auto max-w-[980px] content-stack">
             <section className="ui-panel overflow-hidden">
               <div className="panel-body-lg">
                 <h1 className="font-heading font-extrabold text-[30px] sm:text-[42px] tracking-[-0.04em] leading-[0.95] text-text">
                   Open Now by City
                 </h1>
-                <p className="text-muted2 text-[15px] leading-relaxed mt-4 max-w-[68ch]">
+                <p className="text-muted2 text-[15px] leading-relaxed mt-5 max-w-[68ch]">
                   Location-focused pages for high-intent local checks. Pick a city to see live status across major brands.
                 </p>
               </div>
@@ -61,20 +61,20 @@ export default function CityIndexPage() {
                 <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Available city pages</h2>
                 <span className="font-mono text-[10px] text-muted tracking-[0.08em]">{cityData.length} pages</span>
               </div>
-              <div className="panel-body grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              <div className="panel-body grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {cityData.map((city) => (
                   <Link
                     key={city.slug}
                     href={`/city/${city.slug}`}
-                    className="brand-card-link brand-card-premium no-underline p-5"
+                    className="brand-card-link brand-card-premium no-underline p-6"
                   >
                     <p className="text-[16px] font-heading font-bold text-text tracking-[-0.01em]">
                       {city.name}, {city.state}
                     </p>
-                    <p className="text-[12px] text-muted2 mt-1">{city.timezone}</p>
-                    <div className="mt-3 flex flex-wrap gap-1.5">
+                    <p className="text-[12px] text-muted2 mt-1.5">{city.timezone}</p>
+                    <div className="mt-3.5 flex flex-wrap gap-2">
                       {city.focusCategories.slice(0, 3).map((category) => (
-                        <span key={category} className="text-[10px] uppercase tracking-[0.08em] text-muted border border-border px-2 py-1 rounded-full">
+                        <span key={category} className="text-[10px] uppercase tracking-[0.08em] text-muted border border-border px-2.5 py-1 rounded-full">
                           {category}
                         </span>
                       ))}

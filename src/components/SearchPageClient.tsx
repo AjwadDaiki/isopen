@@ -22,21 +22,21 @@ export default function SearchPageClient() {
 
   return (
     <>
-      <div className="relative mb-6">
+      <div className="relative mb-7">
         <input
           type="text"
           placeholder="Search by name or category..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           autoFocus
-          className="w-full bg-bg2 border border-border2 rounded-xl px-4 py-3.5 text-sm text-text outline-none focus:border-green transition-all placeholder:text-muted"
+          className="w-full bg-bg2 border border-border2 rounded-xl px-5 py-4 text-sm text-text outline-none focus:border-green transition-all placeholder:text-muted"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted text-sm">
+        <span className="absolute right-5 top-1/2 -translate-y-1/2 text-muted text-sm">
           {results.length} result{results.length !== 1 ? "s" : ""}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {results.map(({ brand, hours }) => {
           const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
           const isOpen = status.isOpen;
@@ -45,7 +45,7 @@ export default function SearchPageClient() {
             <Link
               key={brand.slug}
               href={buildBrandUrl("en", brand.slug)}
-              className={`brand-card-link brand-card-premium p-5 no-underline flex items-center gap-3 ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
+              className={`brand-card-link brand-card-premium p-5 no-underline flex items-center gap-3.5 ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
             >
               <span className="text-2xl">{brand.emoji || "Store"}</span>
 
@@ -64,9 +64,9 @@ export default function SearchPageClient() {
       </div>
 
       {results.length === 0 && (
-        <div className="text-center py-16">
+        <div className="text-center py-20">
           <p className="text-muted2 text-sm">No stores found matching &quot;{query}&quot;</p>
-          <p className="text-muted text-xs mt-1">Try a different search term</p>
+          <p className="text-muted text-xs mt-2">Try a different search term</p>
         </div>
       )}
     </>

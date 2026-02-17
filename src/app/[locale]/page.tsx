@@ -70,7 +70,7 @@ export default async function LocaleHomePage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
 
-        <section className="page-pad relative overflow-hidden" style={{ paddingTop: 112, paddingBottom: 88 }}>
+        <section className="page-pad relative overflow-hidden" style={{ paddingTop: 120, paddingBottom: 100 }}>
           <div
             className="absolute pointer-events-none"
             style={{
@@ -117,7 +117,7 @@ export default async function LocaleHomePage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="page-pad" style={{ paddingBottom: 56 }}>
+        <section className="page-pad" style={{ paddingBottom: 64 }}>
           <div className="flex items-baseline justify-between mb-7">
             <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">{t(loc, "topBrands")}</h2>
             <Link href="/search" className="text-[13px] text-muted2 no-underline hover:text-text transition-colors">
@@ -125,7 +125,7 @@ export default async function LocaleHomePage({ params }: PageProps) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 18 }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
             {featured.map(({ brand, hours }, i) => {
               const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
               const isOpen = status.isOpen;
@@ -135,13 +135,13 @@ export default async function LocaleHomePage({ params }: PageProps) {
                   href={buildBrandUrl(loc, brand.slug)}
                   className={`brand-card-link brand-card-premium no-underline ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
                   style={{
-                    padding: "26px 20px",
+                    padding: "28px 22px",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    gap: 12,
+                    gap: 14,
                     textAlign: "center",
-                    minHeight: 152,
+                    minHeight: 160,
                     animationDelay: `${Math.min(i * 0.045, 0.42)}s`,
                   }}
                 >
@@ -163,11 +163,11 @@ export default async function LocaleHomePage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="page-pad" style={{ paddingBottom: 38 }}>
+        <section className="page-pad" style={{ paddingBottom: 48 }}>
           <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_TOP} label="Sponsored" minHeight={92} />
         </section>
 
-        <section className="page-pad" style={{ paddingBottom: 72 }}>
+        <section className="page-pad" style={{ paddingBottom: 80 }}>
           <div className="flex flex-col gap-12">
             {categories.map((cat) => {
               const catSlug = cat.toLowerCase().replace(/\s+/g, "-");
@@ -202,7 +202,7 @@ export default async function LocaleHomePage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="page-pad" style={{ paddingBottom: 44 }}>
+        <section className="page-pad" style={{ paddingBottom: 52 }}>
           <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={120} />
         </section>
 

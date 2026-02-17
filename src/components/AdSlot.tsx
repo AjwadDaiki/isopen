@@ -40,13 +40,13 @@ export default function AdSlot({
   if (!slot) {
     return (
       <section className={`ui-panel overflow-hidden ${className}`}>
-        <div className="px-4 py-2.5 border-b border-border ui-bg-1-60">
+        <div className="px-5 py-3 border-b border-border ui-bg-1-60">
           <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
             {label}
           </p>
         </div>
         <div
-          className="px-4 py-6 text-sm text-muted2 flex items-center justify-center"
+          className="px-5 py-7 text-sm text-muted2 flex items-center justify-center"
           style={{ minHeight }}
         >
           Ad space reserved
@@ -62,7 +62,7 @@ export default function AdSlot({
           {label}
         </p>
       </div>
-      <div className="px-3 py-3" style={{ minHeight }}>
+      <div className="px-4 py-4" style={{ minHeight }}>
         <ins
           className="adsbygoogle"
           style={{ display: "block", minHeight }}

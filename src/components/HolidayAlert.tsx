@@ -25,8 +25,8 @@ export default function HolidayAlert({ country = "US", brandName }: Props) {
 
   return (
     <section className="ui-panel ui-border-orange-25 overflow-hidden">
-      <div className="panel-body border-l-[3px] border-l-orange ui-bg-orange-dim-60 flex items-start gap-3">
-        <div className="w-2 h-2 rounded-full bg-orange mt-2 shrink-0" />
+      <div className="panel-body border-l-[3px] border-l-orange ui-bg-orange-dim-60 flex items-start gap-3.5">
+        <div className="w-2.5 h-2.5 rounded-full bg-orange mt-1.5 shrink-0" />
         <p className="text-[13px] md:text-[13.5px] leading-relaxed text-orange font-medium">
           {isToday
             ? `Today is ${holiday.name}.`

@@ -105,7 +105,7 @@ export default async function CityPage({ params }: PageProps) {
           </nav>
         </div>
 
-        <div className="page-pad pt-3 pb-14">
+        <div className="page-pad pt-4 pb-16">
           <div className="content-grid-shell">
             <main className="min-w-0 content-stack">
               <section className="ui-panel overflow-hidden">
@@ -114,10 +114,10 @@ export default async function CityPage({ params }: PageProps) {
                   <h1 className="font-heading font-extrabold text-[30px] sm:text-[42px] tracking-[-0.04em] leading-[0.95] text-text">
                     What&apos;s Open Now in {city.name}, {city.state}?
                   </h1>
-                  <p className="text-muted2 text-[15px] leading-relaxed mt-4 max-w-[68ch]">
+                  <p className="text-muted2 text-[15px] leading-relaxed mt-5 max-w-[68ch]">
                     Live store and service status using {city.timezone} timezone. Use this page for quick local checks before visiting a branch.
                   </p>
-                  <div className="mt-5 inline-flex items-center gap-2 rounded-full px-3.5 py-2 border ui-border-green-30 bg-green-dim text-[12px] text-green font-semibold">
+                  <div className="mt-6 inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 border ui-border-green-30 bg-green-dim text-[12px] text-green font-semibold">
                     <span className="w-[7px] h-[7px] rounded-full bg-green animate-pulse-dot" />
                     {openCount} / {statuses.length} featured brands open now
                   </div>
@@ -130,15 +130,15 @@ export default async function CityPage({ params }: PageProps) {
                   <span className="font-mono text-[10px] text-muted tracking-[0.08em]">Live status</span>
                 </div>
 
-                <div className="panel-body grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="panel-body grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {statuses.map(({ brand, status }, i) => (
                     <Link
                       key={brand.slug}
                       href={`/is-${brand.slug}-open`}
-                      className={`brand-card-link brand-card-premium p-5 no-underline ${status.isOpen ? "brand-card-open" : "brand-card-closed"}`}
+                      className={`brand-card-link brand-card-premium p-6 no-underline ${status.isOpen ? "brand-card-open" : "brand-card-closed"}`}
                       style={{ animationDelay: `${Math.min(i * 0.03, 0.25)}s` }}
                     >
-                      <div className="flex items-center gap-3 mb-2.5">
+                      <div className="flex items-center gap-3.5 mb-3">
                         <span className="text-2xl">{brand.emoji || "Store"}</span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[16px] font-heading font-bold text-text leading-tight truncate">{brand.name}</p>
@@ -163,18 +163,18 @@ export default async function CityPage({ params }: PageProps) {
                 <div className="card-title-row">
                   <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">{editorial.kicker}</h2>
                 </div>
-                <div className="panel-body flex flex-col gap-4">
+                <div className="panel-body flex flex-col gap-5">
                   <p className="text-[14px] text-muted2 leading-relaxed">{editorial.intro}</p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                     {editorial.bullets.map((line) => (
-                      <div key={line} className="rounded-xl border border-border ui-bg-2-55 px-3.5 py-3 text-[12px] text-muted2">
+                      <div key={line} className="rounded-xl border border-border ui-bg-2-55 px-4 py-3.5 text-[12px] text-muted2">
                         {line}
                       </div>
                     ))}
                   </div>
                   {editorial.sections.map((section) => (
                     <article key={section.title}>
-                      <h3 className="font-heading font-bold text-[14px] text-text mb-1.5">{section.title}</h3>
+                      <h3 className="font-heading font-bold text-[14px] text-text mb-2">{section.title}</h3>
                       <p className="text-[13px] text-muted2 leading-relaxed">{section.body}</p>
                     </article>
                   ))}
@@ -185,14 +185,14 @@ export default async function CityPage({ params }: PageProps) {
                 <div className="card-title-row">
                   <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Popular categories in {city.name}</h2>
                 </div>
-                <div className="panel-body flex flex-wrap gap-2.5">
+                <div className="panel-body flex flex-wrap gap-3">
                   {categories.map((category) => {
                     const categorySlug = category.toLowerCase().replace(/\s+/g, "-");
                     return (
                       <Link
                         key={category}
                         href={`/category/${categorySlug}`}
-                        className="no-underline text-[12px] font-medium text-muted2 border border-border rounded-xl px-3.5 py-2 hover:text-text hover:border-border2 transition-colors bg-bg1"
+                        className="no-underline text-[12px] font-medium text-muted2 border border-border rounded-xl px-4 py-2.5 hover:text-text hover:border-border2 transition-colors bg-bg1"
                       >
                         {category}
                       </Link>
@@ -210,12 +210,12 @@ export default async function CityPage({ params }: PageProps) {
                 <div className="card-title-row">
                   <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Other city pages</h2>
                 </div>
-                <div className="panel-body flex flex-col gap-2.5">
+                <div className="panel-body flex flex-col gap-3">
                   {otherCities.map((entry) => (
                     <Link
                       key={entry.slug}
                       href={`/city/${entry.slug}`}
-                      className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-4 py-3"
+                      className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-5 py-4"
                     >
                       <p className="text-[14px] font-semibold text-text leading-tight">{entry.name}, {entry.state}</p>
                       <p className="text-[12px] text-muted2 mt-1">Live status in {entry.timezone}</p>

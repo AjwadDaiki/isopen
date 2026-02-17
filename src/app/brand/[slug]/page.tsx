@@ -120,15 +120,15 @@ export default async function BrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad pt-2">
+        <div className="page-pad pt-4">
           <StatusHero brand={brand} initialStatus={status} locale="en" />
         </div>
 
-        <div className="page-pad pt-4">
+        <div className="page-pad pt-6">
           <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={90} />
         </div>
 
-        <div className="page-pad pt-7 pb-14">
+        <div className="page-pad pt-8 pb-16">
           <div className="content-grid-shell">
             <main className="min-w-0 content-stack">
               <HolidayAlert brandName={brand.name} />
@@ -145,25 +145,25 @@ export default async function BrandPage({ params }: PageProps) {
                   <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Quick checks</h3>
                 </div>
 
-                <div className="panel-body flex flex-col gap-4">
-                  <div className="flex flex-wrap gap-2.5">
+                <div className="panel-body flex flex-col gap-5">
+                  <div className="flex flex-wrap gap-3">
                     {DAY_SLUGS.map((day) => (
                       <Link
                         key={day}
                         href={buildDayUrl("en", slug, day as CanonicalDay)}
-                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                        className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                       >
                         {day.charAt(0).toUpperCase() + day.slice(1)}
                       </Link>
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t ui-border-70 flex flex-wrap gap-2.5">
+                  <div className="pt-4 border-t ui-border-70 flex flex-wrap gap-3">
                     {HOLIDAY_SLUGS.map((holiday) => (
                       <Link
                         key={holiday}
                         href={buildDayUrl("en", slug, holiday as CanonicalDay)}
-                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border ui-border-orange-30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
+                        className="text-[12px] font-medium px-4 py-2.5 rounded-xl border ui-border-orange-30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
                       >
                         {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
                       </Link>
@@ -177,12 +177,12 @@ export default async function BrandPage({ params }: PageProps) {
                   <div className="card-title-row">
                     <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Top city pages for {brand.name}</h3>
                   </div>
-                  <div className="panel-body flex flex-wrap gap-2.5">
+                  <div className="panel-body flex flex-wrap gap-3">
                     {cityLinks.map((city) => (
                       <Link
                         key={city.slug}
                         href={`/city/${city.slug}`}
-                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                        className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                       >
                         {city.name}, {city.state}
                       </Link>
@@ -195,12 +195,12 @@ export default async function BrandPage({ params }: PageProps) {
                 <div className="card-title-row">
                   <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">{editorial.kicker}</h3>
                 </div>
-                <div className="panel-body flex flex-col gap-4">
+                <div className="panel-body flex flex-col gap-5">
                   <p className="text-[14px] text-muted2 leading-relaxed">{editorial.intro}</p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                     {editorial.bullets.map((line) => (
-                      <div key={line} className="rounded-xl border border-border ui-bg-2-55 px-3.5 py-3 text-[12px] text-muted2">
+                      <div key={line} className="rounded-xl border border-border ui-bg-2-55 px-4 py-3.5 text-[12px] text-muted2">
                         {line}
                       </div>
                     ))}
@@ -208,7 +208,7 @@ export default async function BrandPage({ params }: PageProps) {
 
                   {editorial.sections.map((section) => (
                     <article key={section.title}>
-                      <h4 className="font-heading font-bold text-[14px] text-text mb-1.5">{section.title}</h4>
+                      <h4 className="font-heading font-bold text-[14px] text-text mb-2">{section.title}</h4>
                       <p className="text-[13px] text-muted2 leading-relaxed">{section.body}</p>
                     </article>
                   ))}
@@ -249,8 +249,8 @@ export default async function BrandPage({ params }: PageProps) {
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <article className="border-b border-border last:border-b-0 px-5 py-4 md:px-6 md:py-5">
-      <h3 className="font-heading font-bold text-[14px] md:text-[15px] mb-1.5 text-text leading-snug">{q}</h3>
+    <article className="border-b border-border last:border-b-0 px-6 py-5 md:px-7 md:py-6">
+      <h3 className="font-heading font-bold text-[14px] md:text-[15px] mb-2 text-text leading-snug">{q}</h3>
       <p className="text-[14px] text-muted2 leading-relaxed">{a}</p>
     </article>
   );

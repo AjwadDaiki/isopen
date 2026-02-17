@@ -147,7 +147,7 @@ export default async function LocaleDayPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad pt-3 pb-14">
+        <div className="page-pad pt-4 pb-16">
           <div className="content-grid-shell">
             <main className="min-w-0 content-stack">
               <section className="ui-panel overflow-hidden">
@@ -161,7 +161,7 @@ export default async function LocaleDayPage({ params }: PageProps) {
                   </p>
 
                   <div
-                    className={`inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-2 text-[12px] font-semibold ${
+                    className={`inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2.5 text-[12px] font-semibold ${
                       isHoliday
                         ? "ui-border-orange-30 bg-orange-dim text-orange"
                         : isOpenOnDay

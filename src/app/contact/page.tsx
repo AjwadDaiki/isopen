@@ -23,21 +23,21 @@ export default function ContactPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="page-pad pt-12 pb-14">
+        <div className="page-pad pt-14 pb-16">
           <div className="max-w-[760px] content-stack">
             <section className="ui-panel overflow-hidden">
               <div className="panel-body-lg">
                 <h1 className="font-heading font-extrabold text-[34px] tracking-[-0.04em] text-text">
                   Contact IsItOpen
                 </h1>
-                <p className="text-muted2 text-[15px] leading-relaxed mt-4">
+                <p className="text-muted2 text-[15px] leading-relaxed mt-5">
                   Need to report inaccurate hours, request a brand update, or ask a business question? Reach out and the
                   team will review your request.
                 </p>
               </div>
             </section>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <ContactCard
                 title="General support"
                 description="Questions about pages, features, and usage."
@@ -85,10 +85,10 @@ function ContactCard({
   return (
     <article className="ui-panel overflow-hidden">
       <div className="panel-body">
-        <h2 className="font-heading font-bold text-text text-[17px] mb-2">
+        <h2 className="font-heading font-bold text-text text-[17px] mb-2.5">
           {title}
         </h2>
-        <p className="text-muted2 text-[13px] leading-relaxed mb-3.5">
+        <p className="text-muted2 text-[13px] leading-relaxed mb-4">
           {description}
         </p>
         <a href={href} className="text-green font-semibold no-underline hover:underline">

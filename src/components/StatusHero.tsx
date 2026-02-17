@@ -193,7 +193,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           </div>
         </div>
 
-        <div className="relative z-[1] mt-5 flex flex-col gap-1.5">
+        <div className="relative z-[1] mt-6 flex flex-col gap-2">
           <p className="text-[13px] md:text-[14px] text-text font-semibold">{nearestLine}</p>
           <p className="text-[12px] text-muted">
             {locationMode === "gps"
@@ -221,19 +221,19 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <StatCell label={t(locale, "updated")} value={t(locale, "live")} muted />
       </div>
 
-      <div className="panel-body border-t border-border flex flex-wrap gap-2.5">
+      <div className="panel-body border-t border-border flex flex-wrap gap-3">
         <a
           href={brand.website || `/is-${brand.slug}-open`}
           target={brand.website ? "_blank" : undefined}
           rel={brand.website ? "noopener noreferrer" : undefined}
-          className="no-underline rounded-xl px-5 py-2.5 text-sm font-semibold bg-green text-black hover:brightness-95 transition-[filter]"
+          className="no-underline rounded-xl px-6 py-3 text-sm font-semibold bg-green text-black hover:brightness-95 transition-[filter]"
         >
           {t(locale, "officialWebsite")}
         </a>
 
         <a
           href="#user-reports"
-          className="no-underline rounded-xl px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
+          className="no-underline rounded-xl px-5 py-3 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
           {t(locale, "reportIssueCta")}
         </a>
@@ -241,7 +241,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <button
           type="button"
           onClick={handleShare}
-          className="rounded-xl px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
+          className="rounded-xl px-5 py-3 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
           {shareState === "done" ? t(locale, "linkCopied") : t(locale, "sharePage")}
         </button>
@@ -262,8 +262,8 @@ function StatCell({
   muted?: boolean;
 }) {
   return (
-    <div className="px-5 py-[19px] md:px-6 md:py-[19px] border-r border-border last:border-r-0">
-      <div className="font-mono uppercase text-muted text-[10px] tracking-[0.12em] mb-1">{label}</div>
+    <div className="px-5 py-5.5 md:px-7 md:py-5.5 border-r border-border last:border-r-0">
+      <div className="font-mono uppercase text-muted text-[10px] tracking-[0.12em] mb-1.5">{label}</div>
       <div
         className="font-heading font-extrabold tracking-[-0.02em]"
         style={{

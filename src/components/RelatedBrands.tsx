@@ -19,7 +19,7 @@ export default function RelatedBrands({ brands }: Props) {
         </h3>
       </div>
 
-      <div className="panel-body grid grid-cols-2 gap-3">
+      <div className="panel-body grid grid-cols-2 gap-3.5">
         {brands.map((b) => {
           const data = getBrandBySlug(b.slug);
           let isOpen = false;
@@ -32,9 +32,9 @@ export default function RelatedBrands({ brands }: Props) {
             <Link
               key={b.slug}
               href={`/is-${b.slug}-open`}
-              className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors p-3.5 flex flex-col items-start gap-2"
+              className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors p-4 flex flex-col items-start gap-2.5"
             >
-              <div className="w-full flex items-center justify-between gap-2">
+              <div className="w-full flex items-center justify-between gap-2.5">
                 <span className="text-[22px] leading-none">{b.emoji || "Store"}</span>
                 <span
                   className={`inline-flex rounded-full px-2 py-[2px] text-[10px] font-semibold uppercase tracking-[0.08em] ${

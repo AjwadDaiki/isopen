@@ -95,7 +95,7 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
           </nav>
         </div>
 
-        <div className="page-pad pt-3 pb-14">
+        <div className="page-pad pt-4 pb-16">
           <div className="content-grid-shell">
             <main className="min-w-0 content-stack">
               <section className="ui-panel overflow-hidden">
@@ -107,7 +107,7 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
                 </div>
               </section>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {categoryBrands.map(({ brand, hours }, i) => {
                   const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
                   const isOpen = status.isOpen;
@@ -115,7 +115,7 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
                     <Link
                       key={brand.slug}
                       href={buildBrandUrl(loc, brand.slug)}
-                      className={`brand-card-link brand-card-premium p-5 no-underline ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
+                      className={`brand-card-link brand-card-premium p-6 no-underline ${isOpen ? "brand-card-open" : "brand-card-closed"}`}
                       style={{
                         animationDelay: `${Math.min(i * 0.035, 0.28)}s`,
                       }}

@@ -24,14 +24,14 @@ export default function AboutPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="page-pad pt-12 pb-14">
+        <div className="page-pad pt-14 pb-16">
           <div className="max-w-[760px] content-stack">
             <section className="ui-panel overflow-hidden">
               <div className="panel-body-lg">
                 <h1 className="font-heading font-extrabold text-[34px] tracking-[-0.04em] text-text">
                   About IsItOpen
                 </h1>
-                <p className="text-muted2 text-[15px] leading-relaxed mt-4">
+                <p className="text-muted2 text-[15px] leading-relaxed mt-5">
                   IsItOpen helps people answer one question fast: is a place open right now? We publish brand-level hours,
                   live open or closed status, and day-specific checks in one page.
                 </p>
@@ -40,7 +40,7 @@ export default function AboutPage() {
 
             <section className="ui-panel overflow-hidden">
               <div className="panel-body">
-                <h2 className="font-heading font-bold text-[19px] text-text mb-3">
+                <h2 className="font-heading font-bold text-[19px] text-text mb-4">
                   What we publish
                 </h2>
                 <ul className="legal-content text-muted2 text-[14px] leading-relaxed">
@@ -54,7 +54,7 @@ export default function AboutPage() {
 
             <section className="ui-panel overflow-hidden">
               <div className="panel-body">
-                <h2 className="font-heading font-bold text-[19px] text-text mb-3">
+                <h2 className="font-heading font-bold text-[19px] text-text mb-4">
                   How quality is handled
                 </h2>
                 <p className="text-muted2 text-[14px] leading-relaxed">
@@ -67,7 +67,7 @@ export default function AboutPage() {
 
             <section className="ui-panel overflow-hidden">
               <div className="panel-body">
-                <h2 className="font-heading font-bold text-[19px] text-text mb-3">
+                <h2 className="font-heading font-bold text-[19px] text-text mb-4">
                   Contact and policies
                 </h2>
                 <p className="text-muted2 text-[14px] leading-relaxed">

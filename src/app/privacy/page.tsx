@@ -21,7 +21,7 @@ export default function PrivacyPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="page-pad pt-12 pb-14">
+        <div className="page-pad pt-14 pb-16">
           <div className="max-w-[760px] content-stack">
             <section className="ui-panel overflow-hidden">
               <div className="panel-body-lg">
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="ui-panel overflow-hidden">
-              <div className="panel-body flex flex-col gap-6">
+              <div className="panel-body flex flex-col gap-8">
                 <Section title="1. Information We Collect">
                   <p>We collect only data needed to operate the service:</p>
                   <ul>
@@ -96,10 +96,10 @@ export default function PrivacyPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="font-heading font-bold text-text text-[18px] mb-3">
+      <h2 className="font-heading font-bold text-text text-[18px] mb-4">
         {title}
       </h2>
-      <div className="text-muted2 legal-content text-[14px] leading-relaxed flex flex-col gap-2">
+      <div className="text-muted2 legal-content text-[14px] leading-relaxed flex flex-col gap-3">
         {children}
       </div>
     </section>

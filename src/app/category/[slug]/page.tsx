@@ -15,34 +15,19 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+const CATEGORY_BY_SLUG = new Map(
+  brandsData
+    .map((item) => item.brand.category)
+    .filter((category): category is string => Boolean(category))
+    .map((category) => [category.toLowerCase().replace(/\s+/g, "-"), category])
+);
+
 function getCategoryFromSlug(slug: string): string | null {
-  const map: Record<string, string> = {
-    "fast-food": "Fast Food",
-    retail: "Retail",
-    coffee: "Coffee",
-    wholesale: "Wholesale",
-    pharmacy: "Pharmacy",
-    "home-improvement": "Home Improvement",
-    "fast-casual": "Fast Casual",
-    pizza: "Pizza",
-    government: "Government",
-    financial: "Financial",
-    grocery: "Grocery",
-    convenience: "Convenience",
-    electronics: "Electronics",
-    auto: "Auto",
-    banking: "Banking",
-    shipping: "Shipping",
-    gym: "Gym",
-  };
-  return map[slug] || null;
+  return CATEGORY_BY_SLUG.get(slug) || null;
 }
 
 function getAllCategorySlugs(): string[] {
-  const cats = new Set(
-    brandsData.map((b) => b.brand.category?.toLowerCase().replace(/\s+/g, "-") || "").filter(Boolean)
-  );
-  return [...cats];
+  return [...CATEGORY_BY_SLUG.keys()];
 }
 
 export async function generateStaticParams() {

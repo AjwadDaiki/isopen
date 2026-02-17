@@ -19,6 +19,7 @@ export default function Footer() {
 
             <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] text-muted">
               <Link href="/about" className="no-underline text-muted hover:text-text transition-colors">About</Link>
+              <Link href="/contact" className="no-underline text-muted hover:text-text transition-colors">Contact</Link>
               <Link href="/privacy" className="no-underline text-muted hover:text-text transition-colors">Privacy</Link>
               <Link href="/terms" className="no-underline text-muted hover:text-text transition-colors">Terms</Link>
             </div>
@@ -31,10 +32,9 @@ export default function Footer() {
         </div>
 
         <div className="mt-7 pt-4 border-t border-border text-center font-mono text-[11px] text-muted/70">
-          Real-time opening hours for any store · {year}
+          Real-time opening hours for any store - {year}
         </div>
       </div>
     </footer>
   );
 }
-

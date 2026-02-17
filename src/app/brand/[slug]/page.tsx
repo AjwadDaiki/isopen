@@ -21,7 +21,7 @@ import {
   generateBreadcrumbJsonLd,
 } from "@/lib/schema";
 import { LOCALES, type Locale } from "@/lib/i18n/translations";
-import { buildBrandUrl } from "@/lib/i18n/url-patterns";
+import { buildBrandUrl, buildDayUrl, type CanonicalDay } from "@/lib/i18n/url-patterns";
 import { buildLocaleAlternates, absoluteUrl } from "@/lib/i18n/alternates";
 
 export const revalidate = 300;
@@ -146,7 +146,7 @@ export default async function BrandPage({ params }: PageProps) {
                   {DAY_SLUGS.map((day) => (
                     <Link
                       key={day}
-                      href={`/is-${slug}-open-on-${day}`}
+                      href={buildDayUrl("en", slug, day as CanonicalDay)}
                       className="text-[12px] font-medium px-3.5 py-2 rounded-lg border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                     >
                       {day.charAt(0).toUpperCase() + day.slice(1)}
@@ -158,7 +158,7 @@ export default async function BrandPage({ params }: PageProps) {
                   {HOLIDAY_SLUGS.map((holiday) => (
                     <Link
                       key={holiday}
-                      href={`/is-${slug}-open-on-${holiday}`}
+                      href={buildDayUrl("en", slug, holiday as CanonicalDay)}
                       className="text-[12px] font-medium px-3.5 py-2 rounded-lg border border-orange/30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
                     >
                       {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}

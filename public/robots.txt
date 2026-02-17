@@ -2,10 +2,11 @@
 User-agent: *
 Allow: /
 
-# Ads crawler
+# AdsBot-Google
 User-agent: AdsBot-Google
 Allow: /
 
+# Mediapartners-Google
 User-agent: Mediapartners-Google
 Allow: /
 

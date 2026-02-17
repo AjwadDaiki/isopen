@@ -18,35 +18,19 @@ interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
+const CATEGORY_BY_SLUG = new Map(
+  brandsData
+    .map((item) => item.brand.category)
+    .filter((category): category is string => Boolean(category))
+    .map((category) => [category.toLowerCase().replace(/\s+/g, "-"), category])
+);
+
 function getCategoryFromSlug(slug: string): string | null {
-  const map: Record<string, string> = {
-    "fast-food": "Fast Food",
-    retail: "Retail",
-    coffee: "Coffee",
-    wholesale: "Wholesale",
-    pharmacy: "Pharmacy",
-    "home-improvement": "Home Improvement",
-    "fast-casual": "Fast Casual",
-    pizza: "Pizza",
-    government: "Government",
-    financial: "Financial",
-  };
-  return map[slug] || null;
+  return CATEGORY_BY_SLUG.get(slug) || null;
 }
 
 function getAllCategorySlugs(): string[] {
-  return [
-    "fast-food",
-    "retail",
-    "coffee",
-    "wholesale",
-    "pharmacy",
-    "home-improvement",
-    "fast-casual",
-    "pizza",
-    "government",
-    "financial",
-  ];
+  return [...CATEGORY_BY_SLUG.keys()];
 }
 
 export async function generateStaticParams() {

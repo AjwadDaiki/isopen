@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   description:
     "Real-time opening hours for any store, restaurant, or service. Check if it's open right now, today's hours, holiday schedules, and closing time countdown.",
   metadataBase: new URL("https://isopenow.com"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -39,6 +42,7 @@ export const metadata: Metadata = {
     title: "IsItOpen - Check if any store is open right now",
     description: "Real-time opening hours for any store, restaurant, or service.",
   },
+  category: "business",
   twitter: {
     card: "summary_large_image",
     title: "IsItOpen - Check if any store is open right now",
@@ -47,6 +51,16 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 };
 

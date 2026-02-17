@@ -1,11 +1,22 @@
+import type { Metadata } from "next";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Link from "next/link";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About — IsItOpen",
-  description: "About IsItOpen: instantly check if any store, restaurant, or service is open right now.",
+  title: "About - IsItOpen",
+  description:
+    "About IsItOpen: how we collect opening-hours data, update status in real time, and maintain quality.",
+  alternates: {
+    canonical: "https://isopenow.com/about",
+  },
+  openGraph: {
+    title: "About - IsItOpen",
+    description:
+      "Learn how IsItOpen provides real-time store status and weekly opening hours.",
+    url: "https://isopenow.com/about",
+    type: "website",
+  },
 };
 
 export default function AboutPage() {
@@ -14,64 +25,52 @@ export default function AboutPage() {
       <Navbar />
       <div className="min-h-screen">
         <div className="page-pad" style={{ paddingTop: 48, paddingBottom: 64 }}>
-          <div style={{ maxWidth: 680 }}>
+          <div style={{ maxWidth: 760 }}>
             <h1
               className="font-heading font-extrabold text-text"
-              style={{ fontSize: 32, letterSpacing: "-0.04em", marginBottom: 32 }}
+              style={{ fontSize: 34, letterSpacing: "-0.04em", marginBottom: 16 }}
             >
               About IsItOpen
             </h1>
 
+            <p className="text-muted2" style={{ fontSize: 15, lineHeight: 1.75, marginBottom: 28 }}>
+              IsItOpen helps people answer one question fast: is a place open right now? We publish brand-level hours,
+              live open or closed status, and day-specific checks in one page.
+            </p>
+
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div style={{ background: "var(--color-bg1)", border: "1px solid var(--color-border)", borderRadius: 16, padding: 24 }}>
-                <h2 className="font-heading font-bold text-text" style={{ fontSize: 18, marginBottom: 12 }}>
-                  The simplest answer to a simple question
+              <section className="ui-panel" style={{ padding: 24 }}>
+                <h2 className="font-heading font-bold text-text" style={{ fontSize: 19, marginBottom: 12 }}>
+                  What we publish
                 </h2>
-                <p className="text-muted2" style={{ fontSize: 14, lineHeight: 1.7 }}>
-                  &quot;Is McDonald&apos;s open right now?&quot; &mdash; You&apos;ve searched this before. Everyone has.
-                  IsItOpen gives you the answer in under a second: a big green <strong className="text-green">OPEN</strong> or
-                  red <strong className="text-red">CLOSED</strong>, plus the exact hours, countdown to closing, and holiday schedules.
+                <ul className="legal-content text-muted2" style={{ fontSize: 14, lineHeight: 1.7 }}>
+                  <li>Current open or closed status</li>
+                  <li>Weekly opening hours by day</li>
+                  <li>Holiday and special-day checks</li>
+                  <li>User-reported issues used for quality review</li>
+                </ul>
+              </section>
+
+              <section className="ui-panel" style={{ padding: 24 }}>
+                <h2 className="font-heading font-bold text-text" style={{ fontSize: 19, marginBottom: 12 }}>
+                  How quality is handled
+                </h2>
+                <p className="text-muted2" style={{ fontSize: 14, lineHeight: 1.75 }}>
+                  We combine schedule data, timezone-aware calculations, and report moderation to reduce errors.
+                  Opening hours can still vary by specific location, temporary closures, or seasonal changes. For
+                  critical visits, always confirm directly with the location.
                 </p>
-              </div>
+              </section>
 
-              <div style={{ background: "var(--color-bg1)", border: "1px solid var(--color-border)", borderRadius: 16, padding: 24 }}>
-                <h2 className="font-heading font-bold text-text" style={{ fontSize: 18, marginBottom: 12 }}>
-                  How it works
+              <section className="ui-panel" style={{ padding: 24 }}>
+                <h2 className="font-heading font-bold text-text" style={{ fontSize: 19, marginBottom: 12 }}>
+                  Contact and policies
                 </h2>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {[
-                    "We maintain a database of standard opening hours for major brands across the US.",
-                    "Your browser tells us your timezone, and we check the current time against the schedule.",
-                    "We factor in holidays, special hours, and community reports to give you the most accurate answer.",
-                  ].map((text, i) => (
-                    <div key={i} className="flex text-muted2" style={{ gap: 12, fontSize: 14, lineHeight: 1.7 }}>
-                      <span className="text-text font-heading font-bold" style={{ fontSize: 18 }}>{i + 1}.</span>
-                      <p>{text}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ background: "var(--color-bg1)", border: "1px solid var(--color-border)", borderRadius: 16, padding: 24 }}>
-                <h2 className="font-heading font-bold text-text" style={{ fontSize: 18, marginBottom: 12 }}>Built with</h2>
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
-                  {["Next.js", "TypeScript", "Tailwind CSS", "Supabase", "Vercel", "date-fns"].map((tech) => (
-                    <span key={tech} className="font-mono text-muted2" style={{ fontSize: 12, background: "var(--color-bg2)", border: "1px solid var(--color-border)", borderRadius: 8, padding: "6px 12px" }}>
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ textAlign: "center", paddingTop: 16 }}>
-                <Link
-                  href="/"
-                  className="no-underline inline-flex items-center font-bold hover:opacity-90 transition-opacity"
-                  style={{ gap: 8, background: "var(--color-green)", color: "#000", fontSize: 14, padding: "12px 24px", borderRadius: 8 }}
-                >
-                  Check a store now
-                </Link>
-              </div>
+                <p className="text-muted2" style={{ fontSize: 14, lineHeight: 1.75 }}>
+                  You can reach us for data corrections or partnership requests on the <Link href="/contact" className="text-green no-underline hover:underline">contact page</Link>.
+                  Please also review our <Link href="/privacy" className="text-green no-underline hover:underline">privacy policy</Link> and <Link href="/terms" className="text-green no-underline hover:underline">terms of service</Link>.
+                </p>
+              </section>
             </div>
           </div>
         </div>

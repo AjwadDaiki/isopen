@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getConsumptionDashboard } from "@/lib/establishments";
 
 interface Props {
@@ -5,6 +6,14 @@ interface Props {
 }
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Admin Dashboard - IsItOpen",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+  },
+};
 
 export default async function AdminPage({ searchParams }: Props) {
   const params = await searchParams;
@@ -69,7 +78,7 @@ export default async function AdminPage({ searchParams }: Props) {
                   >
                     <span className="font-mono text-xs text-muted2">{row.day}</span>
                     <span className="text-sm text-text">
-                      {row.calls} calls · ${row.estimatedCostUsd.toFixed(3)}
+                      {row.calls} calls - ${row.estimatedCostUsd.toFixed(3)}
                     </span>
                   </div>
                 ))}

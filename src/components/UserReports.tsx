@@ -100,13 +100,16 @@ export default function UserReports({ brandSlug }: Props) {
   return (
     <section id="user-reports" className="ui-panel overflow-hidden">
       <div className="card-title-row">
-        <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Live user reports</h3>
+        <div>
+          <h3 className="font-heading font-bold text-[15px] tracking-[-0.01em] text-text">Live user reports</h3>
+          <p className="mt-1 text-[12px] text-muted2">Community feedback helps keep this page accurate.</p>
+        </div>
         <span className="font-mono text-[10px] text-muted tracking-[0.06em]">{reports.length} reports</span>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="px-5 py-4 md:px-6 md:py-5 border-b border-border bg-bg1/50">
-          <div className="flex flex-wrap gap-2 mb-3">
+        <form onSubmit={handleSubmit} className="px-5 py-4 md:px-6 md:py-5 border-b border-border bg-bg1/60">
+          <div className="flex flex-wrap gap-2 mb-3.5">
             {(
               [
                 ["confirmed_open", "Open", "bg-green/10 text-green border-green/20"],
@@ -118,7 +121,7 @@ export default function UserReports({ brandSlug }: Props) {
                 key={type}
                 type="button"
                 onClick={() => setReportType(type)}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                className={`text-[13px] font-semibold px-3 py-2 rounded-lg border transition-all cursor-pointer ${
                   reportType === type ? classes : "bg-bg2 text-muted2 border-border"
                 }`}
               >
@@ -131,15 +134,15 @@ export default function UserReports({ brandSlug }: Props) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Optional: Add details about what you found..."
-            className="w-full bg-bg2 border border-border rounded-lg px-3 py-2 text-sm text-text resize-none h-24 outline-none focus:border-green/40 transition-colors font-sans placeholder:text-muted"
+            className="w-full bg-bg2 border border-border rounded-xl px-3.5 py-3 text-[14px] text-text resize-none h-24 outline-none focus:border-green/40 transition-colors font-sans placeholder:text-muted"
           />
 
-          <div className="flex items-center justify-between gap-3 mt-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
             <p className="text-[12px] text-muted">Your report helps keep hours accurate in real time.</p>
             <button
               type="submit"
               disabled={submitting}
-              className="bg-green text-black rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="bg-green text-black rounded-lg px-4 py-2.5 text-[13px] font-semibold cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {submitting ? "Submitting..." : "Submit report"}
             </button>
@@ -153,47 +156,43 @@ export default function UserReports({ brandSlug }: Props) {
         </div>
       )}
 
-      <div className="py-1">
+      <div className="px-4 py-4 md:px-5 md:py-5">
         {loading ? (
-          <div className="px-5 py-6 md:px-6 text-center text-muted text-sm">Loading reports...</div>
+          <div className="rounded-xl border border-border bg-bg2/50 px-4 py-6 text-center text-muted text-[14px]">Loading reports...</div>
         ) : reports.length === 0 ? (
-          <div className="px-5 py-7 md:px-6 text-center text-muted text-[13px]">
+          <div className="rounded-xl border border-border bg-bg2/50 px-4 py-6 text-center text-muted text-[13px]">
             No reports yet. Be the first to report.
           </div>
         ) : (
-          reports.map((report) => (
-            <div
-              key={report.id}
-              className="px-5 py-3 md:px-6 md:py-3.5 grid grid-cols-[10px_1fr_auto] items-start gap-3 border-b border-border last:border-b-0 hover:bg-bg2 transition-colors"
-            >
-              <div
-                className={`w-[8px] h-[8px] rounded-full mt-1.5 ${
-                  report.report_type === "confirmed_closed"
-                    ? "bg-red"
-                    : report.report_type === "wrong_hours"
-                      ? "bg-orange"
-                      : "bg-green"
-                }`}
-                style={
-                  report.report_type === "confirmed_open"
-                    ? { boxShadow: "0 0 6px var(--color-green-glow)" }
-                    : undefined
-                }
-              />
+          <div className="flex flex-col gap-2.5">
+            {reports.map((report) => (
+              <article
+                key={report.id}
+                className="rounded-xl border border-border bg-bg2/55 px-3.5 py-3.5 md:px-4 md:py-4 grid grid-cols-[10px_1fr_auto] items-start gap-3"
+              >
+                <div
+                  className={`w-[8px] h-[8px] rounded-full mt-1.5 ${
+                    report.report_type === "confirmed_closed"
+                      ? "bg-red"
+                      : report.report_type === "wrong_hours"
+                        ? "bg-orange"
+                        : "bg-green"
+                  }`}
+                  style={report.report_type === "confirmed_open" ? { boxShadow: "0 0 6px var(--color-green-glow)" } : undefined}
+                />
 
-              <div className="min-w-0">
-                <p className="text-[13px] text-text leading-relaxed break-words">
-                  {report.message || reportText(report.report_type)}
-                </p>
-              </div>
+                <div className="min-w-0">
+                  <p className="text-[14px] text-text leading-relaxed break-words">{report.message || reportText(report.report_type)}</p>
+                </div>
 
-              <span className="font-mono text-[11px] text-muted shrink-0 mt-0.5">{timeAgo(report.reported_at)}</span>
-            </div>
-          ))
+                <span className="font-mono text-[11px] text-muted shrink-0 mt-0.5">{timeAgo(report.reported_at)}</span>
+              </article>
+            ))}
+          </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 px-5 py-4 md:px-6 border-t border-border bg-bg1/50">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 px-5 py-4 md:px-6 border-t border-border bg-bg1/60">
         {quickActions.map(([type, label]) => (
           <button
             key={type}
@@ -210,3 +209,4 @@ export default function UserReports({ brandSlug }: Props) {
     </section>
   );
 }
+

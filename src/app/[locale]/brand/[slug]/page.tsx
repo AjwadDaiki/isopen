@@ -29,6 +29,18 @@ interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
+const DAY_SLUGS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
+
+const HOLIDAY_SLUGS = ["christmas", "thanksgiving", "new-years", "easter"] as const;
+
 export async function generateStaticParams() {
   const slugs = getAllBrandSlugs();
   return getNonEnglishLocales().flatMap((locale) => slugs.map((slug) => ({ locale, slug })));
@@ -83,7 +95,7 @@ export default async function LocaleBrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 14, gap: 8, fontSize: 13 }}>
+        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
           <Link href={`/${loc}`} className="text-muted2 no-underline hover:text-text transition-colors">
             {t(loc, "home")}
           </Link>
@@ -105,15 +117,68 @@ export default async function LocaleBrandPage({ params }: PageProps) {
           <StatusHero brand={brand} initialStatus={status} locale={loc} />
         </div>
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_320px]" style={{ gap: 26, paddingTop: 24, paddingBottom: 56 }}>
-          <main className="min-w-0 flex flex-col gap-5">
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px]" style={{ gap: 28, paddingTop: 24, paddingBottom: 62 }}>
+          <main className="min-w-0 flex flex-col gap-6">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
             <UserReports brandSlug={slug} />
+
+            <section className="ui-panel overflow-hidden">
+              <div className="card-title-row">
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">{t(loc, "openingHours")}+</h3>
+              </div>
+
+              <div className="px-5 py-5 md:px-7 md:py-6 flex flex-col gap-4">
+                <div className="flex flex-wrap gap-2">
+                  {DAY_SLUGS.map((day) => (
+                    <Link
+                      key={day}
+                      href={`/${loc}/brand/${slug}/${day}`}
+                      className="text-[12px] font-medium px-3.5 py-2 rounded-lg border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                    >
+                      {t(loc, day)}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="pt-1 border-t border-border/70 flex flex-wrap gap-2">
+                  {HOLIDAY_SLUGS.map((holiday) => (
+                    <Link
+                      key={holiday}
+                      href={`/is-${slug}-open-on-${holiday}`}
+                      className="text-[12px] font-medium px-3.5 py-2 rounded-lg border border-orange/30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
+                    >
+                      {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="ui-panel overflow-hidden">
+              <div className="card-title-row">
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">FAQ</h3>
+              </div>
+              <div>
+                <FaqItem
+                  q={t(loc, "whatTimeCloseQ", { brand: brand.name })}
+                  a={status.closesIn ? `${t(loc, "closesIn")} ${status.closesIn}.` : `${t(loc, "opensAt")} ${status.opensAt || "--"}.`}
+                />
+                <FaqItem
+                  q={t(loc, "openHolidaysQ", { brand: brand.name })}
+                  a={status.holidayName ? `${t(loc, "holiday")}: ${status.holidayName}` : `${t(loc, "holiday")}: ${t(loc, "no")}`}
+                />
+                <FaqItem
+                  q={t(loc, "open24HoursQ", { brand: brand.name })}
+                  a={brand.is24h ? `${t(loc, "yes")} - ${t(loc, "open24h")}.` : `${t(loc, "no")} - ${t(loc, "closedToday")}.`}
+                />
+              </div>
+            </section>
+
             <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
           </main>
 
-          <aside className="hidden lg:flex flex-col gap-4 sticky top-[82px] self-start">
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-[84px] self-start">
             <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={250} />
             <TrendingSidebar />
             <RelatedBrands brands={related} />
@@ -122,5 +187,14 @@ export default async function LocaleBrandPage({ params }: PageProps) {
       </div>
       <Footer />
     </>
+  );
+}
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  return (
+    <article className="border-b border-border last:border-b-0 px-5 py-4.5 md:px-6 md:py-5">
+      <h3 className="font-heading font-bold text-[14px] md:text-[15px] mb-1.5 text-text leading-snug">{q}</h3>
+      <p className="text-[14px] text-muted2 leading-relaxed">{a}</p>
+    </article>
   );
 }

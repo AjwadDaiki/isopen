@@ -110,12 +110,14 @@ export default function Navbar() {
     <nav
       className="sticky top-0 z-50 page-pad"
       style={{
-        height: 70,
+        minHeight: 74,
         display: "grid",
         gridTemplateColumns: "auto 1fr auto",
         alignItems: "center",
         columnGap: 16,
-        background: "rgba(14,19,25,0.9)",
+        paddingTop: 10,
+        paddingBottom: 10,
+        background: "rgba(14,19,25,0.92)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         borderBottom: "1px solid var(--color-border)",
@@ -124,7 +126,7 @@ export default function Navbar() {
       <Link
         href={homeHref}
         className="font-heading font-extrabold no-underline text-text flex items-center shrink-0"
-        style={{ fontSize: 19, letterSpacing: "-0.04em", gap: 8 }}
+        style={{ fontSize: 20, letterSpacing: "-0.04em", gap: 9 }}
       >
         <span
           className="rounded-full bg-green animate-pulse-dot"
@@ -138,7 +140,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setShowMenu((v) => !v)}
-            className="text-sm font-semibold text-text bg-bg2 border border-border2 rounded-xl px-3.5 py-2 cursor-pointer hover:border-border transition-colors"
+            className="text-[13px] font-semibold text-text bg-bg2 border border-border2 rounded-xl px-4 py-2.5 cursor-pointer hover:border-border transition-colors"
           >
             {t(locale, "brandsMenu")}
           </button>
@@ -197,10 +199,10 @@ export default function Navbar() {
             className="search-wrap flex items-center overflow-hidden"
             style={{
               width: "100%",
-              maxWidth: 520,
+              maxWidth: 560,
               background: "rgba(27,36,48,0.9)",
               border: "1px solid var(--color-border2)",
-              borderRadius: 12,
+              borderRadius: 14,
               transition: "border-color 0.2s, box-shadow 0.2s",
             }}
           >
@@ -218,7 +220,7 @@ export default function Navbar() {
                 if (e.key === "Escape") setShowDropdown(false);
               }}
               className="bg-transparent border-none outline-none text-text placeholder:text-muted"
-              style={{ fontSize: 14, padding: "10px 14px", flex: 1, minWidth: 0 }}
+              style={{ fontSize: 14, padding: "11px 14px", flex: 1, minWidth: 0 }}
             />
             <button
               onClick={handleSearch}
@@ -226,7 +228,7 @@ export default function Navbar() {
               style={{
                 background: "var(--color-green)",
                 color: "#08120d",
-                padding: "10px 16px",
+                padding: "11px 18px",
                 fontWeight: 700,
                 fontSize: 13,
               }}

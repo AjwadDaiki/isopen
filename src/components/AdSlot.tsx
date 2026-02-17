@@ -13,6 +13,7 @@ interface Props {
   label?: string;
   className?: string;
   minHeight?: number;
+  showPlaceholder?: boolean;
 }
 
 const ADS_CLIENT =
@@ -23,6 +24,7 @@ export default function AdSlot({
   label = "Sponsored",
   className = "",
   minHeight = 120,
+  showPlaceholder = false,
 }: Props) {
   useEffect(() => {
     if (!slot) return;
@@ -32,6 +34,8 @@ export default function AdSlot({
       // Ignore failed ad push in preview/local builds.
     }
   }, [slot]);
+
+  if (!slot && !showPlaceholder) return null;
 
   if (!slot) {
     return (

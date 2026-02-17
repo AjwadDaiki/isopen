@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -43,6 +43,7 @@ export default async function LocaleHomePage({ params }: PageProps) {
   const loc = locale as Locale;
 
   const categories = [...new Set(brandsData.map((b) => b.brand.category).filter(Boolean))] as string[];
+  const featured = brandsData.slice(0, 15);
   const websiteJsonLd = generateWebsiteJsonLd();
   const orgJsonLd = generateOrganizationJsonLd();
 
@@ -53,65 +54,85 @@ export default async function LocaleHomePage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
 
-        <div className="page-pad" style={{ paddingTop: 64, paddingBottom: 24 }}>
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-green-dim border border-green/20 rounded-full px-3 py-1 font-mono text-[11px] text-green tracking-wide mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse-dot" />
-              {t(loc, "realTimeStatus")}
-            </div>
-            <h1 className="font-heading text-4xl sm:text-[64px] font-extrabold tracking-[-0.04em] leading-[1] mb-6 text-text">
-              {t(loc, "heroTitle").replace("<green>", "").replace("</green>", "")}
-            </h1>
-            <p className="text-lg text-muted2 leading-relaxed max-w-xl">{t(loc, "heroSub")}</p>
+        <section className="page-pad" style={{ paddingTop: 52, paddingBottom: 26 }}>
+          <h1 className="font-heading text-[clamp(34px,4.6vw,56px)] font-extrabold tracking-[-0.04em] leading-[0.98] text-text">
+            {t(loc, "heroTitle").replace("<green>", "").replace("</green>", "")}
+          </h1>
+          <p className="text-muted2 mt-4 text-[15px] max-w-xl">{t(loc, "heroSub")}</p>
+        </section>
+
+        <section className="page-pad" style={{ paddingBottom: 30 }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" style={{ gap: 12 }}>
+            {featured.map(({ brand, hours }) => {
+              const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
+              return (
+                <Link
+                  key={brand.slug}
+                  href={buildBrandUrl(loc, brand.slug)}
+                  className="brand-card-link no-underline"
+                  style={{
+                    background: "linear-gradient(170deg, rgba(18,22,29,0.98) 0%, rgba(14,16,23,0.98) 100%)",
+                    border: `1px solid ${status.isOpen ? "rgba(68,209,141,0.38)" : "var(--color-border)"}`,
+                    borderRadius: 14,
+                    padding: "16px 14px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                    minHeight: 120,
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <span style={{ fontSize: 23, lineHeight: 1 }}>{brand.emoji || "Store"}</span>
+                    <span
+                      className={`text-[11px] font-semibold px-2 py-[2px] rounded-full ${
+                        status.isOpen ? "text-green bg-green-dim" : "text-red bg-red-dim"
+                      }`}
+                    >
+                      {status.isOpen ? t(loc, "open") : t(loc, "closed")}
+                    </span>
+                  </div>
+                  <span className="font-heading font-bold text-[14px] text-text leading-tight">{brand.name}</span>
+                  <span className="text-[11px] text-muted2">{brand.category}</span>
+                </Link>
+              );
+            })}
           </div>
-        </div>
+        </section>
 
-        <div className="page-pad" style={{ paddingBottom: 20 }}>
-          <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_TOP} label="Sponsored" minHeight={140} />
-        </div>
+        <section className="page-pad" style={{ paddingBottom: 26 }}>
+          <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_TOP} label="Sponsored" minHeight={92} />
+        </section>
 
-        <div className="page-pad" style={{ paddingBottom: 56 }}>
-          {categories.map((cat) => {
-            const catSlug = cat.toLowerCase().replace(/\s+/g, "-");
-            return (
-              <div key={cat} style={{ marginBottom: 40 }}>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-mono text-xs uppercase tracking-[0.12em] text-muted">{cat}</h2>
-                  <Link href={`/${loc}/category/${catSlug}`} className="font-mono text-[11px] text-green no-underline hover:underline">
-                    View all &rarr;
-                  </Link>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                  {brandsData
-                    .filter((b) => b.brand.category === cat)
-                    .map(({ brand, hours }) => {
-                      const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
-                      return (
+        <section className="page-pad" style={{ paddingBottom: 56 }}>
+          <div className="flex flex-col gap-8">
+            {categories.map((cat) => {
+              const catSlug = cat.toLowerCase().replace(/\s+/g, "-");
+              return (
+                <div key={cat}>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">{cat}</h2>
+                    <Link href={`/${loc}/category/${catSlug}`} className="text-[12px] text-muted2 no-underline hover:text-text transition-colors">
+                      {t(loc, "viewAll")}
+                    </Link>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {brandsData
+                      .filter((b) => b.brand.category === cat)
+                      .map(({ brand }) => (
                         <Link
                           key={brand.slug}
                           href={buildBrandUrl(loc, brand.slug)}
-                          className="brand-card-link bg-bg1 border border-border rounded-xl p-4 no-underline flex flex-col items-center gap-2.5"
+                          className="no-underline text-[12px] text-muted2 border border-border rounded-md px-3 py-1.5 hover:text-text hover:border-border2 transition-colors"
                         >
-                          <span className="text-2xl">{brand.emoji || "Store"}</span>
-                          <span className="text-sm font-heading font-bold text-text text-center leading-tight">{brand.name}</span>
-                          <div className="flex items-center gap-1.5">
-                            <span className={`w-2 h-2 rounded-full ${status.isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`} />
-                            <span className={`text-xs font-semibold ${status.isOpen ? "text-green" : "text-red"}`}>
-                              {status.isOpen ? t(loc, "open") : t(loc, "closed")}
-                            </span>
-                          </div>
+                          {brand.name}
                         </Link>
-                      );
-                    })}
+                      ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-
-          <div style={{ marginTop: 8 }}>
-            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={180} />
+              );
+            })}
           </div>
-        </div>
+        </section>
 
         <Footer />
       </div>

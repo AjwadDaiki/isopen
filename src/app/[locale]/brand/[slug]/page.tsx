@@ -1,4 +1,4 @@
-﻿import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -7,7 +7,6 @@ import AdSlot from "@/components/AdSlot";
 import StatusHero from "@/components/StatusHero";
 import HoursTable from "@/components/HoursTable";
 import HolidayAlert from "@/components/HolidayAlert";
-import AffiliateUnit from "@/components/AffiliateUnit";
 import UserReports from "@/components/UserReports";
 import RelatedBrands from "@/components/RelatedBrands";
 import TrendingSidebar from "@/components/TrendingSidebar";
@@ -32,9 +31,7 @@ interface PageProps {
 
 export async function generateStaticParams() {
   const slugs = getAllBrandSlugs();
-  return getNonEnglishLocales().flatMap((locale) =>
-    slugs.map((slug) => ({ locale, slug }))
-  );
+  return getNonEnglishLocales().flatMap((locale) => slugs.map((slug) => ({ locale, slug })));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -47,18 +44,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const year = String(new Date().getFullYear());
 
   const alternates = buildLocaleAlternates(
-    Object.fromEntries(
-      LOCALES.map((l) => [l, buildBrandUrl(l, slug)])
-    ) as Record<Locale, string>
+    Object.fromEntries(LOCALES.map((l) => [l, buildBrandUrl(l, slug)])) as Record<Locale, string>
   );
-
-  const canonical = buildBrandUrl(loc, slug);
 
   return {
     title: t(loc, "titleWithYear", { brand: brand.name, year }),
     description: t(loc, "description", { brand: brand.name }),
     alternates: {
-      canonical: absoluteUrl(canonical),
+      canonical: absoluteUrl(buildBrandUrl(loc, slug)),
       languages: alternates,
     },
   };
@@ -71,12 +64,10 @@ export default async function LocaleBrandPage({ params }: PageProps) {
   if (!data || !LOCALES.includes(loc) || loc === "en") notFound();
 
   const { brand, hours } = data;
-  const timezone = "America/New_York";
-  const status = computeOpenStatus(hours, timezone, brand.is24h);
+  const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
   const related = getRelatedBrands(slug, brand.category, 6);
 
-  const canonicalPath = buildBrandUrl(loc, slug);
-  const currentUrl = absoluteUrl(canonicalPath);
+  const currentUrl = absoluteUrl(buildBrandUrl(loc, slug));
   const jsonLd = generateJsonLd(brand, hours, currentUrl);
   const faqJsonLd = generateFaqJsonLd(brand, hours, status, loc);
   const websiteJsonLd = generateWebsiteJsonLd();
@@ -92,15 +83,15 @@ export default async function LocaleBrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <nav className="page-pad flex items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
+        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 14, gap: 8, fontSize: 13 }}>
           <Link href={`/${loc}`} className="text-muted2 no-underline hover:text-text transition-colors">
             {t(loc, "home")}
           </Link>
-          <span className="text-muted">/</span>
+          <span>/</span>
           <Link href={`/${loc}/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">
             {brand.category}
           </Link>
-          <span className="text-muted">/</span>
+          <span>/</span>
           <span className="text-text">{brand.name}</span>
         </nav>
 
@@ -110,23 +101,19 @@ export default async function LocaleBrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad" style={{ paddingTop: 24, paddingBottom: 0 }}>
+        <div className="page-pad" style={{ paddingTop: 16 }}>
           <StatusHero brand={brand} initialStatus={status} />
         </div>
 
-        <div
-          className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]"
-          style={{ gap: 24, paddingTop: 24, paddingBottom: 48 }}
-        >
-          <div className="flex flex-col gap-4 min-w-0">
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]" style={{ gap: 22, paddingTop: 20, paddingBottom: 52 }}>
+          <main className="min-w-0 flex flex-col gap-4">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
-            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={160} />
-            <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
-          </div>
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
+          </main>
 
-          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px]">
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px] self-start">
             <TrendingSidebar />
             <RelatedBrands brands={related} />
           </aside>

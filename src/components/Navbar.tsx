@@ -34,13 +34,17 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const filtered = query.trim().length > 0
-    ? brandsData.filter((b) =>
-        b.brand.name.toLowerCase().includes(query.toLowerCase()) ||
-        b.brand.slug.includes(query.toLowerCase()) ||
-        b.brand.category?.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 6)
-    : [];
+  const filtered =
+    query.trim().length > 0
+      ? brandsData
+          .filter(
+            (b) =>
+              b.brand.name.toLowerCase().includes(query.toLowerCase()) ||
+              b.brand.slug.includes(query.toLowerCase()) ||
+              b.brand.category?.toLowerCase().includes(query.toLowerCase())
+          )
+          .slice(0, 6)
+      : [];
 
   function navigate(slug: string) {
     setQuery("");
@@ -64,7 +68,7 @@ export default function Navbar() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: "rgba(12,12,15,0.8)",
+        background: "rgba(14,19,25,0.86)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         borderBottom: "1px solid var(--color-border)",
@@ -79,16 +83,15 @@ export default function Navbar() {
           className="rounded-full bg-green animate-pulse-dot"
           style={{ width: 8, height: 8, boxShadow: "0 0 12px var(--color-green-glow)" }}
         />
-        isopenow
+        IsOpenNow
       </Link>
 
-      {/* Search */}
       <div className="hidden md:block relative" ref={dropdownRef}>
         <div
           className="search-wrap flex items-center overflow-hidden"
           style={{
             width: 360,
-            background: "rgba(24,24,31,0.85)",
+            background: "rgba(27,36,48,0.9)",
             border: "1px solid var(--color-border2)",
             borderRadius: 12,
             transition: "border-color 0.2s, box-shadow 0.2s",
@@ -96,7 +99,7 @@ export default function Navbar() {
         >
           <input
             type="text"
-            placeholder="Is McDonald's open right now?"
+            placeholder="Search a brand..."
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -115,13 +118,13 @@ export default function Navbar() {
             className="border-none cursor-pointer whitespace-nowrap hover:opacity-90 transition-opacity"
             style={{
               background: "var(--color-green)",
-              color: "#000",
+              color: "#08120d",
               padding: "10px 18px",
-              fontWeight: 600,
+              fontWeight: 700,
               fontSize: 13,
             }}
           >
-            Check &rarr;
+            Check
           </button>
         </div>
 
@@ -132,7 +135,7 @@ export default function Navbar() {
               background: "var(--color-bg1)",
               borderRadius: 12,
               border: "1px solid var(--color-border2)",
-              boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
+              boxShadow: "0 8px 40px rgba(0,0,0,0.35)",
             }}
           >
             {filtered.map((b) => (
@@ -142,10 +145,12 @@ export default function Navbar() {
                 className="w-full flex items-center cursor-pointer border-none bg-transparent text-left transition-colors hover:bg-bg2"
                 style={{ padding: "10px 16px", gap: 12 }}
               >
-                <span style={{ fontSize: 18 }}>{b.brand.emoji || "🏪"}</span>
+                <span style={{ fontSize: 18 }}>{b.brand.emoji || "Store"}</span>
                 <div className="flex-1">
                   <div className="text-sm font-semibold text-text">{b.brand.name}</div>
-                  <div style={{ fontSize: 11 }} className="text-muted2">{b.brand.category}</div>
+                  <div style={{ fontSize: 11 }} className="text-muted2">
+                    {b.brand.category}
+                  </div>
                 </div>
               </button>
             ))}
@@ -153,10 +158,7 @@ export default function Navbar() {
         )}
       </div>
 
-      <Link
-        href="/search"
-        className="md:hidden text-muted2 no-underline text-sm font-medium"
-      >
+      <Link href="/search" className="md:hidden text-muted2 no-underline text-sm font-medium">
         Search
       </Link>
 

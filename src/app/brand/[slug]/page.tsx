@@ -7,7 +7,6 @@ import AdSlot from "@/components/AdSlot";
 import StatusHero from "@/components/StatusHero";
 import HoursTable from "@/components/HoursTable";
 import HolidayAlert from "@/components/HolidayAlert";
-import AffiliateUnit from "@/components/AffiliateUnit";
 import UserReports from "@/components/UserReports";
 import RelatedBrands from "@/components/RelatedBrands";
 import TrendingSidebar from "@/components/TrendingSidebar";
@@ -60,14 +59,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `Is ${brand.name} Open Right Now? [${year} Hours]`,
-    description: `Check if ${brand.name} is open right now. Real-time status, today's hours, holiday schedule and closing time countdown.`,
+    description: `Check if ${brand.name} is open right now. Live status, today's schedule and weekly hours.`,
     alternates: {
       canonical: absoluteUrl(buildBrandUrl("en", slug)),
       languages: alternates,
     },
     openGraph: {
       title: `Is ${brand.name} Open Right Now?`,
-      description: `Real-time ${brand.name} opening hours, holiday schedule, and closing time countdown.`,
+      description: `Live ${brand.name} opening hours and current status.`,
       type: "website",
       url: absoluteUrl(buildBrandUrl("en", slug)),
     },
@@ -80,8 +79,7 @@ export default async function BrandPage({ params }: PageProps) {
   if (!data) notFound();
 
   const { brand, hours } = data;
-  const ssrTz = "America/New_York";
-  const status = computeOpenStatus(hours, ssrTz, brand.is24h);
+  const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
   const related = getRelatedBrands(slug, brand.category, 6);
   const currentUrl = absoluteUrl(buildBrandUrl("en", slug));
   const jsonLd = generateJsonLd(brand, hours, currentUrl);
@@ -99,13 +97,13 @@ export default async function BrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
+        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 14, gap: 8, fontSize: 13 }}>
           <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
-          <span className="text-muted">/</span>
+          <span>/</span>
           <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">
             {brand.category}
           </Link>
-          <span className="text-muted">/</span>
+          <span>/</span>
           <span className="text-text">{brand.name}</span>
         </nav>
 
@@ -115,22 +113,19 @@ export default async function BrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad" style={{ paddingTop: 22 }}>
+        <div className="page-pad" style={{ paddingTop: 16 }}>
           <StatusHero brand={brand} initialStatus={status} />
         </div>
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_310px]" style={{ gap: 24, paddingTop: 22, paddingBottom: 52 }}>
-          <main className="min-w-0 flex flex-col gap-5">
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]" style={{ gap: 22, paddingTop: 20, paddingBottom: 52 }}>
+          <main className="min-w-0 flex flex-col gap-4">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
-            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={160} />
-            <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
 
             <section className="ui-panel overflow-hidden">
               <div className="card-title-row">
-                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Check by day</h3>
-                <span className="font-mono text-[10px] text-muted tracking-[0.06em]">Quick links</span>
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Quick checks</h3>
               </div>
 
               <div className="px-4 py-4 md:px-6 md:py-5 flex flex-col gap-3">
@@ -165,20 +160,13 @@ export default async function BrandPage({ params }: PageProps) {
                 <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Frequently asked questions</h3>
               </div>
               <div>
-                <FaqItem
-                  q={`Is ${brand.name} open right now?`}
-                  a={status.isOpen ? `Yes, ${brand.name} is currently open.` : `No, ${brand.name} is currently closed.`}
-                />
-                <FaqItem
-                  q={`What are ${brand.name} hours today?`}
-                  a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`}
-                />
-                <FaqItem
-                  q={`What time does ${brand.name} close today?`}
-                  a={status.closesIn ? `${brand.name} closes in ${status.closesIn}.` : `${brand.name} opens at ${status.opensAt || "unknown"}.`}
-                />
+                <FaqItem q={`Is ${brand.name} open right now?`} a={status.isOpen ? `Yes, ${brand.name} is currently open.` : `No, ${brand.name} is currently closed.`} />
+                <FaqItem q={`What are ${brand.name} hours today?`} a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`} />
+                <FaqItem q={`What time does ${brand.name} close today?`} a={status.closesIn ? `${brand.name} closes in ${status.closesIn}.` : `${brand.name} opens at ${status.opensAt || "unknown"}.`} />
               </div>
             </section>
+
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
           </main>
 
           <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px] self-start">
@@ -194,7 +182,7 @@ export default async function BrandPage({ params }: PageProps) {
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <article className="border-b border-border last:border-b-0 px-5 py-4 md:px-6 md:py-4.5">
+    <article className="border-b border-border last:border-b-0 px-5 py-4 md:px-6">
       <h3 className="font-heading font-bold text-[13px] md:text-[13.5px] mb-1.5 text-text leading-snug">{q}</h3>
       <p className="text-[13px] text-muted2 leading-relaxed">{a}</p>
     </article>

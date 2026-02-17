@@ -26,22 +26,21 @@ export default function Home() {
       <Navbar />
       <div className="min-h-screen">
         {/* Hero */}
-        <div className="relative overflow-hidden px-6 sm:px-12 pt-[72px] pb-14">
+        <div className="relative overflow-hidden pt-16 pb-14">
           {/* Green gradient glow */}
           <div className="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(0,232,122,0.06) 0%, transparent 70%)" }} />
 
-          <div className="max-w-[700px] relative z-10">
+          <div className="max-w-[1100px] mx-auto px-6 sm:px-10 relative z-10">
             <div className="inline-flex items-center gap-2 bg-green-dim border border-green/20 rounded-full px-3.5 py-1 font-mono text-[12px] text-green tracking-[0.06em] uppercase font-semibold mb-7">
               <span className="w-[5px] h-[5px] rounded-full bg-green animate-pulse-dot" />
               Real-time status
             </div>
-            <h1 className="font-heading font-extrabold tracking-[-0.04em] leading-[1] mb-5" style={{ fontSize: "clamp(42px, 6vw, 72px)" }}>
+            <h1 className="font-heading font-extrabold tracking-[-0.04em] leading-[1] mb-5" style={{ fontSize: "clamp(36px, 5vw, 60px)" }}>
               Is it{" "}
-              <span className="text-green">open</span>
-              <br />
+              <span className="text-green">open</span>{" "}
               right now?
             </h1>
-            <p className="text-[17px] text-muted2 leading-relaxed max-w-[480px] mb-10">
+            <p className="text-[16px] text-muted2 leading-relaxed max-w-[480px]">
               Instantly check if any store, restaurant, or service is open.
               Real-time status, weekly hours, holiday schedules.
             </p>
@@ -49,7 +48,7 @@ export default function Home() {
         </div>
 
         {/* Brand grid by category */}
-        <div className="px-6 sm:px-12 pb-16">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-10 pb-16">
           {categories.map((cat, i) => {
             const catSlug = cat.toLowerCase().replace(/\s+/g, "-");
             return (

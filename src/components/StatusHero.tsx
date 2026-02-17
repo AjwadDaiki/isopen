@@ -87,7 +87,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
       }}
     >
       {/* Main hero area */}
-      <div className="bg-bg1 relative p-8 sm:p-9 flex flex-wrap items-center justify-between gap-6">
+      <div className="bg-bg1 relative p-6 sm:p-8">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -97,15 +97,37 @@ export default function StatusHero({ brand, initialStatus }: Props) {
           }}
         />
 
-        <div className="flex items-center gap-6 relative z-10">
-          <div className="w-[72px] h-[72px] rounded-2xl bg-bg2 border border-border2 flex items-center justify-center text-4xl shrink-0">
+        <div className="relative z-10 flex items-center gap-5 mb-5">
+          <div className="w-[56px] h-[56px] rounded-xl bg-bg2 border border-border2 flex items-center justify-center text-3xl shrink-0">
             {brand.emoji || "🏪"}
           </div>
-          <div>
-            <h1 className="font-heading font-extrabold text-[32px] tracking-[-0.04em] leading-[1.1] text-text">
-              {brand.name}
-            </h1>
-            <p className="text-[13px] text-muted2 flex items-center gap-2">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="font-heading font-extrabold text-2xl sm:text-[28px] tracking-[-0.03em] leading-[1.1] text-text">
+                {brand.name}
+              </h1>
+              <div
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-heading font-extrabold text-sm tracking-[0.04em] border-2 ${
+                  isOpen
+                    ? "text-green border-green/35"
+                    : "text-red border-red/30"
+                }`}
+                style={{
+                  background: isOpen
+                    ? "rgba(0,232,122,0.12)"
+                    : "rgba(255,71,87,0.1)",
+                }}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full shrink-0 ${
+                    isOpen ? "bg-green animate-pulse-dot" : "bg-red"
+                  }`}
+                  style={isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : {}}
+                />
+                {isOpen ? "OPEN" : "CLOSED"}
+              </div>
+            </div>
+            <p className="text-[13px] text-muted2 flex items-center gap-2 mt-1">
               {brand.category}
               {brand.is24h && (
                 <>
@@ -113,44 +135,23 @@ export default function StatusHero({ brand, initialStatus }: Props) {
                   <span className="text-muted">24/7 locations available</span>
                 </>
               )}
+              {isOpen && status.closesIn && (
+                <>
+                  <span className="text-border2">&middot;</span>
+                  <span className="font-mono text-muted">
+                    Closes in <strong className="text-text">{status.closesIn}</strong>
+                  </span>
+                </>
+              )}
+              {!isOpen && status.opensAt && (
+                <>
+                  <span className="text-border2">&middot;</span>
+                  <span className="font-mono text-muted">
+                    Opens at <strong className="text-text">{status.opensAt}</strong>
+                  </span>
+                </>
+              )}
             </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-end gap-3 relative z-10 shrink-0">
-          <div
-            className={`flex items-center gap-2.5 px-6 py-3 rounded-full font-heading font-extrabold text-xl tracking-[0.04em] border-2 ${
-              isOpen
-                ? "text-green border-green/35"
-                : "text-red border-red/30"
-            }`}
-            style={{
-              background: isOpen
-                ? "rgba(0,232,122,0.12)"
-                : "rgba(255,71,87,0.1)",
-            }}
-          >
-            <span
-              className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                isOpen ? "bg-green animate-pulse-dot" : "bg-red"
-              }`}
-              style={isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : {}}
-            />
-            {isOpen ? "OPEN" : "CLOSED"}
-          </div>
-          <div className="font-mono text-[13px] text-muted2 text-right">
-            {isOpen && status.closesIn && (
-              <>
-                Closes in{" "}
-                <strong className="text-text text-[15px]">{status.closesIn}</strong>
-              </>
-            )}
-            {!isOpen && status.opensAt && (
-              <>
-                Opens at{" "}
-                <strong className="text-text text-[15px]">{status.opensAt}</strong>
-              </>
-            )}
           </div>
         </div>
       </div>

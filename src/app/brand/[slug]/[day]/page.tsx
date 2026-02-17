@@ -78,7 +78,7 @@ export default async function DayPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-12 pt-8 pb-16 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-10 pt-8 pb-16 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start">
           <main className="min-w-0">
             <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
               <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>

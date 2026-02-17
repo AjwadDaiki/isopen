@@ -70,8 +70,9 @@ export default async function BrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-10">
         {/* Breadcrumb */}
-        <nav className="px-6 sm:px-12 pt-4 flex items-center gap-2 text-[13px] text-muted">
+        <nav className="pt-4 flex items-center gap-2 text-[13px] text-muted">
           <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
           <span className="text-muted">/</span>
           <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">{brand.category}</Link>
@@ -83,12 +84,12 @@ export default async function BrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
         {/* Hero - full width */}
-        <div className="mx-6 sm:mx-12 mt-6">
+        <div className="mt-6">
           <StatusHero brand={brand} initialStatus={status} />
         </div>
 
         {/* Body grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 px-6 sm:px-12 py-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 py-6 items-start">
           {/* Left column */}
           <div className="flex flex-col gap-4 min-w-0">
             <HolidayAlert brandName={brand.name} />
@@ -182,6 +183,7 @@ export default async function BrandPage({ params }: PageProps) {
               </div>
             )}
           </aside>
+        </div>
         </div>
       </div>
       <Footer />

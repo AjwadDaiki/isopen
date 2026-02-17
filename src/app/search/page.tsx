@@ -25,7 +25,7 @@ export default function SearchPage() {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-12">
+        <div className="page-pad" style={{ maxWidth: 848, paddingTop: 48, paddingBottom: 48 }}>
           <h1 className="font-heading text-3xl font-extrabold tracking-tight mb-2 text-text">Search stores</h1>
           <p className="text-sm text-muted2 mb-8">
             Find any store, restaurant, or service and check if it&apos;s open right now.

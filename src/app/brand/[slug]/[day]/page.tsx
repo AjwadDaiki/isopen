@@ -78,7 +78,7 @@ export default async function DayPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <div style={{ padding: "32px 48px 64px" }} className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start">
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start" style={{ paddingTop: 32, paddingBottom: 64 }}>
           <main className="min-w-0">
             <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
               <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>

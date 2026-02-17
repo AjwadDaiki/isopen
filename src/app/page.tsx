@@ -26,17 +26,17 @@ export default function Home() {
       <Navbar />
       <div className="min-h-screen">
         {/* Hero */}
-        <div className="relative overflow-hidden" style={{ padding: "72px 48px 56px" }}>
+        <div className="relative overflow-hidden page-pad" style={{ paddingTop: 72, paddingBottom: 56 }}>
           {/* Green gradient glow */}
           <div
             className="absolute pointer-events-none"
             style={{
-              top: -120,
+              top: -80,
               left: "50%",
               transform: "translateX(-50%)",
-              width: 600,
-              height: 300,
-              background: "radial-gradient(ellipse, rgba(0,232,122,0.06) 0%, transparent 70%)",
+              width: 800,
+              height: 400,
+              background: "radial-gradient(ellipse, rgba(0,232,122,0.08) 0%, transparent 70%)",
             }}
           />
 
@@ -81,13 +81,13 @@ export default function Home() {
         </div>
 
         {/* Brand grid by category */}
-        <div style={{ padding: "0 48px 48px" }}>
+        <div className="page-pad" style={{ paddingBottom: 48 }}>
           {categories.map((cat, i) => {
             const catSlug = cat.toLowerCase().replace(/\s+/g, "-");
             return (
               <div key={cat}>
                 {i > 0 && (
-                  <div style={{ height: 1, background: "var(--color-border)", margin: "0 0 48px" }} />
+                  <div style={{ height: 1, background: "var(--color-border)", marginBottom: 48 }} />
                 )}
                 <div style={{ marginBottom: 48 }}>
                   <div className="flex items-baseline justify-between" style={{ marginBottom: 20 }}>
@@ -106,11 +106,8 @@ export default function Home() {
                     </Link>
                   </div>
                   <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(5, 1fr)",
-                      gap: 12,
-                    }}
+                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+                    style={{ gap: 12 }}
                   >
                     {brandsData
                       .filter((b) => b.brand.category === cat)
@@ -121,7 +118,7 @@ export default function Home() {
                           <Link
                             key={brand.slug}
                             href={`/is-${brand.slug}-open`}
-                            className="no-underline transition-all"
+                            className="brand-card-link no-underline"
                             style={{
                               background: isOpen
                                 ? "linear-gradient(135deg, var(--color-bg1) 0%, rgba(0,232,122,0.04) 100%)"
@@ -189,14 +186,8 @@ export default function Home() {
               Check store hours in real-time
             </h2>
             <div
-              className="text-muted2"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 24,
-                fontSize: 14,
-                lineHeight: 1.7,
-              }}
+              className="text-muted2 grid grid-cols-1 sm:grid-cols-2"
+              style={{ gap: 24, fontSize: 14, lineHeight: 1.7 }}
             >
               <p>
                 IsItOpen helps you instantly find out if a store, restaurant, or service

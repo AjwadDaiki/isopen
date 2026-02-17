@@ -58,22 +58,22 @@ export default function Navbar() {
 
   return (
     <nav
-      className="sticky top-0 z-50 border-b border-border"
+      className="sticky top-0 z-50 page-pad"
       style={{
         height: 56,
-        padding: "0 32px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         background: "rgba(12,12,15,0.85)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid var(--color-border)",
       }}
     >
       <Link
         href="/"
-        className="font-heading font-extrabold tracking-[-0.04em] flex items-center gap-2 no-underline text-text"
-        style={{ fontSize: 18 }}
+        className="font-heading font-extrabold no-underline text-text flex items-center shrink-0"
+        style={{ fontSize: 18, letterSpacing: "-0.04em", gap: 8 }}
       >
         <span
           className="rounded-full bg-green animate-pulse-dot"
@@ -85,12 +85,13 @@ export default function Navbar() {
       {/* Search */}
       <div className="hidden sm:block relative" ref={dropdownRef}>
         <div
-          className="flex items-center overflow-hidden transition-all"
+          className="search-wrap flex items-center overflow-hidden"
           style={{
             width: 320,
             background: "var(--color-bg2)",
             border: "1px solid var(--color-border2)",
             borderRadius: 10,
+            transition: "border-color 0.2s, box-shadow 0.2s",
           }}
         >
           <input
@@ -111,7 +112,7 @@ export default function Navbar() {
           />
           <button
             onClick={handleSearch}
-            className="border-none cursor-pointer whitespace-nowrap"
+            className="border-none cursor-pointer whitespace-nowrap hover:opacity-90 transition-opacity"
             style={{
               background: "var(--color-green)",
               color: "#000",
@@ -138,8 +139,8 @@ export default function Navbar() {
               <button
                 key={b.brand.slug}
                 onClick={() => navigate(b.brand.slug)}
-                className="w-full flex items-center gap-3 cursor-pointer border-none bg-transparent text-left transition-colors hover:bg-bg2"
-                style={{ padding: "10px 16px" }}
+                className="w-full flex items-center cursor-pointer border-none bg-transparent text-left transition-colors hover:bg-bg2"
+                style={{ padding: "10px 16px", gap: 12 }}
               >
                 <span style={{ fontSize: 18 }}>{b.brand.emoji || "🏪"}</span>
                 <div className="flex-1">
@@ -159,7 +160,7 @@ export default function Navbar() {
         Search
       </Link>
 
-      <div className="flex items-center" style={{ gap: 24 }}>
+      <div className="flex items-center shrink-0" style={{ gap: 24 }}>
         <span className="font-mono text-muted2" style={{ fontSize: 13, letterSpacing: "0.05em" }}>
           {clock}
         </span>

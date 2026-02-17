@@ -71,7 +71,7 @@ export default async function BrandPage({ params }: PageProps) {
       <Navbar />
       <div className="min-h-screen">
         {/* Breadcrumb */}
-        <nav className="flex items-center text-muted" style={{ padding: "16px 48px 0", gap: 8, fontSize: 13 }}>
+        <nav className="page-pad flex items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
           <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
           <span className="text-muted">/</span>
           <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">{brand.category}</Link>
@@ -83,14 +83,14 @@ export default async function BrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
         {/* Hero - full width */}
-        <div style={{ margin: "24px 48px" }}>
+        <div className="page-pad" style={{ paddingTop: 24, paddingBottom: 0 }}>
           <StatusHero brand={brand} initialStatus={status} />
         </div>
 
         {/* Body grid */}
         <div
-          style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 24, padding: "0 48px 48px" }}
-          className="max-lg:!grid-cols-1 max-lg:!p-6"
+          className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]"
+          style={{ gap: 24, paddingTop: 24, paddingBottom: 48 }}
         >
           {/* Left column */}
           <div className="flex flex-col gap-4 min-w-0">

@@ -37,6 +37,9 @@ body {
   overflow-x: hidden;
 }
 
+/* Remove default link colors */
+a { color: inherit; }
+
 /* Pulse animation for status dots */
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -63,8 +66,11 @@ body {
   justify-content: space-between;
 }
 
-/* Brand card hover effect */
-a[href^="/is-"]:hover {
+/* Brand card hover */
+.brand-card-link {
+  transition: all 0.2s ease;
+}
+.brand-card-link:hover {
   border-color: var(--color-border2) !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -72,7 +78,7 @@ a[href^="/is-"]:hover {
 }
 
 /* Search focus glow */
-.search-focus-glow:focus-within {
+.search-wrap:focus-within {
   border-color: var(--color-green) !important;
   box-shadow: 0 0 0 3px var(--color-green-dim);
 }
@@ -88,8 +94,31 @@ a[href^="/is-"]:hover {
 ::-webkit-scrollbar-track { background: var(--color-bg); }
 ::-webkit-scrollbar-thumb { background: var(--color-bg3); border-radius: 3px; }
 
-/* Responsive overrides */
+/* Legal page lists */
+.legal-content ul {
+  list-style: disc;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Responsive padding helper ── */
+.page-pad {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
 @media (max-width: 768px) {
-  .hero-responsive { padding: 48px 24px 40px !important; }
-  .section-responsive { padding: 0 24px 24px !important; }
+  .page-pad {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-pad {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }

@@ -57,6 +57,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}>
         <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9657496359488658"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8MWJB8TTNY"
           strategy="afterInteractive"
         />

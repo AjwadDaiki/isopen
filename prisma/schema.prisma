@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id         String   @id @default(uuid()) @db.Uuid
+  slug       String   @unique @db.VarChar(100)
+  name       String   @db.VarChar(200)
+  category   String?  @db.VarChar(50)
+  emoji      String?  @db.VarChar(10)
+  logoUrl    String?  @map("logo_url")
+  website    String?
+  is24h      Boolean  @default(false) @map("is_24h")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  locations  Location[]
+  brandHours BrandHours[]
+
+  @@map("brands")
+}
+
+model Location {
+  id            String   @id @default(uuid()) @db.Uuid
+  brandId       String   @map("brand_id") @db.Uuid
+  slug          String?  @db.VarChar(100)
+  address       String?
+  city          String?  @db.VarChar(100)
+  country       String?  @db.VarChar(2)
+  latitude      Decimal? @db.Decimal(10, 8)
+  longitude     Decimal? @db.Decimal(11, 8)
+  timezone      String?  @db.VarChar(50)
+  googlePlaceId String?  @map("google_place_id") @db.VarChar(200)
+  lastVerified  DateTime? @map("last_verified") @db.Timestamptz
+
+  brand         Brand    @relation(fields: [brandId], references: [id])
+  hours         Hours[]
+  specialHours  SpecialHours[]
+  userReports   UserReport[]
+
+  @@index([brandId, city, country])
+  @@map("locations")
+}
+
+model Hours {
+  id           String  @id @default(uuid()) @db.Uuid
+  locationId   String  @map("location_id") @db.Uuid
+  dayOfWeek    Int     @map("day_of_week") @db.SmallInt
+  openTime     String? @map("open_time")
+  closeTime    String? @map("close_time")
+  isClosed     Boolean @default(false) @map("is_closed")
+  spansMidnight Boolean @default(false) @map("spans_midnight")
+
+  location     Location @relation(fields: [locationId], references: [id])
+
+  @@index([locationId, dayOfWeek])
+  @@map("hours")
+}
+
+model BrandHours {
+  id          String  @id @default(uuid()) @db.Uuid
+  brandId     String  @map("brand_id") @db.Uuid
+  country     String? @db.VarChar(2)
+  dayOfWeek   Int     @map("day_of_week") @db.SmallInt
+  openTime    String? @map("open_time")
+  closeTime   String? @map("close_time")
+  isClosed    Boolean @default(false) @map("is_closed")
+  spansMidnight Boolean @default(false) @map("spans_midnight")
+
+  brand       Brand   @relation(fields: [brandId], references: [id])
+
+  @@map("brand_hours")
+}
+
+model Holiday {
+  id         String  @id @default(uuid()) @db.Uuid
+  country    String  @db.VarChar(2)
+  date       DateTime @db.Date
+  name       String? @db.VarChar(200)
+  affectsAll Boolean @default(true) @map("affects_all")
+
+  @@index([country, date])
+  @@map("holidays")
+}
+
+model SpecialHours {
+  id         String   @id @default(uuid()) @db.Uuid
+  locationId String   @map("location_id") @db.Uuid
+  date       DateTime @db.Date
+  openTime   String?  @map("open_time")
+  closeTime  String?  @map("close_time")
+  isClosed   Boolean  @default(false) @map("is_closed")
+  note       String?
+
+  location   Location @relation(fields: [locationId], references: [id])
+
+  @@map("special_hours")
+}
+
+model UserReport {
+  id         String   @id @default(uuid()) @db.Uuid
+  locationId String   @map("location_id") @db.Uuid
+  reportType String   @map("report_type") @db.VarChar(20)
+  message    String?
+  reportedAt DateTime @default(now()) @map("reported_at") @db.Timestamptz
+  upvotes    Int      @default(0)
+
+  location   Location @relation(fields: [locationId], references: [id])
+
+  @@map("user_reports")
+}

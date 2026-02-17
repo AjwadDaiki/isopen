@@ -18,12 +18,21 @@ function timeAgo(dateStr: string): string {
   const now = Date.now();
   const then = new Date(dateStr).getTime();
   const diffMin = Math.floor((now - then) / 60000);
+
   if (diffMin < 1) return "just now";
   if (diffMin < 60) return `${diffMin}m ago`;
+
   const diffH = Math.floor(diffMin / 60);
   if (diffH < 24) return `${diffH}h ago`;
+
   const diffD = Math.floor(diffH / 24);
   return `${diffD}d ago`;
+}
+
+function reportText(type: string) {
+  if (type === "confirmed_open") return "Confirmed open";
+  if (type === "confirmed_closed") return "Confirmed closed";
+  return "Wrong hours reported";
 }
 
 export default function UserReports({ brandSlug }: Props) {
@@ -56,6 +65,7 @@ export default function UserReports({ brandSlug }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
+
     try {
       const res = await fetch("/api/report", {
         method: "POST",
@@ -66,6 +76,7 @@ export default function UserReports({ brandSlug }: Props) {
           message: message.trim() || null,
         }),
       });
+
       if (res.ok) {
         setSubmitted(true);
         setShowForm(false);
@@ -80,34 +91,27 @@ export default function UserReports({ brandSlug }: Props) {
     }
   }
 
-  const reportButtons: [string, string][] = [
-    ["confirmed_open", "✓ Confirm open"],
-    ["confirmed_closed", "✗ Report closed"],
-    ["wrong_hours", "⚠ Wrong hours"],
+  const quickActions: Array<[string, string]> = [
+    ["confirmed_open", "Confirm open"],
+    ["confirmed_closed", "Report closed"],
+    ["wrong_hours", "Wrong hours"],
   ];
 
   return (
-    <div
-      id="user-reports"
-      className="bg-bg1 border border-border rounded-2xl overflow-hidden"
-    >
+    <section id="user-reports" className="ui-panel overflow-hidden">
       <div className="card-title-row">
-        <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
-          <span>👥</span> Live user reports
-        </h3>
-        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">
-          {reports.length} reports
-        </span>
+        <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Live user reports</h3>
+        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">{reports.length} reports</span>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="px-6 py-4 border-b border-border">
-          <div className="flex gap-2 mb-3">
+        <form onSubmit={handleSubmit} className="px-5 py-4 md:px-6 md:py-5 border-b border-border bg-bg1/50">
+          <div className="flex flex-wrap gap-2 mb-3">
             {(
               [
-                ["confirmed_open", "✅ Open", "bg-green/10 text-green border-green/20"],
-                ["confirmed_closed", "❌ Closed", "bg-red/10 text-red border-red/20"],
-                ["wrong_hours", "⚠️ Wrong hours", "bg-orange/10 text-orange border-orange/20"],
+                ["confirmed_open", "Open", "bg-green/10 text-green border-green/20"],
+                ["confirmed_closed", "Closed", "bg-red/10 text-red border-red/20"],
+                ["wrong_hours", "Wrong hours", "bg-orange/10 text-orange border-orange/20"],
               ] as const
             ).map(([type, label, classes]) => (
               <button
@@ -122,43 +126,48 @@ export default function UserReports({ brandSlug }: Props) {
               </button>
             ))}
           </div>
+
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Optional: Add details about what you found..."
-            className="w-full bg-bg2 border border-border rounded-lg px-3 py-2 text-sm text-text resize-none h-20 outline-none focus:border-green/40 transition-colors font-sans placeholder:text-muted"
+            className="w-full bg-bg2 border border-border rounded-lg px-3 py-2 text-sm text-text resize-none h-24 outline-none focus:border-green/40 transition-colors font-sans placeholder:text-muted"
           />
-          <button
-            type="submit"
-            disabled={submitting}
-            className="mt-2 bg-green text-black rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer hover:opacity-90 transition-colors disabled:opacity-50"
-          >
-            {submitting ? "Submitting..." : "Submit report"}
-          </button>
+
+          <div className="flex items-center justify-between gap-3 mt-3">
+            <p className="text-[12px] text-muted">Your report helps keep hours accurate in real time.</p>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="bg-green text-black rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {submitting ? "Submitting..." : "Submit report"}
+            </button>
+          </div>
         </form>
       )}
 
       {submitted && (
-        <div className="px-6 py-3 bg-green-dim text-green text-sm font-semibold border-b border-border">
-          ✅ Thanks! Your report has been submitted.
+        <div className="px-5 py-3 md:px-6 bg-green-dim text-green text-sm font-semibold border-b border-border">
+          Report submitted. Thank you.
         </div>
       )}
 
-      <div className="py-2">
+      <div className="py-1">
         {loading ? (
-          <div className="px-6 py-6 text-center text-muted text-sm">Loading reports...</div>
+          <div className="px-5 py-6 md:px-6 text-center text-muted text-sm">Loading reports...</div>
         ) : reports.length === 0 ? (
-          <div className="px-6 py-7 text-center text-muted text-[13px]">
-            No reports yet. Be the first to report!
+          <div className="px-5 py-7 md:px-6 text-center text-muted text-[13px]">
+            No reports yet. Be the first to report.
           </div>
         ) : (
           reports.map((report) => (
             <div
               key={report.id}
-              className="px-6 py-3 flex items-start gap-3 border-b border-border last:border-b-0 hover:bg-bg2 transition-colors"
+              className="px-5 py-3 md:px-6 md:py-3.5 grid grid-cols-[10px_1fr_auto] items-start gap-3 border-b border-border last:border-b-0 hover:bg-bg2 transition-colors"
             >
               <div
-                className={`w-[7px] h-[7px] rounded-full mt-1.5 shrink-0 ${
+                className={`w-[8px] h-[8px] rounded-full mt-1.5 ${
                   report.report_type === "confirmed_closed"
                     ? "bg-red"
                     : report.report_type === "wrong_hours"
@@ -168,41 +177,36 @@ export default function UserReports({ brandSlug }: Props) {
                 style={
                   report.report_type === "confirmed_open"
                     ? { boxShadow: "0 0 6px var(--color-green-glow)" }
-                    : {}
+                    : undefined
                 }
               />
-              <p className="text-[13px] text-muted2 leading-relaxed flex-1">
-                {report.message || (
-                  report.report_type === "confirmed_open"
-                    ? "Confirmed open"
-                    : report.report_type === "confirmed_closed"
-                      ? "Confirmed closed"
-                      : "Wrong hours reported"
-                )}
-              </p>
-              <span className="font-mono text-[11px] text-muted shrink-0 mt-0.5">
-                {timeAgo(report.reported_at)}
-              </span>
+
+              <div className="min-w-0">
+                <p className="text-[13px] text-text leading-relaxed break-words">
+                  {report.message || reportText(report.report_type)}
+                </p>
+              </div>
+
+              <span className="font-mono text-[11px] text-muted shrink-0 mt-0.5">{timeAgo(report.reported_at)}</span>
             </div>
           ))
         )}
       </div>
 
-      {/* Quick action buttons */}
-      <div className="flex gap-2 px-6 py-4 border-t border-border">
-        {reportButtons.map(([type, label]) => (
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 px-5 py-4 md:px-6 border-t border-border bg-bg1/50">
+        {quickActions.map(([type, label]) => (
           <button
             key={type}
             onClick={() => {
               setShowForm(true);
               setReportType(type);
             }}
-            className="flex-1 py-2.5 px-3 rounded-lg border border-border2 bg-bg2 text-muted2 font-medium text-[13px] cursor-pointer transition-all hover:border-green hover:text-green hover:bg-green-dim flex items-center justify-center gap-1.5"
+            className="py-2.5 px-3 rounded-lg border border-border2 bg-bg2 text-muted2 font-medium text-[13px] cursor-pointer transition-all hover:border-green hover:text-green hover:bg-green-dim"
           >
             {label}
           </button>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

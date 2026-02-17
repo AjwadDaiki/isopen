@@ -1,4 +1,4 @@
-﻿import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -28,6 +28,18 @@ export const revalidate = 300;
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
+
+const DAY_SLUGS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
+
+const HOLIDAY_SLUGS = ["christmas", "thanksgiving", "new-years", "easter"] as const;
 
 export async function generateStaticParams() {
   return getAllBrandSlugs().map((slug) => ({ slug }));
@@ -86,10 +98,12 @@ export default async function BrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <nav className="page-pad flex items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
+        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
           <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
           <span className="text-muted">/</span>
-          <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">{brand.category}</Link>
+          <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">
+            {brand.category}
+          </Link>
           <span className="text-muted">/</span>
           <span className="text-text">{brand.name}</span>
         </nav>
@@ -100,63 +114,72 @@ export default async function BrandPage({ params }: PageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        <div className="page-pad" style={{ paddingTop: 24, paddingBottom: 0 }}>
+        <div className="page-pad" style={{ paddingTop: 22 }}>
           <StatusHero brand={brand} initialStatus={status} />
         </div>
 
-        <div
-          className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]"
-          style={{ gap: 24, paddingTop: 24, paddingBottom: 48 }}
-        >
-          <div className="flex flex-col gap-4 min-w-0">
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_310px]" style={{ gap: 24, paddingTop: 22, paddingBottom: 52 }}>
+          <main className="min-w-0 flex flex-col gap-5">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
             <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
 
-            <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+            <section className="ui-panel overflow-hidden">
               <div className="card-title-row">
-                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
-                  <span>Days</span> {brand.name} hours
-                </h3>
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Check by day</h3>
+                <span className="font-mono text-[10px] text-muted tracking-[0.06em]">Quick links</span>
               </div>
-              <div className="flex flex-wrap gap-1.5 p-4">
-                {["monday","tuesday","wednesday","thursday","friday","saturday","sunday"].map((day) => (
-                  <Link
-                    key={day}
-                    href={`/is-${slug}-open-on-${day}`}
-                    className="text-xs font-medium px-3 py-1.5 rounded-md border border-transparent text-muted2 no-underline hover:bg-bg2 hover:text-text hover:border-border2 transition-all"
-                  >
-                    {day.charAt(0).toUpperCase() + day.slice(1)}
-                  </Link>
-                ))}
-                {["christmas","thanksgiving","new-years","easter"].map((h) => (
-                  <Link
-                    key={h}
-                    href={`/is-${slug}-open-on-${h}`}
-                    className="text-xs font-medium px-3 py-1.5 rounded-md text-orange no-underline hover:bg-orange-dim transition-all"
-                  >
-                    {h.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
-                  </Link>
-                ))}
-              </div>
-            </div>
 
-            <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+              <div className="px-4 py-4 md:px-6 md:py-5 flex flex-col gap-3">
+                <div className="flex flex-wrap gap-2">
+                  {DAY_SLUGS.map((day) => (
+                    <Link
+                      key={day}
+                      href={`/is-${slug}-open-on-${day}`}
+                      className="text-xs font-medium px-3 py-1.5 rounded-md border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                    >
+                      {day.charAt(0).toUpperCase() + day.slice(1)}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="pt-1 border-t border-border/70 flex flex-wrap gap-2">
+                  {HOLIDAY_SLUGS.map((holiday) => (
+                    <Link
+                      key={holiday}
+                      href={`/is-${slug}-open-on-${holiday}`}
+                      className="text-xs font-medium px-3 py-1.5 rounded-md border border-orange/30 bg-orange-dim text-orange no-underline hover:opacity-90 transition-opacity"
+                    >
+                      {holiday.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="ui-panel overflow-hidden">
               <div className="card-title-row">
-                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">
-                  Frequently asked questions
-                </h3>
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Frequently asked questions</h3>
               </div>
               <div>
-                <FaqItem q={`Is ${brand.name} open right now?`} a={status.isOpen ? `Yes, ${brand.name} is currently open.` : `No, ${brand.name} is currently closed.`} />
-                <FaqItem q={`What are ${brand.name} hours today?`} a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`} />
-                <FaqItem q={`What time does ${brand.name} close today?`} a={status.closesIn ? `${brand.name} closes in ${status.closesIn}.` : `${brand.name} opens at ${status.opensAt || "unknown"}.`} />
+                <FaqItem
+                  q={`Is ${brand.name} open right now?`}
+                  a={status.isOpen ? `Yes, ${brand.name} is currently open.` : `No, ${brand.name} is currently closed.`}
+                />
+                <FaqItem
+                  q={`What are ${brand.name} hours today?`}
+                  a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`}
+                />
+                <FaqItem
+                  q={`What time does ${brand.name} close today?`}
+                  a={status.closesIn ? `${brand.name} closes in ${status.closesIn}.` : `${brand.name} opens at ${status.opensAt || "unknown"}.`}
+                />
               </div>
-            </div>
-          </div>
+            </section>
+          </main>
 
-          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px]">
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px] self-start">
             <TrendingSidebar />
             <RelatedBrands brands={related} />
           </aside>
@@ -169,9 +192,9 @@ export default async function BrandPage({ params }: PageProps) {
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <div className="border-b border-border last:border-b-0 px-6 py-4">
-      <h3 className="font-heading font-bold text-[13px] mb-1.5 text-text">{q}</h3>
+    <article className="border-b border-border last:border-b-0 px-5 py-4 md:px-6 md:py-4.5">
+      <h3 className="font-heading font-bold text-[13px] md:text-[13.5px] mb-1.5 text-text leading-snug">{q}</h3>
       <p className="text-[13px] text-muted2 leading-relaxed">{a}</p>
-    </div>
+    </article>
   );
 }

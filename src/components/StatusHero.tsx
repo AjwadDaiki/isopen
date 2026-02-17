@@ -39,7 +39,6 @@ export default function StatusHero({ brand, initialStatus }: Props) {
     };
   }, [brand.slug]);
 
-  // Update local time every second
   useEffect(() => {
     function tick() {
       setLocalTime(
@@ -50,6 +49,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
         })
       );
     }
+
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
@@ -60,6 +60,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
 
   async function handleShare() {
     const shareUrl = `${window.location.origin}${canonicalPath}`;
+
     try {
       if (navigator.share) {
         await navigator.share({
@@ -70,6 +71,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
       } else {
         await navigator.clipboard.writeText(shareUrl);
       }
+
       setShareState("done");
       setTimeout(() => setShareState("idle"), 2000);
     } catch {
@@ -78,201 +80,114 @@ export default function StatusHero({ brand, initialStatus }: Props) {
   }
 
   return (
-    <div
+    <section
+      className="ui-panel overflow-hidden"
       style={{
-        borderRadius: 20,
-        overflow: "hidden",
-        border: `1px solid ${isOpen ? "rgba(0,232,122,0.25)" : "rgba(255,71,87,0.2)"}`,
-        boxShadow: isOpen ? "0 0 60px rgba(0,232,122,0.06)" : "none",
-        position: "relative",
+        borderColor: isOpen ? "rgba(0,232,122,0.25)" : "rgba(255,71,87,0.22)",
+        boxShadow: isOpen ? "0 0 56px rgba(0,232,122,0.08)" : "0 14px 40px rgba(0,0,0,0.28)",
       }}
     >
-      {/* Main hero area */}
-      <div
-        style={{
-          padding: "30px 28px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 20,
-          flexWrap: "wrap",
-          background: "var(--color-bg1)",
-          position: "relative",
-        }}
-      >
+      <div className="relative px-5 py-6 md:px-7 md:py-8 bg-bg1">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: isOpen
-              ? "linear-gradient(135deg, rgba(0,232,122,0.04) 0%, transparent 60%)"
-              : "linear-gradient(135deg, rgba(255,71,87,0.03) 0%, transparent 60%)",
+              ? "linear-gradient(130deg, rgba(0,232,122,0.08) 0%, transparent 62%)"
+              : "linear-gradient(130deg, rgba(255,71,87,0.08) 0%, transparent 62%)",
           }}
         />
 
-        {/* Left: icon + name */}
-        <div style={{ display: "flex", alignItems: "center", gap: 24, position: "relative", zIndex: 1 }}>
-          <div
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 16,
-              background: "var(--color-bg2)",
-              border: "1px solid var(--color-border2)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 36,
-              flexShrink: 0,
-            }}
-          >
-            {brand.emoji || "🏪"}
+        <div className="relative z-[1] flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+          <div className="flex items-start gap-4 md:gap-5 min-w-0">
+            <div className="w-16 h-16 md:w-[72px] md:h-[72px] rounded-2xl border border-border2 bg-bg2 flex items-center justify-center text-3xl md:text-4xl shrink-0">
+              {brand.emoji || "Store"}
+            </div>
+
+            <div className="min-w-0">
+              <h1 className="font-heading font-extrabold text-text text-[30px] leading-[1.02] tracking-[-0.04em] md:text-[38px]">
+                {brand.name}
+              </h1>
+              <div className="mt-2 text-sm text-muted2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span>{brand.category}</span>
+                {brand.is24h && (
+                  <>
+                    <span className="text-border2">|</span>
+                    <span className="text-muted">24/7 locations available</span>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
-          <div>
-            <h1
-              className="font-heading font-extrabold text-text"
-              style={{ fontSize: 32, letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: 4 }}
+
+          <div className="flex flex-col items-start md:items-end gap-2">
+            <div
+              className="font-heading font-extrabold inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 text-[18px] tracking-[0.03em]"
+              style={{
+                background: isOpen ? "rgba(0,232,122,0.12)" : "rgba(255,71,87,0.1)",
+                border: `2px solid ${isOpen ? "rgba(0,232,122,0.35)" : "rgba(255,71,87,0.3)"}`,
+                color: isOpen ? "var(--color-green)" : "var(--color-red)",
+              }}
             >
-              {brand.name}
-            </h1>
-            <div className="text-muted2 flex items-center" style={{ fontSize: 13, gap: 8 }}>
-              {brand.category}
-              {brand.is24h && (
+              <span
+                className={`w-2.5 h-2.5 rounded-full shrink-0 ${isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`}
+                style={isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : undefined}
+              />
+              {isOpen ? "OPEN NOW" : "CLOSED NOW"}
+            </div>
+
+            <div className="font-mono text-sm text-muted2 md:text-right">
+              {isOpen && status.closesIn && (
                 <>
-                  <span style={{ color: "var(--color-border2)" }}>&middot;</span>
-                  <span className="text-muted">24/7 locations available</span>
+                  Closes in <strong className="text-text text-[15px]">{status.closesIn}</strong>
+                </>
+              )}
+              {!isOpen && status.opensAt && (
+                <>
+                  Opens at <strong className="text-text text-[15px]">{status.opensAt}</strong>
                 </>
               )}
             </div>
           </div>
         </div>
-
-        {/* Right: status badge + countdown */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            gap: 12,
-            position: "relative",
-            zIndex: 1,
-            flexShrink: 0,
-          }}
-        >
-          <div
-            className="font-heading font-extrabold flex items-center"
-            style={{
-              gap: 10,
-              padding: "12px 24px",
-              borderRadius: 100,
-              fontSize: 20,
-              letterSpacing: "0.04em",
-              background: isOpen ? "rgba(0,232,122,0.12)" : "rgba(255,71,87,0.1)",
-              border: `2px solid ${isOpen ? "rgba(0,232,122,0.35)" : "rgba(255,71,87,0.3)"}`,
-              color: isOpen ? "var(--color-green)" : "var(--color-red)",
-            }}
-          >
-            <span
-              className={`rounded-full shrink-0 ${isOpen ? "bg-green animate-pulse-dot" : "bg-red"}`}
-              style={{
-                width: 10,
-                height: 10,
-                ...(isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : {}),
-              }}
-            />
-            {isOpen ? "OPEN" : "CLOSED"}
-          </div>
-          <div className="font-mono text-muted2" style={{ fontSize: 13, textAlign: "right" }}>
-            {isOpen && status.closesIn && (
-              <>
-                Closes in{" "}
-                <strong className="text-text" style={{ fontSize: 15 }}>{status.closesIn}</strong>
-              </>
-            )}
-            {!isOpen && status.opensAt && (
-              <>
-                Opens at{" "}
-                <strong className="text-text" style={{ fontSize: 15 }}>{status.opensAt}</strong>
-              </>
-            )}
-          </div>
-        </div>
       </div>
 
-      {/* Stats row */}
-      <div
-        className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-bg2"
-      >
-        <StatCell label="Today's Hours" value={status.todayHours || "—"} />
+      <div className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-bg2">
+        <StatCell label="Today's Hours" value={status.todayHours || "--"} />
         <StatCell label="Local Time" value={localTime} />
         <StatCell
-          label="Holiday Today?"
+          label="Holiday Today"
           value={status.holidayName || "No"}
           color={status.holidayName ? "var(--color-orange)" : "var(--color-green)"}
         />
-        <StatCell label="Updated" value="Feb 2026" muted />
+        <StatCell label="Updated" value="Live" muted />
       </div>
 
-      {/* Action buttons */}
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          padding: "14px 24px",
-          background: "var(--color-bg1)",
-          borderTop: "1px solid var(--color-border)",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="px-5 py-4 md:px-7 md:py-5 bg-bg1 border-t border-border flex flex-wrap gap-2.5">
         <a
           href={brand.website || canonicalPath}
           target={brand.website ? "_blank" : undefined}
           rel={brand.website ? "noopener noreferrer" : undefined}
-          className="no-underline"
-          style={{
-            background: "var(--color-green)",
-            color: "#000",
-            borderRadius: 8,
-            padding: "10px 20px",
-            fontWeight: 600,
-            fontSize: 14,
-            cursor: "pointer",
-          }}
+          className="no-underline rounded-lg px-4 py-2.5 text-sm font-semibold bg-green text-black hover:opacity-90 transition-opacity"
         >
           Official website
         </a>
+
         <a
           href="#user-reports"
-          className="no-underline text-muted2 hover:text-text transition-all"
-          style={{
-            background: "transparent",
-            border: "1px solid var(--color-border2)",
-            borderRadius: 8,
-            padding: "10px 20px",
-            fontWeight: 500,
-            fontSize: 14,
-            cursor: "pointer",
-          }}
+          className="no-underline rounded-lg px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
           Report hours issue
         </a>
+
         <button
           type="button"
           onClick={handleShare}
-          className="text-muted2 hover:text-text transition-all"
-          style={{
-            background: "transparent",
-            border: "1px solid var(--color-border2)",
-            borderRadius: 8,
-            padding: "10px 20px",
-            fontWeight: 500,
-            fontSize: 14,
-            cursor: "pointer",
-          }}
+          className="rounded-lg px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
-          {shareState === "done" ? "Link copied" : "Share"}
+          {shareState === "done" ? "Link copied" : "Share page"}
         </button>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -289,18 +204,12 @@ function StatCell({
 }) {
   return (
     <div className="px-4 py-4 md:px-6 md:py-[18px] border-r border-border last:border-r-0">
+      <div className="font-mono uppercase text-muted text-[10px] tracking-[0.12em] mb-1">{label}</div>
       <div
-        className="font-mono uppercase text-muted"
-        style={{ fontSize: 10, letterSpacing: "0.12em", marginBottom: 4 }}
-      >
-        {label}
-      </div>
-      <div
-        className="font-heading font-bold"
+        className="font-heading font-bold tracking-[-0.02em]"
         style={{
-          letterSpacing: "-0.02em",
           fontSize: muted ? 14 : 17,
-          color: muted ? "var(--color-muted2)" : (color || "var(--color-text)"),
+          color: muted ? "var(--color-muted2)" : color || "var(--color-text)",
         }}
       >
         {value}

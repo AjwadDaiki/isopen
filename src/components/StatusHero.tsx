@@ -15,6 +15,8 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
   const [localTime, setLocalTime] = useState(initialStatus.localTime);
   const [shareState, setShareState] = useState<"idle" | "done">("idle");
   const [geoPrecise, setGeoPrecise] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [nearest, setNearest] = useState<{ city: string | null; distanceKm: number } | null>(null);
 
   useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -22,12 +24,23 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
 
     async function refresh() {
       try {
-        const res = await fetch(
-          `/api/open-status?brand=${brand.slug}&timezone=${encodeURIComponent(tz)}`
-        );
+        const qs = new URLSearchParams({
+          brand: brand.slug,
+          timezone: tz,
+        });
+        if (coords) {
+          qs.set("lat", String(coords.lat));
+          qs.set("lng", String(coords.lng));
+        }
+        const res = await fetch(`/api/open-status?${qs.toString()}`);
         if (res.ok && !cancelled) {
           const data = await res.json();
           setStatus(data.status);
+          setNearest(
+            data.nearestLocation
+              ? { city: data.nearestLocation.city ?? null, distanceKm: data.nearestLocation.distanceKm }
+              : null
+          );
         }
       } catch {
         // Keep showing the last known status.
@@ -40,7 +53,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
       cancelled = true;
       clearInterval(id);
     };
-  }, [brand.slug]);
+  }, [brand.slug, coords]);
 
   useEffect(() => {
     function tick() {
@@ -64,9 +77,12 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
     void (navigator as Navigator & { permissions: Permissions }).permissions
       .query({ name: "geolocation" as PermissionName })
       .then((p) => {
-        if (p.state === "granted") {
+        if (p.state === "granted" || p.state === "prompt") {
           navigator.geolocation.getCurrentPosition(
-            () => setGeoPrecise(true),
+            (pos) => {
+              setGeoPrecise(true);
+              setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            },
             () => setGeoPrecise(false),
             { enableHighAccuracy: false, timeout: 3500 }
           );
@@ -180,6 +196,11 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <p className="relative z-[1] mt-1.5 text-[12px] text-muted2">
           {geoPrecise ? t(locale, "statusBasedOnLocation") : t(locale, "statusBasedOnTimezone")}
         </p>
+        {nearest && (
+          <p className="relative z-[1] mt-1 text-[12px] text-muted2">
+            {t(locale, "nearestBranch")}: {nearest.city || t(locale, "nearestUnknownCity")} ({nearest.distanceKm} km)
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-bg2">

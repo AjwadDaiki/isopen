@@ -140,7 +140,7 @@ export default function Navbar() {
             onClick={() => setShowMenu((v) => !v)}
             className="text-sm font-semibold text-text bg-bg2 border border-border2 rounded-xl px-3.5 py-2 cursor-pointer hover:border-border transition-colors"
           >
-            Brands menu
+            {t(locale, "brandsMenu")}
           </button>
 
           {showMenu && (
@@ -206,7 +206,7 @@ export default function Navbar() {
           >
             <input
               type="text"
-              placeholder="Search a brand..."
+              placeholder={t(locale, "searchPlaceholder")}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -231,7 +231,7 @@ export default function Navbar() {
                 fontSize: 13,
               }}
             >
-              Check
+              {t(locale, "checkCta")}
             </button>
           </div>
 
@@ -267,7 +267,7 @@ export default function Navbar() {
       </div>
 
       <Link href="/search" className="lg:hidden text-muted2 no-underline text-sm font-medium">
-        Search
+        {t(locale, "searchNav")}
       </Link>
 
       <div className="hidden md:flex items-center justify-end shrink-0">

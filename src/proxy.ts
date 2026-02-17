@@ -25,7 +25,7 @@ function detectPreferredLocale(request: NextRequest): Locale {
   return "en";
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   if (request.nextUrl.pathname === "/") {
     const preferred = detectPreferredLocale(request);
     if (preferred !== "en") {

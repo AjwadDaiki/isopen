@@ -146,7 +146,11 @@ module.exports = {
   sitemapSize: 5000,
   exclude: ["/api/*"],
   robotsTxtOptions: {
-    policies: [{ userAgent: "*", allow: "/" }],
+    policies: [
+      { userAgent: "*", allow: "/" },
+      { userAgent: "AdsBot-Google", allow: "/" },
+      { userAgent: "Mediapartners-Google", allow: "/" },
+    ],
   },
   transform: async (config, path) => {
     const isBrandPage = /^\/brand\/[^/]+$/.test(path) || /^\/(fr|es|de|pt|it|ja|ko|nl|pl|sv|ar|hi|zh|tr)\/brand\/[^/]+$/.test(path);

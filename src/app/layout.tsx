@@ -53,12 +53,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const adsClient =
+    process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "ca-pub-9657496359488658";
+
   return (
     <html lang="en">
       <head>
+        <meta name="google-adsense-account" content={adsClient} />
         <script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9657496359488658"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsClient}`}
           crossOrigin="anonymous"
         />
       </head>

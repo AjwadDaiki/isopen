@@ -1,30 +1,73 @@
-interface Props {
-  size: "728x90" | "300x250" | "300x600";
-  id?: string;
+"use client";
+
+import { useEffect } from "react";
+
+declare global {
+  interface Window {
+    adsbygoogle?: unknown[];
+  }
 }
 
-/**
- * Ad slot placeholder — invisible in dev, will be replaced by real AdSense
- * units in production. Just reserves the space with a minimal label.
- */
-export default function AdSlot({ size, id }: Props) {
-  const [w, h] = size.split("x").map(Number);
+interface Props {
+  slot?: string;
+  label?: string;
+  className?: string;
+  minHeight?: number;
+}
+
+const ADS_CLIENT =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "ca-pub-9657496359488658";
+
+export default function AdSlot({
+  slot,
+  label = "Sponsored",
+  className = "",
+  minHeight = 120,
+}: Props) {
+  useEffect(() => {
+    if (!slot) return;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch {
+      // Ignore failed ad push in preview/local builds.
+    }
+  }, [slot]);
+
+  if (!slot) {
+    return (
+      <section className={`ui-panel overflow-hidden ${className}`}>
+        <div className="px-4 py-2 border-b border-border bg-bg1/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+            {label}
+          </p>
+        </div>
+        <div
+          className="px-4 py-5 text-sm text-muted2 flex items-center justify-center"
+          style={{ minHeight }}
+        >
+          Ad space reserved
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <div
-      id={id}
-      className="my-4"
-      style={{ maxWidth: w, width: "100%" }}
-    >
-      {/* Will be replaced by AdSense auto-ads or manual units */}
-      <div
-        className="bg-bg2/50 rounded-lg flex items-center justify-center"
-        style={{ height: h, maxWidth: w }}
-      >
-        <span className="font-mono text-[9px] text-ink3/30 uppercase tracking-widest">
-          ad {size}
-        </span>
+    <section className={`ui-panel overflow-hidden ${className}`}>
+      <div className="px-4 py-2 border-b border-border bg-bg1/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+          {label}
+        </p>
       </div>
-    </div>
+      <div className="px-2 py-2" style={{ minHeight }}>
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block", minHeight }}
+          data-ad-client={ADS_CLIENT}
+          data-ad-slot={slot}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      </div>
+    </section>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import { brandsData } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import { generateWebsiteJsonLd, generateOrganizationJsonLd } from "@/lib/schema";
@@ -108,6 +109,10 @@ export default function Home() {
           </div>
         </div>
 
+        <div className="page-pad" style={{ paddingBottom: 20 }}>
+          <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_TOP} label="Sponsored" minHeight={140} />
+        </div>
+
         {/* Brand grid by category */}
         <div className="page-pad" style={{ paddingBottom: 48 }}>
           {categories.map((cat, i) => {
@@ -203,6 +208,10 @@ export default function Home() {
               </div>
             );
           })}
+
+          <div style={{ marginTop: 8, marginBottom: 40 }}>
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={180} />
+          </div>
 
           {/* SEO text block */}
           <div style={{ height: 1, background: "var(--color-border)", marginBottom: 48 }} />

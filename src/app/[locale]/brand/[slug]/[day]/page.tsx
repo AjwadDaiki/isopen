@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import HoursTable from "@/components/HoursTable";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { getBrandBySlug, getAllBrandSlugs } from "@/data/brands";
@@ -151,6 +152,10 @@ export default async function LocaleDayPage({ params }: PageProps) {
                   {isOpenOnDay ? t(loc, "yes") : t(loc, "no")} - {t(loc, "typicalHours", { day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never) })}: {hoursStr}
                 </p>
               )}
+            </div>
+
+            <div className="mb-6">
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={140} />
             </div>
 
             <h2 className="font-heading text-lg font-bold mb-3 text-text">{t(loc, "allWeekHours")}</h2>

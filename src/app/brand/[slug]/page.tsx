@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import StatusHero from "@/components/StatusHero";
 import HoursTable from "@/components/HoursTable";
 import HolidayAlert from "@/components/HolidayAlert";
@@ -122,6 +123,7 @@ export default async function BrandPage({ params }: PageProps) {
           <main className="min-w-0 flex flex-col gap-5">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={160} />
             <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
 

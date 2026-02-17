@@ -2,6 +2,13 @@
 User-agent: *
 Allow: /
 
+# Ads crawler
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
 # Host
 Host: https://isopenow.com
 

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import HoursTable from "@/components/HoursTable";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { getBrandBySlug, getAllBrandSlugs } from "@/data/brands";
@@ -134,6 +135,10 @@ export default async function DayPage({ params }: PageProps) {
               ) : (
                 <p className="text-lg text-text">{isOpenOnDay ? "Yes, typically open" : "No, usually closed"} - {hoursStr}</p>
               )}
+            </div>
+
+            <div className="mb-6">
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={140} />
             </div>
 
             <h2 className="font-heading text-lg font-bold mb-3 text-text">Full week hours</h2>

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import StatusHero from "@/components/StatusHero";
 import HoursTable from "@/components/HoursTable";
 import HolidayAlert from "@/components/HolidayAlert";
@@ -120,6 +121,7 @@ export default async function LocaleBrandPage({ params }: PageProps) {
           <div className="flex flex-col gap-4 min-w-0">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={160} />
             <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
           </div>

@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import { brandsData } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import { LOCALES, type Locale, t } from "@/lib/i18n/translations";
@@ -65,6 +66,10 @@ export default async function LocaleHomePage({ params }: PageProps) {
           </div>
         </div>
 
+        <div className="page-pad" style={{ paddingBottom: 20 }}>
+          <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_TOP} label="Sponsored" minHeight={140} />
+        </div>
+
         <div className="page-pad" style={{ paddingBottom: 56 }}>
           {categories.map((cat) => {
             const catSlug = cat.toLowerCase().replace(/\s+/g, "-");
@@ -102,6 +107,10 @@ export default async function LocaleHomePage({ params }: PageProps) {
               </div>
             );
           })}
+
+          <div style={{ marginTop: 8 }}>
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={180} />
+          </div>
         </div>
 
         <Footer />

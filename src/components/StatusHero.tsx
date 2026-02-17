@@ -90,11 +90,12 @@ export default function StatusHero({ brand, initialStatus }: Props) {
       {/* Main hero area */}
       <div
         style={{
-          padding: "32px 36px",
+          padding: "30px 28px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 32,
+          gap: 20,
+          flexWrap: "wrap",
           background: "var(--color-bg1)",
           position: "relative",
         }}
@@ -199,12 +200,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
 
       {/* Stats row */}
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          borderTop: "1px solid var(--color-border)",
-          background: "var(--color-bg2)",
-        }}
+        className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-bg2"
       >
         <StatCell label="Today's Hours" value={status.todayHours || "—"} />
         <StatCell label="Local Time" value={localTime} />
@@ -221,7 +217,7 @@ export default function StatusHero({ brand, initialStatus }: Props) {
         style={{
           display: "flex",
           gap: 10,
-          padding: "16px 36px",
+          padding: "14px 24px",
           background: "var(--color-bg1)",
           borderTop: "1px solid var(--color-border)",
           flexWrap: "wrap",
@@ -292,7 +288,7 @@ function StatCell({
   muted?: boolean;
 }) {
   return (
-    <div style={{ padding: "18px 24px", borderRight: "1px solid var(--color-border)" }}>
+    <div className="px-4 py-4 md:px-6 md:py-[18px] border-r border-border last:border-r-0">
       <div
         className="font-mono uppercase text-muted"
         style={{ fontSize: 10, letterSpacing: "0.12em", marginBottom: 4 }}

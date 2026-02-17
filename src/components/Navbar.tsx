@@ -60,11 +60,11 @@ export default function Navbar() {
     <nav
       className="sticky top-0 z-50 page-pad"
       style={{
-        height: 56,
+        height: 64,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: "rgba(12,12,15,0.85)",
+        background: "rgba(12,12,15,0.8)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         borderBottom: "1px solid var(--color-border)",
@@ -83,14 +83,14 @@ export default function Navbar() {
       </Link>
 
       {/* Search */}
-      <div className="hidden sm:block relative" ref={dropdownRef}>
+      <div className="hidden md:block relative" ref={dropdownRef}>
         <div
           className="search-wrap flex items-center overflow-hidden"
           style={{
-            width: 320,
-            background: "var(--color-bg2)",
+            width: 360,
+            background: "rgba(24,24,31,0.85)",
             border: "1px solid var(--color-border2)",
-            borderRadius: 10,
+            borderRadius: 12,
             transition: "border-color 0.2s, box-shadow 0.2s",
           }}
         >
@@ -116,7 +116,7 @@ export default function Navbar() {
             style={{
               background: "var(--color-green)",
               color: "#000",
-              padding: "10px 16px",
+              padding: "10px 18px",
               fontWeight: 600,
               fontSize: 13,
             }}
@@ -155,12 +155,12 @@ export default function Navbar() {
 
       <Link
         href="/search"
-        className="sm:hidden text-muted2 no-underline text-sm font-medium"
+        className="md:hidden text-muted2 no-underline text-sm font-medium"
       >
         Search
       </Link>
 
-      <div className="flex items-center shrink-0" style={{ gap: 24 }}>
+      <div className="hidden sm:flex items-center shrink-0" style={{ gap: 16 }}>
         <span className="font-mono text-muted2" style={{ fontSize: 13, letterSpacing: "0.05em" }}>
           {clock}
         </span>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { HoursData } from "@/lib/types";
 
@@ -23,7 +23,6 @@ function formatTime(t: string): string {
 export default function HoursTable({ hours }: Props) {
   const today = new Date().getDay();
 
-  // Sort: Mon(1)..Sat(6),Sun(0)
   const sorted = [...hours].sort((a, b) => {
     const oa = a.dayOfWeek === 0 ? 7 : a.dayOfWeek;
     const ob = b.dayOfWeek === 0 ? 7 : b.dayOfWeek;
@@ -31,14 +30,12 @@ export default function HoursTable({ hours }: Props) {
   });
 
   return (
-    <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+    <div className="ui-panel overflow-hidden">
       <div className="card-title-row">
         <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
-          <span>🕐</span> Opening hours
+          <span>Hours</span> Opening hours
         </h3>
-        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">
-          Updated Feb 2026
-        </span>
+        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">Updated Feb 2026</span>
       </div>
 
       <div className="py-2">
@@ -46,7 +43,6 @@ export default function HoursTable({ hours }: Props) {
           const isToday = day.dayOfWeek === today;
           const isClosed = day.isClosed || !day.openTime || !day.closeTime;
 
-          // Calculate bar position (proportional to 24h)
           let barLeft = 0;
           let barWidth = 0;
           if (!isClosed && day.openTime && day.closeTime) {
@@ -60,38 +56,30 @@ export default function HoursTable({ hours }: Props) {
           return (
             <div
               key={day.dayOfWeek}
-              className={`flex items-center py-2.5 px-6 gap-4 transition-colors ${
-                isToday
-                  ? "bg-green-dim border-l-[3px] border-l-green"
-                  : "hover:bg-bg2"
+              className={`flex items-center py-2.5 px-4 md:px-6 gap-3 md:gap-4 transition-colors ${
+                isToday ? "bg-green-dim border-l-[3px] border-l-green" : "hover:bg-bg2"
               }`}
             >
               <div
-                className={`text-[13px] w-[90px] shrink-0 ${
-                  isToday
-                    ? "text-green font-bold"
-                    : "text-muted2 font-medium"
+                className={`text-[12px] md:text-[13px] w-[74px] md:w-[90px] shrink-0 ${
+                  isToday ? "text-green font-bold" : "text-muted2 font-medium"
                 }`}
               >
                 {DAY_NAMES[day.dayOfWeek]}
-                {isToday && " ←"}
+                {isToday && " <-"}
               </div>
 
-              {/* Proportional bar */}
               <div className="flex-1 h-1 bg-bg3 rounded-sm relative overflow-hidden hidden sm:block">
                 {!isClosed && (
                   <div
-                    className={`absolute top-0 h-full rounded-sm ${
-                      isToday ? "bg-green opacity-50" : "bg-border2"
-                    }`}
+                    className={`absolute top-0 h-full rounded-sm ${isToday ? "bg-green opacity-50" : "bg-border2"}`}
                     style={{ left: `${barLeft}%`, width: `${barWidth}%` }}
                   />
                 )}
               </div>
 
-              {/* Time */}
               <div
-                className={`font-mono text-[13px] font-medium whitespace-nowrap text-right w-[140px] shrink-0 ${
+                className={`font-mono text-[11px] md:text-[13px] font-medium whitespace-nowrap text-right w-[112px] md:w-[150px] shrink-0 ${
                   isToday ? "text-green" : isClosed ? "text-red" : "text-text"
                 }`}
               >
@@ -99,11 +87,9 @@ export default function HoursTable({ hours }: Props) {
                   "Closed"
                 ) : (
                   <>
-                    {formatTime(day.openTime!)} – {formatTime(day.closeTime!)}
+                    {formatTime(day.openTime!)} - {formatTime(day.closeTime!)}
                     {day.spansMidnight && (
-                      <span className="ml-1.5 text-[11px] text-orange bg-orange-dim rounded px-1.5 py-px font-mono">
-                        +1
-                      </span>
+                      <span className="ml-1.5 text-[11px] text-orange bg-orange-dim rounded px-1.5 py-px font-mono">+1</span>
                     )}
                   </>
                 )}

@@ -5,8 +5,8 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border page-pad" style={{ paddingTop: 32, paddingBottom: 32 }}>
-      <div>
+    <footer className="border-t border-border page-pad" style={{ paddingTop: 40, paddingBottom: 36 }}>
+      <div className="ui-panel" style={{ padding: "24px 20px" }}>
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
           <Link href="/" className="font-heading font-extrabold text-lg text-green tracking-tight no-underline">
             isopenow

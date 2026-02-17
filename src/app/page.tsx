@@ -88,6 +88,23 @@ export default function Home() {
               Instantly check if any store, restaurant, or service is open.
               Real-time status, weekly hours, holiday schedules.
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" style={{ maxWidth: 620 }}>
+              {[
+                { label: "Live checks", value: "24/7" },
+                { label: "Tracked brands", value: String(brandsData.length) },
+                { label: "Locales", value: "15+" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="ui-panel"
+                  style={{ padding: "14px 16px", borderRadius: 12 }}
+                >
+                  <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted mb-1">{item.label}</div>
+                  <div className="font-heading text-xl font-bold text-text tracking-tight">{item.value}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

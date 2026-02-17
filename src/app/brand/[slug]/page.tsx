@@ -12,7 +12,9 @@ import RelatedBrands from "@/components/RelatedBrands";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import AffiliateUnit from "@/components/AffiliateUnit";
 import { getBrandBySlug, getRelatedBrands, getAllBrandSlugs } from "@/data/brands";
+import { getCitiesForBrand } from "@/data/cities";
 import { computeOpenStatus } from "@/lib/isOpenNow";
+import { buildBrandEditorial } from "@/lib/seo-editorial";
 import {
   generateJsonLd,
   generateFaqJsonLd,
@@ -87,6 +89,8 @@ export default async function BrandPage({ params }: PageProps) {
   const faqJsonLd = generateFaqJsonLd(brand, hours, status, "en");
   const websiteJsonLd = generateWebsiteJsonLd();
   const orgJsonLd = generateOrganizationJsonLd();
+  const cityLinks = getCitiesForBrand(slug, 8);
+  const editorial = buildBrandEditorial(brand, hours, status);
   const categorySlug = brand.category?.toLowerCase().replace(/\s+/g, "-") || "";
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", item: absoluteUrl("/") },
@@ -165,6 +169,49 @@ export default async function BrandPage({ params }: PageProps) {
                       </Link>
                     ))}
                   </div>
+                </div>
+              </section>
+
+              {cityLinks.length > 0 && (
+                <section className="ui-panel overflow-hidden">
+                  <div className="card-title-row">
+                    <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Top city pages for {brand.name}</h3>
+                  </div>
+                  <div className="panel-body flex flex-wrap gap-2.5">
+                    {cityLinks.map((city) => (
+                      <Link
+                        key={city.slug}
+                        href={`/city/${city.slug}`}
+                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                      >
+                        {city.name}, {city.state}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              <section className="ui-panel overflow-hidden">
+                <div className="card-title-row">
+                  <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">{editorial.kicker}</h3>
+                </div>
+                <div className="panel-body flex flex-col gap-4">
+                  <p className="text-[14px] text-muted2 leading-relaxed">{editorial.intro}</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {editorial.bullets.map((line) => (
+                      <div key={line} className="rounded-xl border border-border bg-bg2/55 px-3.5 py-3 text-[12px] text-muted2">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+
+                  {editorial.sections.map((section) => (
+                    <article key={section.title}>
+                      <h4 className="font-heading font-bold text-[14px] text-text mb-1.5">{section.title}</h4>
+                      <p className="text-[13px] text-muted2 leading-relaxed">{section.body}</p>
+                    </article>
+                  ))}
                 </div>
               </section>
 

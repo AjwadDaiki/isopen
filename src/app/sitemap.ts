@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { brandsData } from "@/data/brands";
+import { cityData } from "@/data/cities";
 import { LOCALES } from "@/lib/i18n/translations";
 import { buildBrandUrl, buildDayUrl, CANONICAL_DAYS } from "@/lib/i18n/url-patterns";
 
@@ -44,6 +45,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   urls.push(item("/contact", "monthly", 0.5));
   urls.push(item("/privacy", "yearly", 0.3));
   urls.push(item("/terms", "yearly", 0.3));
+  urls.push(item("/city", "daily", 0.8));
+  urls.push(...cityData.map((city) => item(`/city/${city.slug}`, "daily", 0.75)));
 
   for (const locale of LOCALES) {
     if (locale !== "en") {

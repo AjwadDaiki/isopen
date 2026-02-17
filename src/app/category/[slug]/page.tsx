@@ -6,7 +6,9 @@ import Footer from "@/components/Footer";
 import AdSlot from "@/components/AdSlot";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { brandsData } from "@/data/brands";
+import { getCitiesForCategory } from "@/data/cities";
 import { computeOpenStatus } from "@/lib/isOpenNow";
+import { buildCategoryEditorial } from "@/lib/seo-editorial";
 import { generateBreadcrumbJsonLd } from "@/lib/schema";
 
 export const revalidate = 300;
@@ -60,6 +62,8 @@ export default async function CategoryPage({ params }: PageProps) {
   if (!category) notFound();
 
   const categoryBrands = brandsData.filter((b) => b.brand.category === category);
+  const categoryCities = getCitiesForCategory(category, 8);
+  const editorial = buildCategoryEditorial(category, categoryBrands.map((entry) => entry.brand));
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", item: "https://isopenow.com/" },
     { name: category, item: `https://isopenow.com/category/${slug}` },
@@ -138,6 +142,49 @@ export default async function CategoryPage({ params }: PageProps) {
               {categoryBrands.length === 0 && (
                 <p className="text-muted text-center py-12">No brands found in this category yet.</p>
               )}
+
+              {categoryCities.length > 0 && (
+                <section className="ui-panel overflow-hidden">
+                  <div className="card-title-row">
+                    <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Top city pages for {category}</h2>
+                  </div>
+                  <div className="panel-body flex flex-wrap gap-2.5">
+                    {categoryCities.map((city) => (
+                      <Link
+                        key={city.slug}
+                        href={`/city/${city.slug}`}
+                        className="text-[12px] font-medium px-3.5 py-2 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                      >
+                        {city.name}, {city.state}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              <section className="ui-panel overflow-hidden">
+                <div className="card-title-row">
+                  <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">{editorial.kicker}</h2>
+                </div>
+                <div className="panel-body flex flex-col gap-4">
+                  <p className="text-[14px] text-muted2 leading-relaxed">{editorial.intro}</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {editorial.bullets.map((line) => (
+                      <div key={line} className="rounded-xl border border-border bg-bg2/55 px-3.5 py-3 text-[12px] text-muted2">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+
+                  {editorial.sections.map((section) => (
+                    <article key={section.title}>
+                      <h3 className="font-heading font-bold text-[14px] text-text mb-1.5">{section.title}</h3>
+                      <p className="text-[13px] text-muted2 leading-relaxed">{section.body}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
 
               <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={92} />
             </main>

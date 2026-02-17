@@ -103,6 +103,7 @@ const en = {
   topBrands: "Top brands",
   byCategory: "By category",
   brandsMenu: "Brands menu",
+  cityNav: "Cities",
   searchPlaceholder: "Search a brand...",
   checkCta: "Check",
   searchNav: "Search",

@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdSlot from "@/components/AdSlot";
 import { brandsData } from "@/data/brands";
+import { cityData } from "@/data/cities";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import { generateWebsiteJsonLd, generateOrganizationJsonLd } from "@/lib/schema";
 
@@ -24,6 +25,7 @@ export default function Home() {
 
   const categories = [...new Set(brandsData.map((b) => b.brand.category).filter(Boolean))] as string[];
   const featured = brandsData.slice(0, 15);
+  const featuredCities = cityData.slice(0, 8);
 
   return (
     <>
@@ -129,6 +131,37 @@ export default function Home() {
                 </Link>
               );
             })}
+          </div>
+        </section>
+
+        <section className="page-pad" style={{ paddingBottom: 54 }}>
+          <div className="flex items-baseline justify-between mb-6">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">Open now by city</h2>
+            <Link href="/city" className="text-[13px] text-muted2 no-underline hover:text-text transition-colors">
+              Browse cities &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {featuredCities.map((city) => (
+              <Link
+                key={city.slug}
+                href={`/city/${city.slug}`}
+                className="brand-card-link brand-card-premium no-underline p-5"
+              >
+                <p className="text-[15px] font-heading font-bold text-text tracking-[-0.01em]">
+                  {city.name}, {city.state}
+                </p>
+                <p className="text-[11px] text-muted2 mt-1">{city.timezone}</p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {city.focusCategories.slice(0, 2).map((cat) => (
+                    <span key={cat} className="text-[10px] uppercase tracking-[0.08em] text-muted border border-border rounded-full px-2 py-[3px]">
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
 

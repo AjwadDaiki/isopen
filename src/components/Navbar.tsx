@@ -180,6 +180,10 @@ export default function Navbar() {
           )}
         </div>
 
+        <Link href="/city" className="nav-chip no-underline shrink-0">
+          {t(locale, "cityNav")}
+        </Link>
+
         <div className="relative min-w-0 flex-1" ref={dropdownRef}>
           <div className="search-wrap nav-search flex items-center overflow-hidden">
             <input
@@ -223,9 +227,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      <Link href="/search" className="lg:hidden text-muted2 no-underline text-sm font-medium hover:text-text transition-colors">
-        {t(locale, "searchNav")}
-      </Link>
+      <div className="lg:hidden flex items-center gap-3">
+        <Link href="/city" className="text-muted2 no-underline text-sm font-medium hover:text-text transition-colors">
+          {t(locale, "cityNav")}
+        </Link>
+        <Link href="/search" className="text-muted2 no-underline text-sm font-medium hover:text-text transition-colors">
+          {t(locale, "searchNav")}
+        </Link>
+      </div>
 
       <div className="hidden md:flex items-center justify-end shrink-0">
         <span className="font-mono text-muted2 text-[13px] tracking-[0.05em]">{clock}</span>

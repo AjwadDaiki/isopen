@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Script from "next/script";
 import { Syne, DM_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
@@ -24,7 +24,7 @@ const dmMono = DM_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "IsItOpen — Check if any store is open right now",
+    default: "IsItOpen - Check if any store is open right now",
     template: "%s | IsItOpen",
   },
   description:
@@ -34,12 +34,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "IsItOpen",
-    title: "IsItOpen — Check if any store is open right now",
+    title: "IsItOpen - Check if any store is open right now",
     description: "Real-time opening hours for any store, restaurant, or service.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "IsItOpen — Check if any store is open right now",
+    title: "IsItOpen - Check if any store is open right now",
     description: "Real-time opening hours for any store, restaurant, or service.",
   },
   robots: {

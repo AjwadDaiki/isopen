@@ -1,4 +1,9 @@
+# *
 User-agent: *
 Allow: /
 
+# Host
+Host: https://isopenow.com
+
+# Sitemaps
 Sitemap: https://isopenow.com/sitemap.xml

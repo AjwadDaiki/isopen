@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+﻿import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -12,7 +12,16 @@ import RelatedBrands from "@/components/RelatedBrands";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { getBrandBySlug, getRelatedBrands, getAllBrandSlugs } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
-import { generateJsonLd, generateFaqJsonLd } from "@/lib/schema";
+import {
+  generateJsonLd,
+  generateFaqJsonLd,
+  generateWebsiteJsonLd,
+  generateOrganizationJsonLd,
+  generateBreadcrumbJsonLd,
+} from "@/lib/schema";
+import { LOCALES, type Locale } from "@/lib/i18n/translations";
+import { buildBrandUrl } from "@/lib/i18n/url-patterns";
+import { buildLocaleAlternates, absoluteUrl } from "@/lib/i18n/alternates";
 
 export const revalidate = 300;
 
@@ -32,22 +41,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { brand } = data;
   const year = new Date().getFullYear();
 
+  const alternates = buildLocaleAlternates(
+    Object.fromEntries(LOCALES.map((l) => [l, buildBrandUrl(l, slug)])) as Record<Locale, string>
+  );
+
   return {
     title: `Is ${brand.name} Open Right Now? [${year} Hours]`,
     description: `Check if ${brand.name} is open right now. Real-time status, today's hours, holiday schedule and closing time countdown.`,
     alternates: {
-      canonical: `https://isopenow.com/is-${slug}-open`,
-      languages: {
-        en: `/is-${slug}-open`,
-        fr: `/fr/is-${slug}-open`,
-        es: `/es/is-${slug}-open`,
-      },
+      canonical: absoluteUrl(buildBrandUrl("en", slug)),
+      languages: alternates,
     },
     openGraph: {
       title: `Is ${brand.name} Open Right Now?`,
       description: `Real-time ${brand.name} opening hours, holiday schedule, and closing time countdown.`,
       type: "website",
-      url: `https://isopenow.com/is-${slug}-open`,
+      url: absoluteUrl(buildBrandUrl("en", slug)),
     },
   };
 }
@@ -61,16 +70,22 @@ export default async function BrandPage({ params }: PageProps) {
   const ssrTz = "America/New_York";
   const status = computeOpenStatus(hours, ssrTz, brand.is24h);
   const related = getRelatedBrands(slug, brand.category, 6);
-  const currentUrl = `https://isopenow.com/is-${slug}-open`;
+  const currentUrl = absoluteUrl(buildBrandUrl("en", slug));
   const jsonLd = generateJsonLd(brand, hours, currentUrl);
-  const faqJsonLd = generateFaqJsonLd(brand, hours, status);
+  const faqJsonLd = generateFaqJsonLd(brand, hours, status, "en");
+  const websiteJsonLd = generateWebsiteJsonLd();
+  const orgJsonLd = generateOrganizationJsonLd();
   const categorySlug = brand.category?.toLowerCase().replace(/\s+/g, "-") || "";
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", item: absoluteUrl("/") },
+    { name: brand.category || "Category", item: absoluteUrl(`/category/${categorySlug}`) },
+    { name: brand.name, item: currentUrl },
+  ]);
 
   return (
     <>
       <Navbar />
       <div className="min-h-screen">
-        {/* Breadcrumb */}
         <nav className="page-pad flex items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
           <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
           <span className="text-muted">/</span>
@@ -81,29 +96,28 @@ export default async function BrandPage({ params }: PageProps) {
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-        {/* Hero - full width */}
         <div className="page-pad" style={{ paddingTop: 24, paddingBottom: 0 }}>
           <StatusHero brand={brand} initialStatus={status} />
         </div>
 
-        {/* Body grid */}
         <div
           className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]"
           style={{ gap: 24, paddingTop: 24, paddingBottom: 48 }}
         >
-          {/* Left column */}
           <div className="flex flex-col gap-4 min-w-0">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
             <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
 
-            {/* By day tabs */}
             <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
               <div className="card-title-row">
                 <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
-                  <span>📅</span> {brand.name} hours by day
+                  <span>Days</span> {brand.name} hours
                 </h3>
               </div>
               <div className="flex flex-wrap gap-1.5 p-4">
@@ -128,62 +142,23 @@ export default async function BrandPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* FAQ */}
             <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
               <div className="card-title-row">
-                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
-                  <span>❓</span> Frequently asked questions
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">
+                  Frequently asked questions
                 </h3>
               </div>
               <div>
-                <FaqItem
-                  q={`Is ${brand.name} open right now?`}
-                  a={status.isOpen
-                    ? `Yes, ${brand.name} is currently open${status.todayHours ? `. Today's hours are ${status.todayHours}` : ""}.${status.closesIn ? ` It closes in ${status.closesIn}.` : ""}`
-                    : `No, ${brand.name} is currently closed.${status.opensAt ? ` It opens at ${status.opensAt}.` : ""}`}
-                />
-                <FaqItem
-                  q={`What are ${brand.name} hours today?`}
-                  a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`}
-                />
-                <FaqItem
-                  q={`Is ${brand.name} open on Sunday?`}
-                  a={(() => {
-                    const sun = hours.find(h => h.dayOfWeek === 0);
-                    if (!sun || sun.isClosed) return `${brand.name} is typically closed on Sundays.`;
-                    return `Yes, ${brand.name} is typically open on Sundays from ${sun.openTime} to ${sun.closeTime}.`;
-                  })()}
-                />
+                <FaqItem q={`Is ${brand.name} open right now?`} a={status.isOpen ? `Yes, ${brand.name} is currently open.` : `No, ${brand.name} is currently closed.`} />
+                <FaqItem q={`What are ${brand.name} hours today?`} a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`} />
+                <FaqItem q={`What time does ${brand.name} close today?`} a={status.closesIn ? `${brand.name} closes in ${status.closesIn}.` : `${brand.name} opens at ${status.opensAt || "unknown"}.`} />
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
           <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px]">
             <TrendingSidebar />
             <RelatedBrands brands={related} />
-
-            {/* Official website link */}
-            {brand.website && (
-              <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
-                <div className="p-5">
-                  <a
-                    href={brand.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 no-underline text-text"
-                  >
-                    <span className="text-xl">🌐</span>
-                    <div>
-                      <div className="text-xs text-muted2 mb-0.5">Official website</div>
-                      <div className="font-heading font-bold text-[13px]">
-                        {brand.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} &rarr;
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            )}
           </aside>
         </div>
       </div>

@@ -1,27 +1,42 @@
-import type { NextConfig } from "next";
+﻿import type { NextConfig } from "next";
+import {
+  CANONICAL_DAYS,
+  DAY_SLUGS,
+  getLocaleBrandTemplate,
+  getLocaleDayConnector,
+} from "./src/lib/i18n/url-patterns";
+import { LOCALES } from "./src/lib/i18n/translations";
 
-const DAYS = [
-  "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-  "christmas", "thanksgiving", "new-years", "easter",
-];
+const NON_EN_LOCALES = LOCALES.filter((locale) => locale !== "en");
 
 const nextConfig: NextConfig = {
   async rewrites() {
-    // Build temporal rewrites for each day
-    const temporalRewrites = DAYS.map((day) => ({
-      source: `/is-:slug-open-on-${day}`,
+    const englishDayRewrites = CANONICAL_DAYS.map((day) => ({
+      source: `/is-:slug-open-on-${DAY_SLUGS.en[day]}`,
       destination: `/brand/:slug/${day}`,
     }));
 
+    const localizedBrandRewrites = NON_EN_LOCALES.map((locale) => {
+      const template = getLocaleBrandTemplate(locale).replace("{slug}", ":slug");
+      return {
+        source: `/${locale}/${template}`,
+        destination: `/${locale}/brand/:slug`,
+      };
+    });
+
+    const localizedDayRewrites = NON_EN_LOCALES.flatMap((locale) => {
+      const template = getLocaleBrandTemplate(locale).replace("{slug}", ":slug");
+      const connector = getLocaleDayConnector(locale);
+      return CANONICAL_DAYS.map((day) => ({
+        source: `/${locale}/${template}-${connector}-${DAY_SLUGS[locale][day]}`,
+        destination: `/${locale}/brand/:slug/${day}`,
+      }));
+    });
+
     return [
-      // Temporal pages first (more specific)
-      ...temporalRewrites,
-      // i18n brand pages: /fr/is-mcdonalds-open → /fr/brand/mcdonalds
-      {
-        source: "/:locale(fr|es)/is-:slug-open",
-        destination: "/:locale/brand/:slug",
-      },
-      // Main brand pages: /is-mcdonalds-open → /brand/mcdonalds
+      ...englishDayRewrites,
+      ...localizedDayRewrites,
+      ...localizedBrandRewrites,
       {
         source: "/is-:slug-open",
         destination: "/brand/:slug",
@@ -32,9 +47,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/:path*",
-        headers: [
-          { key: "X-DNS-Prefetch-Control", value: "on" },
-        ],
+        headers: [{ key: "X-DNS-Prefetch-Control", value: "on" }],
       },
     ];
   },

@@ -1,4 +1,5 @@
-import Link from "next/link";
+﻿import Link from "next/link";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -16,6 +17,11 @@ export default function Footer() {
             <Link href="/terms" className="no-underline text-muted hover:text-text transition-colors">Terms</Link>
           </div>
         </div>
+
+        <div className="mb-4">
+          <LanguageSwitcher />
+        </div>
+
         <div className="text-center font-mono text-[11px] text-muted/60">
           Real-time opening hours for any store &middot; {year}
         </div>

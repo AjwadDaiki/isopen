@@ -14,62 +14,73 @@ import {
   generateBreadcrumbJsonLd,
 } from "@/lib/schema";
 import { computeOpenStatus } from "@/lib/isOpenNow";
-import { LOCALES, type Locale } from "@/lib/i18n/translations";
-import { CANONICAL_DAYS, type CanonicalDay, buildDayUrl, buildBrandUrl } from "@/lib/i18n/url-patterns";
+import { t, getNonEnglishLocales, LOCALES, type Locale } from "@/lib/i18n/translations";
+import { CANONICAL_DAYS, type CanonicalDay, buildBrandUrl, buildDayUrl } from "@/lib/i18n/url-patterns";
 import { buildLocaleAlternates, absoluteUrl } from "@/lib/i18n/alternates";
 
 export const revalidate = 300;
-
-const DAY_LABELS: Record<CanonicalDay, string> = {
-  sunday: "Sunday",
-  monday: "Monday",
-  tuesday: "Tuesday",
-  wednesday: "Wednesday",
-  thursday: "Thursday",
-  friday: "Friday",
-  saturday: "Saturday",
-  christmas: "Christmas",
-  thanksgiving: "Thanksgiving",
-  "new-years": "New Year's Day",
-  easter: "Easter",
-};
+export const dynamicParams = true;
 
 interface PageProps {
-  params: Promise<{ slug: string; day: string }>;
+  params: Promise<{ locale: string; slug: string; day: string }>;
 }
 
+const DAY_NAME_BY_KEY: Record<CanonicalDay, "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "holiday"> = {
+  sunday: "sunday",
+  monday: "monday",
+  tuesday: "tuesday",
+  wednesday: "wednesday",
+  thursday: "thursday",
+  friday: "friday",
+  saturday: "saturday",
+  christmas: "holiday",
+  thanksgiving: "holiday",
+  "new-years": "holiday",
+  easter: "holiday",
+};
+
 export async function generateStaticParams() {
-  const slugs = getAllBrandSlugs();
-  return slugs.flatMap((slug) => CANONICAL_DAYS.map((day) => ({ slug, day })));
+  const topTen = getAllBrandSlugs().slice(0, 10);
+  return getNonEnglishLocales().flatMap((locale) =>
+    topTen.flatMap((slug) => CANONICAL_DAYS.map((day) => ({ locale, slug, day })))
+  );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug, day } = await params;
+  const { locale, slug, day } = await params;
   const data = getBrandBySlug(slug);
   if (!data || !CANONICAL_DAYS.includes(day as CanonicalDay)) return { title: "Not Found" };
 
+  const loc = locale as Locale;
   const canonicalDay = day as CanonicalDay;
-  const year = new Date().getFullYear();
+  const year = String(new Date().getFullYear());
 
   const alternates = buildLocaleAlternates(
     Object.fromEntries(LOCALES.map((l) => [l, buildDayUrl(l, slug, canonicalDay)])) as Record<Locale, string>
   );
 
   return {
-    title: `Is ${data.brand.name} Open on ${DAY_LABELS[canonicalDay]}? [${year} Hours]`,
-    description: `Check ${data.brand.name} hours on ${DAY_LABELS[canonicalDay]}. Opening time, closing time, and whether it's typically open.`,
+    title: `${t(loc, "onDay", { brand: data.brand.name, day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never) })} [${year}]`,
+    description: t(loc, "onDayDesc", {
+      brand: data.brand.name,
+      day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never),
+    }),
     alternates: {
-      canonical: absoluteUrl(buildDayUrl("en", slug, canonicalDay)),
+      canonical: absoluteUrl(buildDayUrl(loc, slug, canonicalDay)),
       languages: alternates,
     },
   };
 }
 
-export default async function DayPage({ params }: PageProps) {
-  const { slug, day } = await params;
+export default async function LocaleDayPage({ params }: PageProps) {
+  const { locale, slug, day } = await params;
+  const loc = locale as Locale;
   const canonicalDay = day as CanonicalDay;
+
+  if (!LOCALES.includes(loc) || loc === "en" || !CANONICAL_DAYS.includes(canonicalDay)) notFound();
+
   const data = getBrandBySlug(slug);
-  if (!data || !CANONICAL_DAYS.includes(canonicalDay)) notFound();
+  if (!data) notFound();
 
   const { brand, hours } = data;
   const dayIndexMap: Record<CanonicalDay, number> = {
@@ -87,21 +98,23 @@ export default async function DayPage({ params }: PageProps) {
   };
 
   const dayIndex = dayIndexMap[canonicalDay];
-  const dayHours = dayIndex >= 0 ? hours.find((h) => h.dayOfWeek === dayIndex) : null;
   const isHoliday = dayIndex < 0;
+  const dayHours = dayIndex >= 0 ? hours.find((h) => h.dayOfWeek === dayIndex) : null;
   const isOpenOnDay = dayHours ? !dayHours.isClosed && !!dayHours.openTime : false;
-  const hoursStr = dayHours?.openTime && dayHours?.closeTime ? `${dayHours.openTime} - ${dayHours.closeTime}` : "Closed";
+  const hoursStr = dayHours?.openTime && dayHours?.closeTime ? `${dayHours.openTime} - ${dayHours.closeTime}` : t(loc, "closedToday");
 
-  const currentUrl = absoluteUrl(buildDayUrl("en", slug, canonicalDay));
+  const canonicalPath = buildDayUrl(loc, slug, canonicalDay);
+  const currentUrl = absoluteUrl(canonicalPath);
   const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
+
   const jsonLd = generateJsonLd(brand, hours, currentUrl);
-  const faqJsonLd = generateFaqJsonLd(brand, hours, status, "en");
+  const faqJsonLd = generateFaqJsonLd(brand, hours, status, loc);
   const websiteJsonLd = generateWebsiteJsonLd();
   const orgJsonLd = generateOrganizationJsonLd();
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    { name: "Home", item: absoluteUrl("/") },
-    { name: brand.name, item: absoluteUrl(buildBrandUrl("en", slug)) },
-    { name: DAY_LABELS[canonicalDay], item: currentUrl },
+    { name: t(loc, "home"), item: absoluteUrl(`/${loc}`) },
+    { name: brand.name, item: absoluteUrl(buildBrandUrl(loc, slug)) },
+    { name: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never), item: currentUrl },
   ]);
 
   return (
@@ -111,11 +124,11 @@ export default async function DayPage({ params }: PageProps) {
         <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start" style={{ paddingTop: 32, paddingBottom: 64 }}>
           <main className="min-w-0">
             <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
-              <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
+              <Link href={`/${loc}`} className="text-muted2 no-underline hover:text-text transition-colors">{t(loc, "home")}</Link>
               <span className="text-muted">/</span>
-              <Link href={buildBrandUrl("en", slug)} className="text-muted2 no-underline hover:text-text transition-colors">{brand.name}</Link>
+              <Link href={buildBrandUrl(loc, slug)} className="text-muted2 no-underline hover:text-text transition-colors">{brand.name}</Link>
               <span className="text-muted">/</span>
-              <span className="text-text">{DAY_LABELS[canonicalDay]}</span>
+              <span className="text-text">{t(loc, DAY_NAME_BY_KEY[canonicalDay] as never)}</span>
             </nav>
 
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -125,19 +138,27 @@ export default async function DayPage({ params }: PageProps) {
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
             <h1 className="font-heading text-2xl sm:text-4xl font-extrabold tracking-tight mb-4 text-text">
-              Is {brand.name} Open on {DAY_LABELS[canonicalDay]}?
+              {t(loc, "onDay", { brand: brand.name, day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never) })}
             </h1>
 
             <div className={`rounded-[20px] p-6 sm:p-8 mb-6 border ${isHoliday ? "border-orange/30" : isOpenOnDay ? "border-green/25" : "border-red/20"}`}>
               {isHoliday ? (
-                <p className="text-sm text-muted2">{DAY_LABELS[canonicalDay]} - Hours may vary by location.</p>
+                <p className="text-sm text-muted2">
+                  {t(loc, "holiday")}: {t(loc, "onDayDesc", { brand: brand.name, day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never) })}
+                </p>
               ) : (
-                <p className="text-lg text-text">{isOpenOnDay ? "Yes, typically open" : "No, usually closed"} - {hoursStr}</p>
+                <p className="text-lg text-text">
+                  {isOpenOnDay ? t(loc, "yes") : t(loc, "no")} - {t(loc, "typicalHours", { day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never) })}: {hoursStr}
+                </p>
               )}
             </div>
 
-            <h2 className="font-heading text-lg font-bold mb-3 text-text">Full week hours</h2>
+            <h2 className="font-heading text-lg font-bold mb-3 text-text">{t(loc, "allWeekHours")}</h2>
             <HoursTable hours={hours} />
+
+            <Link href={buildBrandUrl(loc, slug)} className="inline-flex items-center gap-2 text-sm font-semibold text-green no-underline hover:underline mt-4">
+              {t(loc, "backHome")}
+            </Link>
           </main>
 
           <aside className="hidden lg:block sticky top-[72px]">

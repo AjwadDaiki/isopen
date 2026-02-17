@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { brandsData } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
+import { generateWebsiteJsonLd, generateOrganizationJsonLd } from "@/lib/schema";
 
 export const revalidate = 300;
 
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
+  const websiteJsonLd = generateWebsiteJsonLd();
+  const orgJsonLd = generateOrganizationJsonLd();
   const categories = [
     ...new Set(brandsData.map((b) => b.brand.category).filter(Boolean)),
   ] as string[];
@@ -25,6 +28,14 @@ export default function Home() {
     <>
       <Navbar />
       <div className="min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
         {/* Hero */}
         <div className="relative overflow-hidden page-pad" style={{ paddingTop: 72, paddingBottom: 56 }}>
           {/* Green gradient glow */}

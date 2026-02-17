@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { brandsData } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
+import { generateBreadcrumbJsonLd } from "@/lib/schema";
 
 export const revalidate = 300;
 
@@ -67,11 +68,19 @@ export default async function CategoryPage({ params }: PageProps) {
   if (!category) notFound();
 
   const categoryBrands = brandsData.filter((b) => b.brand.category === category);
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", item: "https://isopenow.com/" },
+    { name: category, item: `https://isopenow.com/category/${slug}` },
+  ]);
 
   return (
     <>
       <Navbar />
       <div className="min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
         <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start" style={{ paddingTop: 32, paddingBottom: 64 }}>
           <main className="min-w-0">
             <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">

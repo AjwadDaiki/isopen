@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import type { HoursData } from "@/lib/types";
 
 interface Props {
@@ -22,11 +21,7 @@ function formatTime(t: string): string {
 }
 
 export default function HoursTable({ hours }: Props) {
-  const [today, setToday] = useState(-1);
-
-  useEffect(() => {
-    setToday(new Date().getDay());
-  }, []);
+  const today = new Date().getDay();
 
   // Sort: Mon(1)..Sat(6),Sun(0)
   const sorted = [...hours].sort((a, b) => {

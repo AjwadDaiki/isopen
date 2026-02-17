@@ -9,74 +9,112 @@ interface Props {
 }
 
 export default function StatusHero({ brand, initialStatus }: Props) {
-  const [status] = useState(initialStatus);
+  const [status, setStatus] = useState(initialStatus);
+
+  // Poll every 30s for real-time updates with user's actual timezone
+  useEffect(() => {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let cancelled = false;
+
+    async function refresh() {
+      try {
+        const res = await fetch(
+          `/api/open-status?brand=${brand.slug}&timezone=${encodeURIComponent(tz)}`
+        );
+        if (res.ok && !cancelled) {
+          const data = await res.json();
+          setStatus(data.status);
+        }
+      } catch {
+        // Silent — keep showing last known status
+      }
+    }
+
+    // Refresh immediately with user's real timezone, then every 30s
+    refresh();
+    const id = setInterval(refresh, 30_000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [brand.slug]);
 
   const isOpen = status.isOpen;
-  const borderColor = isOpen ? "border-green" : "border-red";
-  const bgColor = isOpen ? "bg-green-bg" : "bg-red-bg";
-  const statusTextColor = isOpen ? "text-green" : "text-red";
 
   return (
     <div
-      className={`rounded-2xl p-6 sm:p-9 mb-6 relative overflow-hidden border-2 ${borderColor} ${bgColor}`}
+      className={`rounded-2xl p-8 sm:p-10 mb-6 relative overflow-hidden border-2 transition-colors ${
+        isOpen ? "border-green bg-green-bg" : "border-red bg-red-bg"
+      }`}
     >
       {/* Decorative circle */}
-      <div className="absolute -top-15 -right-15 w-[200px] h-[200px] rounded-full opacity-[0.04] bg-current" />
+      <div
+        className={`absolute -top-[60px] -right-[60px] w-[200px] h-[200px] rounded-full opacity-[0.04] ${
+          isOpen ? "bg-green" : "bg-red"
+        }`}
+      />
 
-      {/* Header */}
-      <div className="flex items-start justify-between mb-5 flex-wrap gap-4">
+      {/* Header: brand info + status */}
+      <div className="flex items-start justify-between mb-5 flex-wrap gap-4 relative z-10">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center text-[28px] shadow-md shrink-0">
+          <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center text-[28px] shadow-[0_2px_16px_rgba(26,22,18,0.08)] shrink-0">
             {brand.emoji || "🏪"}
           </div>
           <div>
-            <h1 className="text-2xl sm:text-[28px] font-extrabold tracking-tight leading-tight">
+            <h1 className="text-[28px] font-extrabold tracking-[-0.03em] leading-[1.1]">
               {brand.name}
             </h1>
-            <p className="text-[13px] text-ink3">
+            <p className="text-[13px] text-ink3 mt-0.5">
               {brand.category}
               {brand.is24h && " · 24/7 locations available"}
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex items-center gap-3">
           <div
             className={`w-2.5 h-2.5 rounded-full ${
               isOpen ? "bg-green animate-breathe" : "bg-red"
             }`}
           />
           <div
-            className={`font-extrabold text-3xl sm:text-[42px] tracking-tighter leading-none ${statusTextColor}`}
+            className={`font-extrabold text-[42px] tracking-[-0.04em] leading-none ${
+              isOpen ? "text-green" : "text-red"
+            }`}
           >
             {isOpen ? "OPEN" : "CLOSED"}
           </div>
         </div>
       </div>
 
-      {/* Details */}
-      <div className="flex gap-6 sm:gap-8 flex-wrap">
+      {/* Detail row */}
+      <div className="flex gap-8 flex-wrap relative z-10">
         {isOpen && status.closesIn && (
-          <Detail label="Closes in" value={status.closesIn} accent />
+          <DetailItem label="Closes in" value={status.closesIn} color={isOpen ? "text-green" : "text-red"} />
         )}
         {!isOpen && status.opensAt && (
-          <Detail label="Opens at" value={status.opensAt} accent />
+          <DetailItem label="Opens at" value={status.opensAt} color="text-red" />
         )}
         {status.todayHours && (
-          <Detail label="Today's hours" value={status.todayHours} />
+          <DetailItem label="Today's hours" value={status.todayHours} />
         )}
-        <Detail label="Local time" value={status.localTime} />
-        {status.holidayName && (
-          <Detail label="Holiday" value={status.holidayName} />
+        <DetailItem label="Local time" value={status.localTime} />
+        {status.holidayName ? (
+          <DetailItem label="Holiday today?" value={status.holidayName} color="text-amber" />
+        ) : (
+          <DetailItem label="Holiday today?" value="No" color="text-green" />
         )}
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-2.5 mt-6 flex-wrap">
-        <button className="bg-ink text-bg border-none rounded-lg px-5 py-2.5 font-semibold text-sm cursor-pointer flex items-center gap-2 hover:bg-ink/80 transition-all">
+      {/* Action buttons */}
+      <div className="flex gap-2.5 mt-6 flex-wrap relative z-10">
+        <button className="bg-ink text-bg border-none rounded-lg px-5 py-2.5 font-semibold text-sm cursor-pointer flex items-center gap-2 hover:opacity-90 transition-all hover:-translate-y-px">
           📍 Get Directions
         </button>
-        <button className="bg-transparent text-ink2 border border-ink/20 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer flex items-center gap-2 hover:bg-bg2 transition-all">
+        <button className="bg-transparent text-ink2 border border-ink/20 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer flex items-center gap-2 hover:bg-white/50 transition-all">
+          🔔 Notify before closing
+        </button>
+        <button className="bg-transparent text-ink2 border border-ink/20 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer flex items-center gap-2 hover:bg-white/50 transition-all">
           📋 Share hours
         </button>
       </div>
@@ -84,25 +122,21 @@ export default function StatusHero({ brand, initialStatus }: Props) {
   );
 }
 
-function Detail({
+function DetailItem({
   label,
   value,
-  accent,
+  color,
 }: {
   label: string;
   value: string;
-  accent?: boolean;
+  color?: string;
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-ink3 font-mono">
+      <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-ink3 font-mono">
         {label}
       </span>
-      <span
-        className={`text-lg font-bold tracking-tight ${
-          accent ? "text-green" : "text-ink"
-        }`}
-      >
+      <span className={`text-lg font-bold tracking-[-0.02em] ${color || "text-ink"}`}>
         {value}
       </span>
     </div>

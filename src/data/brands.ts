@@ -343,14 +343,17 @@ export const brandsData: BrandWithHours[] = [
   },
 ];
 
-// Saturday closed for stock market
-brandsData[18].hours[6] = {
-  dayOfWeek: 6,
-  openTime: null,
-  closeTime: null,
-  isClosed: true,
-  spansMidnight: false,
-};
+// Saturday closed for stock market (safe lookup by slug)
+const stockMarket = brandsData.find((b) => b.brand.slug === "stock-market");
+if (stockMarket) {
+  stockMarket.hours[6] = {
+    dayOfWeek: 6,
+    openTime: null,
+    closeTime: null,
+    isClosed: true,
+    spansMidnight: false,
+  };
+}
 
 export function getBrandBySlug(slug: string): BrandWithHours | undefined {
   return brandsData.find((b) => b.brand.slug === slug);

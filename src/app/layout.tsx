@@ -55,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
+      <body className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8MWJB8TTNY"
           strategy="afterInteractive"
@@ -66,8 +66,6 @@ export default function RootLayout({
           gtag('js', new Date());
           gtag('config', 'G-8MWJB8TTNY');
         `}</Script>
-      </head>
-      <body className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}>
         {children}
       </body>
     </html>

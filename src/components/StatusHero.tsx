@@ -129,7 +129,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         boxShadow: isOpen ? "0 0 56px rgba(0,232,122,0.08)" : "0 14px 40px rgba(0,0,0,0.28)",
       }}
     >
-      <div className="relative px-5 py-6 md:px-7 md:py-8 bg-bg1">
+      <div className="relative px-5 py-7 md:px-8 md:py-9 bg-bg1">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -209,7 +209,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-bg2">
+      <div className="grid grid-cols-2 md:grid-cols-4 stats-grid-responsive border-t border-border bg-bg2">
         <StatCell label={t(locale, "todayHours")} value={status.todayHours || "--"} />
         <StatCell label={t(locale, "localTime")} value={localTime} />
         <StatCell
@@ -220,7 +220,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <StatCell label={t(locale, "updated")} value={t(locale, "live")} muted />
       </div>
 
-      <div className="px-5 py-4 md:px-7 md:py-5 bg-bg1 border-t border-border flex flex-wrap gap-2.5">
+      <div className="px-5 py-5 md:px-8 md:py-5 bg-bg1 border-t border-border flex flex-wrap gap-2.5">
         <a
           href={brand.website || `/is-${brand.slug}-open`}
           target={brand.website ? "_blank" : undefined}

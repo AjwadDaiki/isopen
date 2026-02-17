@@ -10,6 +10,7 @@ import HolidayAlert from "@/components/HolidayAlert";
 import UserReports from "@/components/UserReports";
 import RelatedBrands from "@/components/RelatedBrands";
 import TrendingSidebar from "@/components/TrendingSidebar";
+import AffiliateUnit from "@/components/AffiliateUnit";
 import { getBrandBySlug, getRelatedBrands, getAllBrandSlugs } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import {
@@ -97,7 +98,7 @@ export default async function BrandPage({ params }: PageProps) {
     <>
       <Navbar />
       <div className="min-h-screen">
-        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 16, gap: 8, fontSize: 13 }}>
+        <nav className="page-pad flex flex-wrap items-center text-muted" style={{ paddingTop: 20, paddingBottom: 4, gap: 8, fontSize: 13 }}>
           <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
           <span>/</span>
           <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">
@@ -117,10 +118,22 @@ export default async function BrandPage({ params }: PageProps) {
           <StatusHero brand={brand} initialStatus={status} locale="en" />
         </div>
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px]" style={{ gap: 28, paddingTop: 24, paddingBottom: 62 }}>
-          <main className="min-w-0 flex flex-col gap-6">
+        {/* Ad banner after hero */}
+        <div className="page-pad" style={{ paddingTop: 20, paddingBottom: 0 }}>
+          <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={90} />
+        </div>
+
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px]" style={{ gap: 28, paddingTop: 28, paddingBottom: 48 }}>
+          <main className="min-w-0 flex flex-col" style={{ gap: 20 }}>
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
+
+            {/* Affiliate unit */}
+            <AffiliateUnit brandName={brand.name} category={brand.category || null} isOpen={status.isOpen} />
+
+            {/* Inline ad between content */}
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={100} />
+
             <UserReports brandSlug={slug} />
 
             <section className="ui-panel overflow-hidden">
@@ -166,13 +179,20 @@ export default async function BrandPage({ params }: PageProps) {
               </div>
             </section>
 
+            {/* Bottom inline ad */}
             <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
           </main>
 
-          <aside className="hidden lg:flex flex-col gap-4 sticky top-[84px] self-start">
-            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={250} />
+          {/* Sidebar: visible on all screen sizes, stacks below main on mobile */}
+          <aside className="flex flex-col" style={{ gap: 20 }}>
+            <div className="hidden lg:block">
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={250} />
+            </div>
             <TrendingSidebar />
             <RelatedBrands brands={related} />
+            <div className="hidden lg:block">
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={200} />
+            </div>
           </aside>
         </div>
       </div>

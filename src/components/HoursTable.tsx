@@ -31,7 +31,7 @@ export default function HoursTable({ hours }: Props) {
         <span className="font-mono text-[10px] text-muted tracking-[0.06em]">Local schedule</span>
       </div>
 
-      <div className="px-4 py-3 md:px-6 md:py-4 flex flex-col gap-2.5">
+      <div className="px-4 py-4 md:px-6 md:py-5 flex flex-col gap-2.5">
         {sorted.map((day) => {
           const isToday = day.dayOfWeek === today;
           const isClosed = day.isClosed || !day.openTime || !day.closeTime;

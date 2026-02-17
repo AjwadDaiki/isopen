@@ -60,8 +60,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="page-pad" style={{ paddingBottom: 30 }}>
-          <div className="flex items-center justify-between mb-3">
+        <section className="page-pad" style={{ paddingBottom: 32 }}>
+          <div className="flex items-center justify-between mb-4">
             <h2 className="font-heading text-[22px] font-bold tracking-tight text-text">Top brands</h2>
             <Link href="/search" className="text-sm text-muted2 no-underline hover:text-text transition-colors">
               Browse all
@@ -80,7 +80,7 @@ export default function Home() {
                   className="brand-card-link brand-card-premium no-underline"
                   style={{
                     border: `1px solid ${isOpen ? "rgba(68,209,141,0.38)" : "var(--color-border)"}`,
-                    padding: "16px 14px",
+                    padding: "18px 16px",
                     display: "flex",
                     flexDirection: "column",
                     gap: 8,
@@ -103,7 +103,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="page-pad" style={{ paddingBottom: 26 }}>
+        <section className="page-pad" style={{ paddingBottom: 28 }}>
           <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_TOP} label="Sponsored" minHeight={92} />
         </section>
 
@@ -142,7 +142,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="page-pad" style={{ paddingBottom: 32 }}>
+        <section className="page-pad" style={{ paddingBottom: 36 }}>
           <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={120} />
         </section>
 

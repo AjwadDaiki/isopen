@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>isopenow.com — Redesign</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0f;
+  --bg1: #111116;
+  --bg2: #18181f;
+  --bg3: #1e1e28;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f0f5;
+  --muted: #5a5a70;
+  --muted2: #8888a0;
+  --green: #00e87a;
+  --green-dim: rgba(0,232,122,0.08);
+  --green-glow: rgba(0,232,122,0.2);
+  --red: #ff4757;
+  --red-dim: rgba(255,71,87,0.08);
+  --orange: #ff9f43;
+  --accent: #6c63ff;
+  --page-px: 48px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12,12,15,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 var(--page-px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  gap: 16px;
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.nav-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--muted2);
+  letter-spacing: 0.05em;
+}
+
+/* ── SEARCH BAR ── */
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  flex: 1;
+  max-width: 400px;
+  min-width: 0;
+}
+
+.search-wrap:focus-within {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-dim);
+}
+
+.search-wrap input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 10px 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.search-wrap input::placeholder { color: var(--muted); }
+
+.search-btn {
+  background: var(--green);
+  color: #000;
+  border: none;
+  padding: 10px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.search-btn:hover { background: #00cc6a; }
+
+/* ──────────────────────────────────────
+   PAGE 1 — HOMEPAGE
+────────────────────────────────────── */
+#page-home { display: block; }
+#page-brand { display: none; }
+
+/* ── HERO ── */
+.hero {
+  padding: 72px var(--page-px) 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -120px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(0,232,122,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-dim);
+  border: 1px solid rgba(0,232,122,0.2);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.hero-tag-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 72px);
+  letter-spacing: -0.04em;
+  line-height: 1.0;
+  margin-bottom: 20px;
+  max-width: 700px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--green);
+  position: relative;
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--muted2);
+  max-width: 480px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+/* ── AD BANNER ── */
+.ad-banner {
+  margin: 0 var(--page-px) 32px;
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(108,99,255,0.03) 0%, rgba(0,232,122,0.03) 100%);
+  pointer-events: none;
+}
+
+.ad-label {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.ad-placeholder {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  z-index: 1;
+}
+
+.ad-placeholder strong {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  color: var(--muted2);
+  margin-bottom: 4px;
+}
+
+/* ── AD SIDEBAR ── */
+.ad-sidebar {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  position: relative;
+}
+
+.ad-sidebar .ad-label {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+}
+
+/* ── AD INLINE (between sections) ── */
+.ad-inline {
+  margin: 0 var(--page-px) 32px;
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 60px;
+  position: relative;
+}
+
+.ad-inline .ad-label {
+  position: static;
+  flex-shrink: 0;
+}
+
+.ad-inline .ad-placeholder {
+  flex: 1;
+  text-align: left;
+}
+
+/* ── CATEGORY SECTION ── */
+.section-wrap {
+  padding: 0 var(--page-px) 48px;
+}
+
+.cat-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.view-all {
+  font-size: 13px;
+  color: var(--muted2);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+}
+.view-all:hover { color: var(--green); }
+
+/* ── BRAND GRID ── */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.brand-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.brand-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.brand-card.is-open {
+  border-color: rgba(0,232,122,0.2);
+  background: linear-gradient(135deg, var(--bg1) 0%, rgba(0,232,122,0.04) 100%);
+}
+
+.brand-card.is-closed {
+  opacity: 0.65;
+}
+
+.brand-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.brand-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.brand-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.brand-status.open { color: var(--green); }
+.brand-status.open .status-dot {
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.brand-status.closed { color: var(--red); }
+.brand-status.closed .status-dot { background: var(--red); }
+
+.brand-closes {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 var(--page-px) 48px;
+}
+
+/* ──────────────────────────────────────
+   PAGE 2 — BRAND PAGE (McDonald's)
+────────────────────────────────────── */
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  padding: 20px var(--page-px) 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.breadcrumb a { color: var(--muted2); text-decoration: none; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--text); }
+.breadcrumb span { color: var(--muted); }
+
+/* ── BRAND HERO ── */
+.brand-hero {
+  margin: 24px var(--page-px);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.brand-hero.open-state {
+  border-color: rgba(0,232,122,0.25);
+  box-shadow: 0 0 60px rgba(0,232,122,0.06);
+}
+
+.brand-hero.closed-state {
+  border-color: rgba(255,71,87,0.2);
+}
+
+.brand-hero-inner {
+  padding: 36px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  background: var(--bg1);
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.brand-hero-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,232,122,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.brand-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.brand-logo-big {
+  width: 72px; height: 72px;
+  border-radius: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  flex-shrink: 0;
+}
+
+.brand-hero-info {
+  min-width: 0;
+}
+
+.brand-hero-info h1 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(24px, 4vw, 32px);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.brand-hero-cat {
+  font-size: 13px;
+  color: var(--muted2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.brand-hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+}
+
+.status-badge.open {
+  background: rgba(0,232,122,0.12);
+  border: 2px solid rgba(0,232,122,0.35);
+  color: var(--green);
+}
+
+.status-badge.closed {
+  background: rgba(255,71,87,0.1);
+  border: 2px solid rgba(255,71,87,0.3);
+  color: var(--red);
+}
+
+.status-badge-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-badge.open .status-badge-dot {
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green-glow);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-badge.closed .status-badge-dot { background: var(--red); }
+
+.countdown {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--muted2);
+  text-align: right;
+}
+
+.countdown strong {
+  color: var(--text);
+  font-size: 15px;
+}
+
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.stat-cell {
+  padding: 18px 24px;
+  border-right: 1px solid var(--border);
+}
+.stat-cell:last-child { border-right: none; }
+
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.stat-value.green { color: var(--green); }
+.stat-value.red { color: var(--red); }
+
+/* ── BRAND PAGE BODY ── */
+.brand-body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  padding: 0 var(--page-px) 48px;
+}
+
+/* ── HOURS TABLE ── */
+.hours-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.card-title-row {
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.card-title-row h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.updated-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.hours-list { padding: 8px 0; }
+
+.hours-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 24px;
+  gap: 16px;
+  transition: background 0.15s;
+}
+
+.hours-row:hover { background: var(--bg2); }
+
+.hours-row.today {
+  background: var(--green-dim);
+  border-left: 3px solid var(--green);
+  padding-left: 21px;
+}
+
+.hours-day {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted2);
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.hours-row.today .hours-day {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.hours-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.hours-bar {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: var(--border2);
+  border-radius: 2px;
+}
+
+.hours-row.today .hours-bar { background: var(--green); opacity: 0.5; }
+
+.hours-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  text-align: right;
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.hours-row.today .hours-time { color: var(--green); }
+
+.hours-late {
+  font-size: 11px;
+  color: var(--orange);
+  background: rgba(255,159,67,0.1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── AFFILIATION ── */
+.affiliate-card {
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+  margin-bottom: 20px;
+  text-decoration: none;
+}
+
+.affiliate-card:hover {
+  border-color: var(--orange);
+  transform: translateY(-1px);
+}
+
+.affiliate-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: rgba(255,159,67,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.affiliate-text { flex: 1; min-width: 0; }
+.affiliate-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--orange);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+.affiliate-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}
+.affiliate-sub { font-size: 12px; color: var(--muted2); }
+
+.affiliate-cta {
+  background: var(--orange);
+  color: #000;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── USER REPORTS ── */
+.reports-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.report-empty {
+  padding: 28px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.report-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--muted2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.report-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.report-btn.report:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+
+/* ── BY DAY TABS ── */
+.byday-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.day-tabs {
+  display: flex;
+  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.day-tab {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.day-tab:hover { background: var(--bg2); color: var(--text); }
+.day-tab.active { background: var(--bg2); border-color: var(--border2); color: var(--text); }
+.day-tab.holiday { color: var(--orange); }
+
+/* ── SIDEBAR ── */
+.brand-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+.sidebar-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* TRENDING */
+.trending-list { padding: 8px 0; }
+
+.trending-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.trending-item:hover { background: var(--bg2); }
+
+.trending-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  width: 16px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.trending-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trending-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.trending-dot.open { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
+.trending-dot.closed { background: var(--red); }
+
+/* PEOPLE ALSO CHECKED */
+.also-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.also-item {
+  background: var(--bg1);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.also-item:hover { background: var(--bg2); }
+
+.also-icon { font-size: 22px; }
+
+.also-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  text-align: center;
+  word-break: break-word;
+}
+
+.also-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.also-dot.open { background: var(--green); }
+.also-dot.closed { background: var(--red); }
+
+/* ── FAQ ── */
+.faq-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+}
+.faq-item:last-child { border-bottom: none; }
+
+.faq-q {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.faq-a {
+  font-size: 13px;
+  color: var(--muted2);
+  line-height: 1.7;
+}
+
+.faq-a strong { color: var(--green); }
+
+/* ── NAV TOGGLE (demo) ── */
+.toggle-bar {
+  display: flex;
+  gap: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 var(--page-px) 24px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: var(--muted2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.toggle-btn.active {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+/* ── FOOTER ── */
+.site-footer {
+  margin-top: 40px;
+  border-top: 1px solid var(--border);
+  padding: 32px var(--page-px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-left {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.footer-left strong {
+  color: var(--muted2);
+  font-family: 'Syne', sans-serif;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--muted2); }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+  .brand-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .brand-body {
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  :root { --page-px: 24px; }
+
+  .brand-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .brand-body {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-cell:nth-child(2) { border-right: none; }
+  .stat-cell:nth-child(1),
+  .stat-cell:nth-child(2) { border-bottom: 1px solid var(--border); }
+
+  .brand-hero-inner {
+    padding: 28px 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root { --page-px: 16px; }
+
+  nav {
+    height: auto;
+    min-height: 56px;
+    padding: 10px var(--page-px);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .search-wrap {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .nav-time { display: none; }
+
+  .hero {
+    padding: 48px var(--page-px) 36px;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+  }
+
+  .brand-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .brand-card {
+    padding: 18px 14px;
+  }
+
+  .brand-hero-inner {
+    padding: 24px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .brand-hero-right {
+    align-items: flex-start;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .countdown { text-align: left; }
+
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat-cell {
+    padding: 14px 16px;
+  }
+
+  .hours-row {
+    padding: 10px 16px;
+    gap: 10px;
+  }
+
+  .hours-row.today {
+    padding-left: 13px;
+  }
+
+  .hours-day { width: 70px; font-size: 12px; }
+  .hours-time { width: auto; font-size: 12px; }
+
+  .hours-bar-wrap { display: none; }
+
+  .card-title-row { padding: 16px 18px 12px; }
+
+  .faq-item { padding: 16px 18px; }
+
+  .affiliate-card {
+    padding: 16px 18px;
+    flex-wrap: wrap;
+  }
+
+  .affiliate-cta {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .brand-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .report-actions {
+    padding: 12px 16px;
+  }
+
+  .report-btn {
+    min-width: 0;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .toggle-bar {
+    margin-left: var(--page-px);
+    margin-right: var(--page-px);
+  }
+
+  .ad-banner {
+    margin-left: var(--page-px);
+    margin-right: var(--page-px);
+  }
+
+  .ad-inline {
+    margin-left: var(--page-px);
+    margin-right: var(--page-px);
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .ad-inline .ad-placeholder { text-align: center; }
+
+  .site-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .brand-card {
+    padding: 16px 10px;
+  }
+  .brand-icon { font-size: 24px; }
+  .brand-name { font-size: 12px; }
+
+  .status-badge {
+    padding: 10px 18px;
+    font-size: 16px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- GLOBAL NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    isopenow
+  </div>
+  <div class="search-wrap">
+    <input type="text" placeholder="Is McDonald's open right now?" id="searchInput">
+    <button class="search-btn">Check</button>
+  </div>
+  <div class="nav-right">
+    <div class="nav-time" id="navTime">12:57:01</div>
+  </div>
+</nav>
+
+<!-- PAGE TOGGLE (demo only) -->
+<div class="toggle-bar" style="margin-top:24px;">
+  <button class="toggle-btn active" onclick="showPage('home')">Homepage</button>
+  <button class="toggle-btn" onclick="showPage('brand')">Page McDonald's</button>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE 1 — HOMEPAGE
+═══════════════════════════════════════ -->
+<div id="page-home">
+
+  <div class="hero">
+    <div class="hero-tag">
+      <div class="hero-tag-dot"></div>
+      Real-time status
+    </div>
+    <h1>Is it <em>open</em><br>right now?</h1>
+    <p class="hero-sub">Instantly check if any store, restaurant, or service is open. Real-time status, weekly hours, holiday schedules.</p>
+  </div>
+
+  <!-- AD: Leaderboard banner after hero -->
+  <div class="ad-banner">
+    <span class="ad-label">Ad</span>
+    <div class="ad-placeholder">
+      <strong>Your Ad Here</strong>
+      Leaderboard 728x90 — Premium placement
+    </div>
+  </div>
+
+  <!-- FAST FOOD -->
+  <div class="section-wrap">
+    <div class="cat-header">
+      <span class="cat-label">Fast Food</span>
+      <a href="#" class="view-all">View all <span>&rarr;</span></a>
+    </div>
+    <div class="brand-grid">
+      <div class="brand-card is-open" onclick="showPage('brand')">
+        <div class="brand-icon">🍟</div>
+        <div class="brand-name">McDonald's</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">closes in 10h</div>
+      </div>
+      <div class="brand-card is-open" onclick="showPage('brand')">
+        <div class="brand-icon">👑</div>
+        <div class="brand-name">Burger King</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">closes in 16h</div>
+      </div>
+      <div class="brand-card is-closed">
+        <div class="brand-icon">🌮</div>
+        <div class="brand-name">Taco Bell</div>
+        <div class="brand-status closed"><div class="status-dot"></div>Closed</div>
+        <div class="brand-closes">opens at 07:00</div>
+      </div>
+      <div class="brand-card is-closed">
+        <div class="brand-icon">🍗</div>
+        <div class="brand-name">KFC</div>
+        <div class="brand-status closed"><div class="status-dot"></div>Closed</div>
+        <div class="brand-closes">opens at 10:00</div>
+      </div>
+      <div class="brand-card is-closed">
+        <div class="brand-icon">🥖</div>
+        <div class="brand-name">Subway</div>
+        <div class="brand-status closed"><div class="status-dot"></div>Closed</div>
+        <div class="brand-closes">opens at 08:00</div>
+      </div>
+      <div class="brand-card is-open">
+        <div class="brand-icon">🐔</div>
+        <div class="brand-name">Chick-fil-A</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">closes in 15h</div>
+      </div>
+      <div class="brand-card is-open">
+        <div class="brand-icon">🍔</div>
+        <div class="brand-name">Wendy's</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">closes in 17h</div>
+      </div>
+      <div class="brand-card is-closed">
+        <div class="brand-icon">🍔</div>
+        <div class="brand-name">Five Guys</div>
+        <div class="brand-status closed"><div class="status-dot"></div>Closed</div>
+        <div class="brand-closes">opens at 11:00</div>
+      </div>
+      <div class="brand-card is-closed">
+        <div class="brand-icon">🍗</div>
+        <div class="brand-name">Popeyes</div>
+        <div class="brand-status closed"><div class="status-dot"></div>Closed</div>
+        <div class="brand-closes">opens at 10:00</div>
+      </div>
+      <div class="brand-card is-open">
+        <div class="brand-icon">🌭</div>
+        <div class="brand-name">Sonic</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">closes in 16h</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD: Inline between sections -->
+  <div class="ad-inline">
+    <span class="ad-label">Ad</span>
+    <div class="ad-placeholder">
+      <strong>Sponsored</strong>
+      Inline ad placement — 468x60
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- RETAIL -->
+  <div class="section-wrap">
+    <div class="cat-header">
+      <span class="cat-label">Retail</span>
+      <a href="#" class="view-all">View all &rarr;</a>
+    </div>
+    <div class="brand-grid">
+      <div class="brand-card is-open">
+        <div class="brand-icon">🛒</div>
+        <div class="brand-name">Walmart</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">closes in 11h</div>
+      </div>
+      <div class="brand-card is-open">
+        <div class="brand-icon">🎯</div>
+        <div class="brand-name">Target</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">closes in 9h</div>
+      </div>
+      <div class="brand-card is-open">
+        <div class="brand-icon">💊</div>
+        <div class="brand-name">CVS</div>
+        <div class="brand-status open"><div class="status-dot"></div>Open</div>
+        <div class="brand-closes">24h</div>
+      </div>
+      <div class="brand-card is-closed">
+        <div class="brand-icon">🌿</div>
+        <div class="brand-name">Costco</div>
+        <div class="brand-status closed"><div class="status-dot"></div>Closed</div>
+        <div class="brand-closes">opens at 10:00</div>
+      </div>
+      <div class="brand-card is-closed">
+        <div class="brand-icon">📦</div>
+        <div class="brand-name">Dollar Tree</div>
+        <div class="brand-status closed"><div class="status-dot"></div>Closed</div>
+        <div class="brand-closes">opens at 09:00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD: Bottom banner -->
+  <div class="ad-banner">
+    <span class="ad-label">Ad</span>
+    <div class="ad-placeholder">
+      <strong>Your Ad Here</strong>
+      Leaderboard 728x90 — Bottom placement
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <strong>isopenow</strong> &mdash; Real-time opening hours
+    </div>
+    <div class="footer-links">
+      <a href="#">About</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+</div><!-- /page-home -->
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 2 — BRAND PAGE (McDonald's)
+═══════════════════════════════════════ -->
+<div id="page-brand" style="display:none;">
+
+  <div class="breadcrumb">
+    <a href="#" onclick="showPage('home'); return false;">Home</a>
+    <span>/</span>
+    <a href="#">Fast Food</a>
+    <span>/</span>
+    <span style="color:var(--text)">McDonald's</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="brand-hero open-state">
+    <div class="brand-hero-inner">
+      <div class="brand-hero-left">
+        <div class="brand-logo-big">🍟</div>
+        <div class="brand-hero-info">
+          <h1>McDonald's</h1>
+          <div class="brand-hero-cat">
+            Fast Food
+            <span style="color:var(--border2)">&middot;</span>
+            <span style="color:var(--muted)">Standard hours</span>
+          </div>
+        </div>
+      </div>
+      <div class="brand-hero-right">
+        <div class="status-badge open">
+          <div class="status-badge-dot"></div>
+          OPEN
+        </div>
+        <div class="countdown">
+          Closes in <strong id="countdown">9h 42min 18s</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="stat-label">Today's Hours</div>
+        <div class="stat-value">06:00 – 23:00</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Local Time</div>
+        <div class="stat-value" id="localTime">12:57 PM</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Holiday Today?</div>
+        <div class="stat-value green">No</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Updated</div>
+        <div class="stat-value" style="font-size:14px; color:var(--muted2)">Feb 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD: Brand page top banner -->
+  <div class="ad-banner">
+    <span class="ad-label">Ad</span>
+    <div class="ad-placeholder">
+      <strong>Your Ad Here</strong>
+      Leaderboard 728x90 — Brand page
+    </div>
+  </div>
+
+  <!-- BODY GRID -->
+  <div class="brand-body">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- HOURS TABLE -->
+      <div class="hours-card">
+        <div class="card-title-row">
+          <h3>Opening hours</h3>
+          <span class="updated-tag">Updated Feb 2026</span>
+        </div>
+        <div class="hours-list">
+          <div class="hours-row">
+            <div class="hours-day">Monday</div>
+            <div class="hours-bar-wrap"><div class="hours-bar" style="left:25%;width:71%"></div></div>
+            <div class="hours-time">06:00 – 23:00</div>
+          </div>
+          <div class="hours-row today">
+            <div class="hours-day">Tuesday</div>
+            <div class="hours-bar-wrap"><div class="hours-bar" style="left:25%;width:71%"></div></div>
+            <div class="hours-time">06:00 – 23:00</div>
+          </div>
+          <div class="hours-row">
+            <div class="hours-day">Wednesday</div>
+            <div class="hours-bar-wrap"><div class="hours-bar" style="left:25%;width:71%"></div></div>
+            <div class="hours-time">06:00 – 23:00</div>
+          </div>
+          <div class="hours-row">
+            <div class="hours-day">Thursday</div>
+            <div class="hours-bar-wrap"><div class="hours-bar" style="left:25%;width:71%"></div></div>
+            <div class="hours-time">06:00 – 23:00</div>
+          </div>
+          <div class="hours-row">
+            <div class="hours-day">Friday</div>
+            <div class="hours-bar-wrap"><div class="hours-bar" style="left:25%;width:83%"></div></div>
+            <div class="hours-time">06:00 – 01:00 <span class="hours-late">+1</span></div>
+          </div>
+          <div class="hours-row">
+            <div class="hours-day">Saturday</div>
+            <div class="hours-bar-wrap"><div class="hours-bar" style="left:29%;width:79%"></div></div>
+            <div class="hours-time">07:00 – 01:00 <span class="hours-late">+1</span></div>
+          </div>
+          <div class="hours-row">
+            <div class="hours-day">Sunday</div>
+            <div class="hours-bar-wrap"><div class="hours-bar" style="left:29%;width:63%"></div></div>
+            <div class="hours-time">07:00 – 22:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AFFILIATE -->
+      <a href="#" class="affiliate-card">
+        <div class="affiliate-icon">🛵</div>
+        <div class="affiliate-text">
+          <div class="affiliate-label">Affiliate &middot; Uber Eats</div>
+          <div class="affiliate-title">McDonald's too far? Order delivery</div>
+          <div class="affiliate-sub">Delivered in 20 min &middot; Free on first order</div>
+        </div>
+        <div class="affiliate-cta">Order now &rarr;</div>
+      </a>
+
+      <!-- AD: Inline in left column -->
+      <div class="ad-sidebar" style="margin-bottom: 20px; min-height: 100px;">
+        <span class="ad-label">Ad</span>
+        <div class="ad-placeholder">
+          <strong>Sponsored</strong>
+          In-content ad — 468x60
+        </div>
+      </div>
+
+      <!-- USER REPORTS -->
+      <div class="reports-card">
+        <div class="card-title-row">
+          <h3>Live user reports</h3>
+          <span class="updated-tag">0 reports</span>
+        </div>
+        <div class="report-empty">No reports yet. Be the first to report!</div>
+        <div class="report-actions">
+          <button class="report-btn">Confirm open</button>
+          <button class="report-btn">Report closed</button>
+          <button class="report-btn report">Wrong hours</button>
+        </div>
+      </div>
+
+      <!-- BY DAY -->
+      <div class="byday-card">
+        <div class="card-title-row">
+          <h3>McDonald's hours by day</h3>
+        </div>
+        <div class="day-tabs">
+          <div class="day-tab active">Monday</div>
+          <div class="day-tab">Tuesday</div>
+          <div class="day-tab">Wednesday</div>
+          <div class="day-tab">Thursday</div>
+          <div class="day-tab">Friday</div>
+          <div class="day-tab">Saturday</div>
+          <div class="day-tab">Sunday</div>
+          <div class="day-tab holiday">Christmas</div>
+          <div class="day-tab holiday">Thanksgiving</div>
+          <div class="day-tab holiday">New Year's</div>
+          <div class="day-tab holiday">Easter</div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq-card">
+        <div class="card-title-row"><h3>Frequently asked questions</h3></div>
+        <div class="faq-item">
+          <div class="faq-q">Is McDonald's open right now?</div>
+          <div class="faq-a">Yes, McDonald's is currently open. Today's hours are 06:00 – 23:00. <strong>It closes in 9 hours 42 minutes.</strong></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is McDonald's open 24 hours?</div>
+          <div class="faq-a">Most McDonald's locations are not open 24 hours. Standard hours are 06:00 – 23:00. Some locations may offer extended drive-through hours.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is McDonald's open on Christmas?</div>
+          <div class="faq-a">Most McDonald's locations are open on Christmas Day, but with reduced hours (typically 10:00 – 18:00). Check the holiday tab above for details.</div>
+        </div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- SIDEBAR -->
+    <div class="brand-sidebar">
+
+      <!-- AD: Sidebar top -->
+      <div class="ad-sidebar">
+        <span class="ad-label">Ad</span>
+        <div class="ad-placeholder">
+          <strong>Your Ad Here</strong>
+          Sidebar 300x250
+        </div>
+      </div>
+
+      <!-- TRENDING -->
+      <div class="sidebar-card">
+        <div class="card-title-row">
+          <h3>Trending right now</h3>
+        </div>
+        <div class="trending-list">
+          <a href="#" class="trending-item">
+            <span class="trending-num">01</span>
+            <span class="trending-name">Walmart</span>
+            <span class="trending-dot open"></span>
+          </a>
+          <a href="#" class="trending-item">
+            <span class="trending-num">02</span>
+            <span class="trending-name">Post Office (USPS)</span>
+            <span class="trending-dot closed"></span>
+          </a>
+          <a href="#" class="trending-item">
+            <span class="trending-num">03</span>
+            <span class="trending-name">Costco</span>
+            <span class="trending-dot closed"></span>
+          </a>
+          <a href="#" class="trending-item">
+            <span class="trending-num">04</span>
+            <span class="trending-name">Stock Market (NYSE)</span>
+            <span class="trending-dot closed"></span>
+          </a>
+          <a href="#" class="trending-item">
+            <span class="trending-num">05</span>
+            <span class="trending-name">CVS Pharmacy</span>
+            <span class="trending-dot closed"></span>
+          </a>
+          <a href="#" class="trending-item">
+            <span class="trending-num">06</span>
+            <span class="trending-name">Starbucks</span>
+            <span class="trending-dot open"></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- PEOPLE ALSO CHECKED -->
+      <div class="sidebar-card">
+        <div class="card-title-row"><h3>People also checked</h3></div>
+        <div class="also-grid">
+          <a href="#" class="also-item">
+            <div class="also-icon">👑</div>
+            <div class="also-name">Burger King</div>
+            <div class="also-dot open"></div>
+          </a>
+          <a href="#" class="also-item">
+            <div class="also-icon">🌮</div>
+            <div class="also-name">Taco Bell</div>
+            <div class="also-dot closed"></div>
+          </a>
+          <a href="#" class="also-item">
+            <div class="also-icon">🍗</div>
+            <div class="also-name">KFC</div>
+            <div class="also-dot closed"></div>
+          </a>
+          <a href="#" class="also-item">
+            <div class="also-icon">🥖</div>
+            <div class="also-name">Subway</div>
+            <div class="also-dot closed"></div>
+          </a>
+          <a href="#" class="also-item">
+            <div class="also-icon">🐔</div>
+            <div class="also-name">Chick-fil-A</div>
+            <div class="also-dot open"></div>
+          </a>
+          <a href="#" class="also-item">
+            <div class="also-icon">🍔</div>
+            <div class="also-name">Wendy's</div>
+            <div class="also-dot open"></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- AD: Sidebar bottom -->
+      <div class="ad-sidebar" style="min-height: 200px;">
+        <span class="ad-label">Ad</span>
+        <div class="ad-placeholder">
+          <strong>Your Ad Here</strong>
+          Sidebar 300x200
+        </div>
+      </div>
+
+      <!-- OFFICIAL LINK -->
+      <div class="sidebar-card">
+        <div style="padding: 20px;">
+          <a href="#" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text);">
+            <span style="font-size:20px;">🌐</span>
+            <div>
+              <div style="font-size:12px; color:var(--muted2); margin-bottom:2px;">Official website</div>
+              <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:13px;">mcdonalds.com &rarr;</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+
+  </div><!-- /brand-body -->
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <strong>isopenow</strong> &mdash; Real-time opening hours
+    </div>
+    <div class="footer-links">
+      <a href="#">About</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+</div><!-- /page-brand -->
+
+<script>
+// ── PAGE TOGGLE ──
+function showPage(page) {
+  document.getElementById('page-home').style.display = page === 'home' ? 'block' : 'none';
+  document.getElementById('page-brand').style.display = page === 'brand' ? 'block' : 'none';
+  document.querySelectorAll('.toggle-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', (page === 'home' && i === 0) || (page === 'brand' && i === 1));
+  });
+  window.scrollTo(0, 0);
+}
+
+// ── LIVE CLOCK ──
+function updateClock() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+  document.getElementById('navTime').textContent = timeStr;
+
+  const localTimeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  const el = document.getElementById('localTime');
+  if (el) el.textContent = localTimeStr;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── LIVE COUNTDOWN ──
+function updateCountdown() {
+  const now = new Date();
+  const close = new Date();
+  close.setHours(23, 0, 0, 0);
+  const diff = close - now;
+  if (diff <= 0) { document.getElementById('countdown').textContent = 'Closing soon'; return; }
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const el = document.getElementById('countdown');
+  if (el) el.textContent = `${h}h ${m}min ${s}s`;
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// ── DAY TABS ──
+document.querySelectorAll('.day-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// ── REPORT BUTTONS ──
+document.querySelectorAll('.report-btn').forEach(btn => {
+  btn.dataset.orig = btn.textContent;
+  btn.addEventListener('click', () => {
+    const orig = btn.dataset.orig;
+    btn.textContent = 'Thanks!';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 2000);
+  });
+});
+</script>
+
+</body>
+</html>

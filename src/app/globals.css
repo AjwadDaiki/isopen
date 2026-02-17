@@ -204,6 +204,7 @@ body::after {
   box-shadow: 0 16px 40px rgba(5,10,18,0.35);
 }
 
+/* ── Stats grid mobile fix ── */
 @media (max-width: 768px) {
   .page-pad {
     padding-left: 20px;
@@ -220,6 +221,18 @@ body::after {
 
   .ui-panel {
     border-radius: 16px;
+  }
+
+  /* Fix stats grid: 2-col on mobile, proper borders */
+  .stats-grid-responsive {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stats-grid-responsive > *:nth-child(2) {
+    border-right: none;
+  }
+  .stats-grid-responsive > *:nth-child(1),
+  .stats-grid-responsive > *:nth-child(2) {
+    border-bottom: 1px solid var(--color-border);
   }
 }
 

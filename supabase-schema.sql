@@ -266,6 +266,12 @@ ALTER TABLE brand_hours ENABLE ROW LEVEL SECURITY;
 ALTER TABLE holidays ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_reports ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Public read brands" ON brands;
+DROP POLICY IF EXISTS "Public read brand_hours" ON brand_hours;
+DROP POLICY IF EXISTS "Public read holidays" ON holidays;
+DROP POLICY IF EXISTS "Public read reports" ON user_reports;
+DROP POLICY IF EXISTS "Anyone can insert reports" ON user_reports;
+
 CREATE POLICY "Public read brands" ON brands FOR SELECT USING (true);
 CREATE POLICY "Public read brand_hours" ON brand_hours FOR SELECT USING (true);
 CREATE POLICY "Public read holidays" ON holidays FOR SELECT USING (true);
@@ -318,4 +324,5 @@ CREATE INDEX IF NOT EXISTS idx_api_logs_establishment ON api_logs(establishment_
 ALTER TABLE establishments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE api_logs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Public read establishments" ON establishments;
 CREATE POLICY "Public read establishments" ON establishments FOR SELECT USING (true);

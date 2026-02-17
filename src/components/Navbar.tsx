@@ -49,7 +49,7 @@ export default function Navbar() {
   function navigate(slug: string) {
     setQuery("");
     setShowDropdown(false);
-    router.push(`/brand/${slug}`);
+    router.push(`/is-${slug}-open`);
   }
 
   function handleSearch() {
@@ -112,6 +112,13 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
+      <Link
+        href="/search"
+        className="sm:hidden text-bg/80 no-underline text-sm font-medium"
+      >
+        Search
+      </Link>
 
       <div className="flex items-center gap-5 text-[13px] text-bg/60">
         <span className="font-mono text-[13px] text-bg/50">{clock}</span>

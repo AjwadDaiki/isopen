@@ -81,7 +81,10 @@ export default function UserReports({ brandSlug }: Props) {
   }
 
   return (
-    <div className="bg-white border border-ink/10 rounded-xl mb-4 overflow-hidden shadow-[0_2px_16px_rgba(26,22,18,0.08)]">
+    <div
+      id="user-reports"
+      className="bg-white border border-ink/10 rounded-xl mb-4 overflow-hidden shadow-[0_2px_16px_rgba(26,22,18,0.08)]"
+    >
       <div className="px-6 py-[18px] border-b border-ink/10 flex items-center justify-between">
         <h2 className="text-[15px] font-bold tracking-[-0.01em] flex items-center gap-2">
           <span className="text-base">💬</span> Live user reports

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import StatusHero from "@/components/StatusHero";
@@ -64,142 +65,136 @@ export default async function BrandPage({ params }: PageProps) {
   const currentUrl = `https://isopenow.com/is-${slug}-open`;
   const jsonLd = generateJsonLd(brand, hours, currentUrl);
   const faqJsonLd = generateFaqJsonLd(brand, hours, status);
+  const categorySlug = brand.category?.toLowerCase().replace(/\s+/g, "-") || "";
 
   return (
     <>
       <Navbar />
       <div className="bg-bg pb-16">
-        {/* Leaderboard ad — top of page, full width */}
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-5">
-          <AdSlot size="728x90" position="Leaderboard — above the fold" />
-        </div>
-
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-6 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 items-start">
-          {/* Main Column */}
           <main className="min-w-0 lg:pr-10">
-            {/* Breadcrumb */}
             <nav className="font-mono text-xs text-ink3 flex items-center gap-1.5 mb-5">
-              <a href="/" className="text-ink3 no-underline hover:text-ink transition-colors">Home</a>
+              <Link href="/" className="text-ink3 no-underline hover:text-ink transition-colors">
+                Home
+              </Link>
               <span className="opacity-40">/</span>
-              <a href={`/category/${brand.category?.toLowerCase().replace(/\s+/g, "-")}`} className="text-ink3 no-underline hover:text-ink transition-colors">{brand.category}</a>
+              <Link
+                href={`/category/${categorySlug}`}
+                className="text-ink3 no-underline hover:text-ink transition-colors"
+              >
+                {brand.category}
+              </Link>
               <span className="opacity-40">/</span>
               <span className="text-ink">{brand.name}</span>
             </nav>
 
-            {/* Timezone pill */}
             <div className="inline-flex items-center gap-1.5 bg-bg2 border border-ink/10 rounded-full px-3 py-1 font-mono text-xs text-ink3 mb-4">
-              🌍 Your timezone: {timezone}
+              Your timezone: {timezone}
             </div>
 
-            {/* JSON-LD: LocalBusiness */}
             <script
               type="application/ld+json"
               dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
-            {/* JSON-LD: FAQ for Google rich results */}
             <script
               type="application/ld+json"
               dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
             />
 
-            {/* Hero status — the big OPEN/CLOSED answer */}
             <StatusHero brand={brand} initialStatus={status} />
-
-            {/* Holiday alert */}
             <HolidayAlert brandName={brand.name} />
-
-            {/* Hours table */}
             <HoursTable hours={hours} timezone={timezone} />
 
-            {/* In-content ad — between hours and affiliate */}
-            <AdSlot size="300x250" position="In-content — between sections" />
+            <AdSlot size="728x90" position="In-content leaderboard" />
+            <AdSlot size="300x250" position="In-content between sections" />
 
-            {/* Affiliate unit */}
             <AffiliateUnit
               brandName={brand.name}
               category={brand.category}
               isOpen={status.isOpen}
             />
 
-            {/* User reports */}
             <UserReports brandSlug={slug} />
-
-            {/* Mid-page leaderboard ad */}
             <AdSlot size="728x90" position="Mid-page leaderboard" />
-
-            {/* Related brands */}
             <RelatedBrands brands={related} />
 
-            {/* Day-specific pages links for SEO internal linking */}
             <div className="bg-white border border-ink/10 rounded-xl p-6 mb-4 shadow-[0_2px_16px_rgba(26,22,18,0.08)]">
-              <h2 className="text-[15px] font-bold tracking-[-0.01em] mb-3 flex items-center gap-2">
-                <span>📅</span> Hours by day
+              <h2 className="text-[15px] font-bold tracking-[-0.01em] mb-3">
+                Hours by day
               </h2>
               <div className="flex flex-wrap gap-2">
-                {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map((day) => (
-                  <a
+                {[
+                  "monday",
+                  "tuesday",
+                  "wednesday",
+                  "thursday",
+                  "friday",
+                  "saturday",
+                  "sunday",
+                ].map((day) => (
+                  <Link
                     key={day}
                     href={`/is-${slug}-open-on-${day}`}
                     className="text-xs font-mono bg-bg border border-ink/10 rounded-lg px-3 py-1.5 text-ink2 no-underline hover:bg-bg2 hover:text-ink transition-colors"
                   >
                     {day.charAt(0).toUpperCase() + day.slice(1)}
-                  </a>
+                  </Link>
                 ))}
                 {["christmas", "thanksgiving", "new-years", "easter"].map((holiday) => (
-                  <a
+                  <Link
                     key={holiday}
                     href={`/is-${slug}-open-on-${holiday}`}
                     className="text-xs font-mono bg-amber-bg border border-amber/20 rounded-lg px-3 py-1.5 text-amber no-underline hover:bg-amber/10 transition-colors"
                   >
-                    {holiday.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
-                  </a>
+                    {holiday
+                      .split("-")
+                      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                      .join(" ")}
+                  </Link>
                 ))}
               </div>
             </div>
 
-            {/* FAQ section for SEO */}
             <div className="bg-white border border-ink/10 rounded-xl p-6 mb-4 shadow-[0_2px_16px_rgba(26,22,18,0.08)]">
-              <h2 className="text-[15px] font-bold tracking-[-0.01em] mb-4 flex items-center gap-2">
-                <span>❓</span> Frequently asked questions
+              <h2 className="text-[15px] font-bold tracking-[-0.01em] mb-4">
+                Frequently asked questions
               </h2>
               <div className="space-y-4">
                 <FaqItem
                   q={`Is ${brand.name} open right now?`}
-                  a={status.isOpen
-                    ? `Yes, ${brand.name} is currently open${status.todayHours ? `. Today's hours are ${status.todayHours}` : ""}.${status.closesIn ? ` It closes in ${status.closesIn}.` : ""}`
-                    : `No, ${brand.name} is currently closed.${status.opensAt ? ` It opens at ${status.opensAt}.` : ""}`
+                  a={
+                    status.isOpen
+                      ? `Yes, ${brand.name} is currently open${status.todayHours ? `. Today's hours are ${status.todayHours}` : ""}.${status.closesIn ? ` It closes in ${status.closesIn}.` : ""}`
+                      : `No, ${brand.name} is currently closed.${status.opensAt ? ` It opens at ${status.opensAt}.` : ""}`
                   }
                 />
                 <FaqItem
                   q={`What are ${brand.name} hours today?`}
-                  a={status.todayHours
-                    ? `${brand.name} is open from ${status.todayHours} today.`
-                    : `${brand.name} is closed today.`
+                  a={
+                    status.todayHours
+                      ? `${brand.name} is open from ${status.todayHours} today.`
+                      : `${brand.name} is closed today.`
                   }
                 />
                 <FaqItem
                   q={`Is ${brand.name} open on Sunday?`}
                   a={(() => {
-                    const sun = hours.find(h => h.dayOfWeek === 0);
-                    if (!sun || sun.isClosed) return `${brand.name} is typically closed on Sundays.`;
+                    const sun = hours.find((h) => h.dayOfWeek === 0);
+                    if (!sun || sun.isClosed) {
+                      return `${brand.name} is typically closed on Sundays.`;
+                    }
                     return `Yes, ${brand.name} is typically open on Sundays from ${sun.openTime} to ${sun.closeTime}.`;
                   })()}
                 />
               </div>
             </div>
 
-            {/* Footer leaderboard ad */}
             <AdSlot size="728x90" position="Footer leaderboard" />
           </main>
 
-          {/* Sidebar */}
           <aside className="hidden lg:block sticky top-[84px]">
-            {/* Sidebar ad 300x250 */}
-            <AdSlot size="300x250" position="Sidebar — sticky" />
-
+            <AdSlot size="300x250" position="Sidebar sticky" />
             <TrendingSidebar />
-
-            {/* Sidebar tall ad 300x600 */}
             <AdSlot size="300x600" position="Half-page sidebar" />
           </aside>
         </div>

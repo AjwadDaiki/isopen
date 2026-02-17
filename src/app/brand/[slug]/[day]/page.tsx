@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HoursTable from "@/components/HoursTable";
@@ -33,9 +34,7 @@ export async function generateStaticParams() {
   const slugs = getAllBrandSlugs();
   const result: { slug: string; day: string }[] = [];
   for (const slug of slugs) {
-    for (const day of ALL_DAYS) {
-      result.push({ slug, day });
-    }
+    for (const day of ALL_DAYS) result.push({ slug, day });
   }
   return result;
 }
@@ -67,15 +66,13 @@ export default async function DayPage({ params }: PageProps) {
   const { brand, hours } = data;
   const jsonLd = generateJsonLd(brand, hours, `https://isopenow.com/is-${slug}-open-on-${day}`);
 
-  const dayHours = dayInfo.index >= 0
-    ? hours.find((h) => h.dayOfWeek === dayInfo.index)
-    : null;
-
+  const dayHours = dayInfo.index >= 0 ? hours.find((h) => h.dayOfWeek === dayInfo.index) : null;
   const isHoliday = dayInfo.index < 0;
   const isOpenOnDay = dayHours ? !dayHours.isClosed && !!dayHours.openTime : false;
-  const hoursStr = dayHours?.openTime && dayHours?.closeTime
-    ? `${dayHours.openTime} – ${dayHours.closeTime}`
-    : "Closed";
+  const hoursStr =
+    dayHours?.openTime && dayHours?.closeTime
+      ? `${dayHours.openTime} - ${dayHours.closeTime}`
+      : "Closed";
 
   return (
     <>
@@ -84,9 +81,13 @@ export default async function DayPage({ params }: PageProps) {
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 items-start">
           <main className="min-w-0 lg:pr-10">
             <nav className="font-mono text-xs text-ink3 flex items-center gap-1.5 mb-5">
-              <a href="/" className="text-ink3 no-underline hover:text-ink">Home</a>
+              <Link href="/" className="text-ink3 no-underline hover:text-ink">
+                Home
+              </Link>
               <span className="opacity-40">/</span>
-              <a href={`/is-${slug}-open`} className="text-ink3 no-underline hover:text-ink">{brand.name}</a>
+              <Link href={`/is-${slug}-open`} className="text-ink3 no-underline hover:text-ink">
+                {brand.name}
+              </Link>
               <span className="opacity-40">/</span>
               <span>{dayInfo.name}</span>
             </nav>
@@ -96,21 +97,22 @@ export default async function DayPage({ params }: PageProps) {
               dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
 
-            {/* Direct answer — Google Featured Snippet target */}
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight mb-4">
               Is {brand.name} Open on {dayInfo.name}?
             </h1>
 
-            <div className={`rounded-2xl p-6 sm:p-8 mb-6 border-2 ${
-              isHoliday
-                ? "bg-amber-bg border-amber"
-                : isOpenOnDay
-                  ? "bg-green-bg border-green"
-                  : "bg-red-bg border-red"
-            }`}>
+            <div
+              className={`rounded-2xl p-6 sm:p-8 mb-6 border-2 ${
+                isHoliday
+                  ? "bg-amber-bg border-amber"
+                  : isOpenOnDay
+                    ? "bg-green-bg border-green"
+                    : "bg-red-bg border-red"
+              }`}
+            >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-2xl shadow-sm">
-                  {brand.emoji || "🏪"}
+                  {brand.emoji || "Store"}
                 </div>
                 <div>
                   <div className="text-lg font-bold">{brand.name}</div>
@@ -121,23 +123,26 @@ export default async function DayPage({ params }: PageProps) {
               {isHoliday ? (
                 <div>
                   <p className="text-lg font-bold text-amber mb-2">
-                    ⚠️ {dayInfo.name} — Hours may vary
+                    {dayInfo.name} - Hours may vary
                   </p>
                   <p className="text-sm text-ink2">
-                    Many {brand.name} locations have reduced hours or are closed on {dayInfo.name}.
-                    Check your local store for specific holiday hours.
+                    Many {brand.name} locations have reduced hours or are closed on{" "}
+                    {dayInfo.name}. Check your local store for specific holiday hours.
                   </p>
                 </div>
               ) : (
                 <div>
-                  <p className={`text-3xl font-black tracking-tight mb-2 ${
-                    isOpenOnDay ? "text-green" : "text-red"
-                  }`}>
+                  <p
+                    className={`text-3xl font-black tracking-tight mb-2 ${
+                      isOpenOnDay ? "text-green" : "text-red"
+                    }`}
+                  >
                     {isOpenOnDay ? "Yes, typically open" : "No, usually closed"}
                   </p>
                   {isOpenOnDay && (
                     <p className="text-lg font-semibold text-ink">
-                      Typical {dayInfo.name} hours: <span className="font-mono">{hoursStr}</span>
+                      Typical {dayInfo.name} hours:{" "}
+                      <span className="font-mono">{hoursStr}</span>
                     </p>
                   )}
                 </div>
@@ -147,12 +152,12 @@ export default async function DayPage({ params }: PageProps) {
             <h2 className="text-lg font-bold mb-3">Full week hours</h2>
             <HoursTable hours={hours} timezone="America/New_York" />
 
-            <a
+            <Link
               href={`/is-${slug}-open`}
               className="inline-flex items-center gap-2 text-sm font-semibold text-green no-underline hover:underline mt-4"
             >
-              ← See {brand.name} real-time status
-            </a>
+              Back to real-time status
+            </Link>
           </main>
 
           <aside className="hidden lg:block sticky top-[84px]">

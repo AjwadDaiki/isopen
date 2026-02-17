@@ -16,23 +16,31 @@ interface PageProps {
 function getCategoryFromSlug(slug: string): string | null {
   const map: Record<string, string> = {
     "fast-food": "Fast Food",
-    "retail": "Retail",
-    "coffee": "Coffee",
-    "wholesale": "Wholesale",
-    "pharmacy": "Pharmacy",
+    retail: "Retail",
+    coffee: "Coffee",
+    wholesale: "Wholesale",
+    pharmacy: "Pharmacy",
     "home-improvement": "Home Improvement",
     "fast-casual": "Fast Casual",
-    "pizza": "Pizza",
-    "government": "Government",
-    "financial": "Financial",
+    pizza: "Pizza",
+    government: "Government",
+    financial: "Financial",
   };
   return map[slug] || null;
 }
 
 function getAllCategorySlugs(): string[] {
   return [
-    "fast-food", "retail", "coffee", "wholesale", "pharmacy",
-    "home-improvement", "fast-casual", "pizza", "government", "financial",
+    "fast-food",
+    "retail",
+    "coffee",
+    "wholesale",
+    "pharmacy",
+    "home-improvement",
+    "fast-casual",
+    "pizza",
+    "government",
+    "financial",
   ];
 }
 
@@ -46,8 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!category) return { title: "Not Found" };
 
   return {
-    title: `${category} Open Now — Check Real-Time Hours`,
-    description: `See which ${category.toLowerCase()} places are open right now. Real-time status for all major ${category.toLowerCase()} brands.`,
+    title: `${category} Open Now - Check Real-Time Hours`,
+    description: `See which ${category.toLowerCase()} places are open right now. Real-time status for major ${category.toLowerCase()} brands.`,
     alternates: {
       canonical: `https://isopenow.com/category/${slug}`,
     },
@@ -68,26 +76,24 @@ export default async function CategoryPage({ params }: PageProps) {
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 items-start">
           <main className="min-w-0 lg:pr-10">
             <nav className="font-mono text-xs text-ink3 flex items-center gap-1.5 mb-5">
-              <a href="/" className="text-ink3 no-underline hover:text-ink">Home</a>
+              <Link href="/" className="text-ink3 no-underline hover:text-ink">
+                Home
+              </Link>
               <span className="opacity-40">/</span>
               <span>{category}</span>
             </nav>
 
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
-              {category} — What&apos;s Open Now?
+              {category} - What&apos;s Open Now?
             </h1>
             <p className="text-ink3 mb-8 max-w-lg">
-              Real-time opening status for all major {category.toLowerCase()} brands.
+              Real-time opening status for major {category.toLowerCase()} brands.
               Updated every 5 minutes.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {categoryBrands.map(({ brand, hours }) => {
-                const status = computeOpenStatus(
-                  hours,
-                  "America/New_York",
-                  brand.is24h
-                );
+                const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
                 return (
                   <Link
                     key={brand.slug}
@@ -99,7 +105,7 @@ export default async function CategoryPage({ params }: PageProps) {
                     }`}
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{brand.emoji || "🏪"}</span>
+                      <span className="text-2xl">{brand.emoji || "Store"}</span>
                       <div className="flex-1">
                         <div className="text-lg font-bold text-ink">{brand.name}</div>
                       </div>

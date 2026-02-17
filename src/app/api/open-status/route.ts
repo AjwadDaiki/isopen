@@ -13,6 +13,8 @@ interface NearestLocation {
   timezone: string | null;
 }
 
+type LocationSource = "gps" | "ip" | "none";
+
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
@@ -99,9 +101,18 @@ export async function GET(request: NextRequest) {
   const tz = searchParams.get("timezone") || "America/New_York";
   const latRaw = searchParams.get("lat");
   const lngRaw = searchParams.get("lng");
-  const lat = latRaw ? Number(latRaw) : null;
-  const lng = lngRaw ? Number(lngRaw) : null;
-  const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
+  const queryLat = latRaw ? Number(latRaw) : null;
+  const queryLng = lngRaw ? Number(lngRaw) : null;
+  const headerLatRaw = request.headers.get("x-vercel-ip-latitude");
+  const headerLngRaw = request.headers.get("x-vercel-ip-longitude");
+  const ipLat = headerLatRaw ? Number(headerLatRaw) : null;
+  const ipLng = headerLngRaw ? Number(headerLngRaw) : null;
+
+  const hasQueryCoords = Number.isFinite(queryLat) && Number.isFinite(queryLng);
+  const hasIpCoords = Number.isFinite(ipLat) && Number.isFinite(ipLng);
+  const resolvedLat = hasQueryCoords ? (queryLat as number) : hasIpCoords ? (ipLat as number) : null;
+  const resolvedLng = hasQueryCoords ? (queryLng as number) : hasIpCoords ? (ipLng as number) : null;
+  const locationSource: LocationSource = hasQueryCoords ? "gps" : hasIpCoords ? "ip" : "none";
 
   if (!slug) {
     return NextResponse.json(
@@ -122,8 +133,8 @@ export async function GET(request: NextRequest) {
   let nearestLocation: NearestLocation | null = null;
   let resolvedHours = hours;
 
-  if (hasCoords) {
-    const nearest = await getNearestLocationWithHours(slug, lat as number, lng as number);
+  if (resolvedLat !== null && resolvedLng !== null) {
+    const nearest = await getNearestLocationWithHours(slug, resolvedLat, resolvedLng);
     if (nearest) {
       nearestLocation = nearest.nearest;
       if (nearest.hours.length > 0) {
@@ -152,6 +163,7 @@ export async function GET(request: NextRequest) {
       status,
       servedBy: cached ? "supabase-cache" : "local-dataset",
       nearestLocation,
+      locationSource,
     },
     {
       headers: {

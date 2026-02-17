@@ -14,7 +14,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
   const [status, setStatus] = useState(initialStatus);
   const [localTime, setLocalTime] = useState(initialStatus.localTime);
   const [shareState, setShareState] = useState<"idle" | "done">("idle");
-  const [geoPrecise, setGeoPrecise] = useState(false);
+  const [locationMode, setLocationMode] = useState<"gps" | "ip" | "none">("none");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [nearest, setNearest] = useState<{ city: string | null; distanceKm: number } | null>(null);
 
@@ -36,6 +36,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         if (res.ok && !cancelled) {
           const data = await res.json();
           setStatus(data.status);
+          setLocationMode(data.locationSource || "none");
           setNearest(
             data.nearestLocation
               ? { city: data.nearestLocation.city ?? null, distanceKm: data.nearestLocation.distanceKm }
@@ -80,10 +81,11 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         if (p.state === "granted" || p.state === "prompt") {
           navigator.geolocation.getCurrentPosition(
             (pos) => {
-              setGeoPrecise(true);
               setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
             },
-            () => setGeoPrecise(false),
+            () => {
+              // On refusal, API will try IP-based fallback.
+            },
             { enableHighAccuracy: false, timeout: 3500 }
           );
         }
@@ -194,7 +196,11 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           {nearestLine}
         </p>
         <p className="relative z-[1] mt-1.5 text-[12px] text-muted2">
-          {geoPrecise ? t(locale, "statusBasedOnLocation") : t(locale, "statusBasedOnTimezone")}
+          {locationMode === "gps"
+            ? t(locale, "statusBasedOnLocation")
+            : locationMode === "ip"
+              ? t(locale, "statusBasedOnIp")
+              : t(locale, "statusBasedOnTimezone")}
         </p>
         {nearest && (
           <p className="relative z-[1] mt-1 text-[12px] text-muted2">

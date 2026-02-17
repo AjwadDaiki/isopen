@@ -77,19 +77,15 @@ export default async function DayPage({ params }: PageProps) {
   return (
     <>
       <Navbar />
-      <div className="bg-bg pb-16">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 items-start">
-          <main className="min-w-0 lg:pr-10">
-            <nav className="font-mono text-xs text-ink3 flex items-center gap-1.5 mb-5">
-              <Link href="/" className="text-ink3 no-underline hover:text-ink">
-                Home
-              </Link>
-              <span className="opacity-40">/</span>
-              <Link href={`/is-${slug}-open`} className="text-ink3 no-underline hover:text-ink">
-                {brand.name}
-              </Link>
-              <span className="opacity-40">/</span>
-              <span>{dayInfo.name}</span>
+      <div className="min-h-screen">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-12 pt-8 pb-16 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start">
+          <main className="min-w-0">
+            <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
+              <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
+              <span className="text-muted">/</span>
+              <Link href={`/is-${slug}-open`} className="text-muted2 no-underline hover:text-text transition-colors">{brand.name}</Link>
+              <span className="text-muted">/</span>
+              <span className="text-text">{dayInfo.name}</span>
             </nav>
 
             <script
@@ -97,35 +93,42 @@ export default async function DayPage({ params }: PageProps) {
               dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
 
-            <h1 className="text-2xl sm:text-4xl font-black tracking-tight mb-4">
+            <h1 className="font-heading text-2xl sm:text-4xl font-extrabold tracking-tight mb-4 text-text">
               Is {brand.name} Open on {dayInfo.name}?
             </h1>
 
             <div
-              className={`rounded-2xl p-6 sm:p-8 mb-6 border-2 ${
+              className={`rounded-[20px] p-6 sm:p-8 mb-6 border ${
                 isHoliday
-                  ? "bg-amber-bg border-amber"
+                  ? "border-orange/30"
                   : isOpenOnDay
-                    ? "bg-green-bg border-green"
-                    : "bg-red-bg border-red"
+                    ? "border-green/25"
+                    : "border-red/20"
               }`}
+              style={{
+                background: isHoliday
+                  ? "var(--color-orange-dim)"
+                  : isOpenOnDay
+                    ? "linear-gradient(135deg, var(--color-bg1) 0%, rgba(0,232,122,0.04) 100%)"
+                    : "linear-gradient(135deg, var(--color-bg1) 0%, rgba(255,71,87,0.03) 100%)",
+              }}
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-2xl shadow-sm">
-                  {brand.emoji || "Store"}
+                <div className="w-12 h-12 rounded-xl bg-bg2 border border-border2 flex items-center justify-center text-2xl">
+                  {brand.emoji || "🏪"}
                 </div>
                 <div>
-                  <div className="text-lg font-bold">{brand.name}</div>
-                  <div className="text-xs text-ink3">{brand.category}</div>
+                  <div className="text-lg font-heading font-bold text-text">{brand.name}</div>
+                  <div className="text-xs text-muted2">{brand.category}</div>
                 </div>
               </div>
 
               {isHoliday ? (
                 <div>
-                  <p className="text-lg font-bold text-amber mb-2">
-                    {dayInfo.name} - Hours may vary
+                  <p className="text-lg font-heading font-bold text-orange mb-2">
+                    {dayInfo.name} — Hours may vary
                   </p>
-                  <p className="text-sm text-ink2">
+                  <p className="text-sm text-muted2">
                     Many {brand.name} locations have reduced hours or are closed on{" "}
                     {dayInfo.name}. Check your local store for specific holiday hours.
                   </p>
@@ -133,14 +136,14 @@ export default async function DayPage({ params }: PageProps) {
               ) : (
                 <div>
                   <p
-                    className={`text-3xl font-black tracking-tight mb-2 ${
+                    className={`text-3xl font-heading font-extrabold tracking-tight mb-2 ${
                       isOpenOnDay ? "text-green" : "text-red"
                     }`}
                   >
                     {isOpenOnDay ? "Yes, typically open" : "No, usually closed"}
                   </p>
                   {isOpenOnDay && (
-                    <p className="text-lg font-semibold text-ink">
+                    <p className="text-lg font-semibold text-text">
                       Typical {dayInfo.name} hours:{" "}
                       <span className="font-mono">{hoursStr}</span>
                     </p>
@@ -149,18 +152,18 @@ export default async function DayPage({ params }: PageProps) {
               )}
             </div>
 
-            <h2 className="text-lg font-bold mb-3">Full week hours</h2>
+            <h2 className="font-heading text-lg font-bold mb-3 text-text">Full week hours</h2>
             <HoursTable hours={hours} />
 
             <Link
               href={`/is-${slug}-open`}
               className="inline-flex items-center gap-2 text-sm font-semibold text-green no-underline hover:underline mt-4"
             >
-              Back to real-time status
+              &larr; Back to real-time status
             </Link>
           </main>
 
-          <aside className="hidden lg:block sticky top-[84px]">
+          <aside className="hidden lg:block sticky top-[72px]">
             <TrendingSidebar />
           </aside>
         </div>

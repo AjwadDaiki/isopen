@@ -17,14 +17,13 @@ export default function HolidayAlert({ country = "US", brandName }: Props) {
     (holidayDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  // Only show if within 14 days
   if (daysUntil > 14 || daysUntil < 0) return null;
 
   const isToday = daysUntil === 0;
   const isTomorrow = daysUntil === 1;
 
   return (
-    <div className="bg-amber-bg border border-amber/20 border-l-[3px] border-l-amber rounded-lg px-4 py-3 mb-4 text-[13px] text-amber font-medium flex items-center gap-2.5">
+    <div className="border border-orange/20 border-l-[3px] border-l-orange rounded-lg px-4 py-3 text-[13px] text-orange font-medium flex items-center gap-2.5" style={{ background: "var(--color-orange-dim)" }}>
       <span>⚠️</span>
       <span>
         {isToday

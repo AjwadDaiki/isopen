@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import StatusHero from "@/components/StatusHero";
 import HoursTable from "@/components/HoursTable";
 import HolidayAlert from "@/components/HolidayAlert";
@@ -67,67 +68,54 @@ export default async function LocaleBrandPage({ params }: PageProps) {
   const currentUrl = `https://isopenow.com/${locale}/is-${slug}-open`;
   const jsonLd = generateJsonLd(brand, hours, currentUrl);
 
-  // Translate status labels for the hero
-  const translatedStatus = {
-    ...status,
-    // Keep the data but UI will use translated labels
-  };
+  const translatedStatus = { ...status };
 
   return (
     <>
       <Navbar />
-      <div className="bg-bg pb-16">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 items-start">
-          <main className="min-w-0 lg:pr-10">
-            <nav className="font-mono text-xs text-ink3 flex items-center gap-1.5 mb-5">
-              <a href={`/${locale}`} className="text-ink3 no-underline hover:text-ink">
-                {t(loc, "home")}
-              </a>
-              <span className="opacity-40">/</span>
-              <span>{brand.category}</span>
-              <span className="opacity-40">/</span>
-              <span>{brand.name}</span>
-            </nav>
+      <div className="min-h-screen">
+        {/* Breadcrumb */}
+        <nav className="px-6 sm:px-12 pt-4 flex items-center gap-2 text-[13px] text-muted">
+          <a href={`/${locale}`} className="text-muted2 no-underline hover:text-text transition-colors">
+            {t(loc, "home")}
+          </a>
+          <span className="text-muted">/</span>
+          <span className="text-muted2">{brand.category}</span>
+          <span className="text-muted">/</span>
+          <span className="text-text">{brand.name}</span>
+        </nav>
 
-            <div className="inline-flex items-center gap-1.5 bg-bg2 border border-ink/10 rounded-full px-3 py-1 font-mono text-xs text-ink3 mb-4">
-              🌍 {t(loc, "timezone")}: {timezone}
-            </div>
+        <link rel="alternate" hrefLang="en" href={`https://isopenow.com/is-${slug}-open`} />
+        <link rel="alternate" hrefLang="fr" href={`https://isopenow.com/fr/is-${slug}-open`} />
+        <link rel="alternate" hrefLang="es" href={`https://isopenow.com/es/is-${slug}-open`} />
+        <link rel="alternate" hrefLang="x-default" href={`https://isopenow.com/is-${slug}-open`} />
 
-            {/* Hreflang links */}
-            <link rel="alternate" hrefLang="en" href={`https://isopenow.com/is-${slug}-open`} />
-            <link rel="alternate" hrefLang="fr" href={`https://isopenow.com/fr/is-${slug}-open`} />
-            <link rel="alternate" hrefLang="es" href={`https://isopenow.com/es/is-${slug}-open`} />
-            <link rel="alternate" hrefLang="x-default" href={`https://isopenow.com/is-${slug}-open`} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
 
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
+        {/* Hero */}
+        <div className="mx-6 sm:mx-12 mt-6">
+          <StatusHero brand={brand} initialStatus={translatedStatus} />
+        </div>
 
-            <StatusHero brand={brand} initialStatus={translatedStatus} />
+        {/* Body grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 px-6 sm:px-12 py-6 items-start">
+          <div className="flex flex-col gap-4 min-w-0">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
             <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
-            <RelatedBrands brands={related} />
-          </main>
+          </div>
 
-          <aside className="hidden lg:block sticky top-[84px]">
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px]">
             <TrendingSidebar />
+            <RelatedBrands brands={related} />
           </aside>
         </div>
       </div>
-
-      <footer className="border-t border-ink/10 py-8 px-4 sm:px-6 bg-bg">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <a href={`/${locale}`} className="font-extrabold text-lg text-green tracking-tight no-underline">
-            isitopen
-          </a>
-          <div className="font-mono text-[11px] text-ink3">
-            {t(loc, "footer")} · {new Date().getFullYear()}
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }

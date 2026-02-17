@@ -25,23 +25,22 @@ function getCategoryFromSlug(slug: string): string | null {
     pizza: "Pizza",
     government: "Government",
     financial: "Financial",
+    grocery: "Grocery",
+    convenience: "Convenience",
+    electronics: "Electronics",
+    auto: "Auto",
+    banking: "Banking",
+    shipping: "Shipping",
+    gym: "Gym",
   };
   return map[slug] || null;
 }
 
 function getAllCategorySlugs(): string[] {
-  return [
-    "fast-food",
-    "retail",
-    "coffee",
-    "wholesale",
-    "pharmacy",
-    "home-improvement",
-    "fast-casual",
-    "pizza",
-    "government",
-    "financial",
-  ];
+  const cats = new Set(
+    brandsData.map((b) => b.brand.category?.toLowerCase().replace(/\s+/g, "-") || "").filter(Boolean)
+  );
+  return [...cats];
 }
 
 export async function generateStaticParams() {
@@ -72,68 +71,71 @@ export default async function CategoryPage({ params }: PageProps) {
   return (
     <>
       <Navbar />
-      <div className="bg-bg pb-16">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0 items-start">
-          <main className="min-w-0 lg:pr-10">
-            <nav className="font-mono text-xs text-ink3 flex items-center gap-1.5 mb-5">
-              <Link href="/" className="text-ink3 no-underline hover:text-ink">
-                Home
-              </Link>
-              <span className="opacity-40">/</span>
-              <span>{category}</span>
+      <div className="min-h-screen">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-12 pt-8 pb-16 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start">
+          <main className="min-w-0">
+            <nav className="font-mono text-xs text-muted flex items-center gap-1.5 mb-5">
+              <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
+              <span className="text-muted">/</span>
+              <span className="text-text">{category}</span>
             </nav>
 
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
-              {category} - What&apos;s Open Now?
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-text">
+              {category} — What&apos;s Open Now?
             </h1>
-            <p className="text-ink3 mb-8 max-w-lg">
+            <p className="text-muted2 mb-8 max-w-lg">
               Real-time opening status for major {category.toLowerCase()} brands.
               Updated every 5 minutes.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {categoryBrands.map(({ brand, hours }) => {
                 const status = computeOpenStatus(hours, "America/New_York", brand.is24h);
+                const isOpen = status.isOpen;
                 return (
                   <Link
                     key={brand.slug}
                     href={`/is-${brand.slug}-open`}
-                    className={`rounded-xl p-5 border-2 no-underline transition-all hover:-translate-y-0.5 hover:shadow-md ${
-                      status.isOpen
-                        ? "bg-green-bg border-green/30"
-                        : "bg-red-bg border-red/30"
+                    className={`rounded-[14px] p-5 border no-underline transition-all hover:-translate-y-0.5 ${
+                      isOpen
+                        ? "border-green/20"
+                        : "border-border opacity-75 hover:opacity-100"
                     }`}
+                    style={{
+                      background: isOpen
+                        ? "linear-gradient(135deg, var(--color-bg1) 0%, rgba(0,232,122,0.04) 100%)"
+                        : "var(--color-bg1)",
+                    }}
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{brand.emoji || "Store"}</span>
+                      <span className="text-2xl">{brand.emoji || "🏪"}</span>
                       <div className="flex-1">
-                        <div className="text-lg font-bold text-ink">{brand.name}</div>
+                        <div className="text-lg font-heading font-bold text-text">{brand.name}</div>
                       </div>
                       <div className="flex items-center gap-2">
                         <span
-                          className={`w-2.5 h-2.5 rounded-full ${
-                            status.isOpen ? "bg-green animate-breathe" : "bg-red"
+                          className={`w-2 h-2 rounded-full ${
+                            isOpen ? "bg-green animate-pulse-dot" : "bg-red"
                           }`}
+                          style={isOpen ? { boxShadow: "0 0 6px var(--color-green-glow)" } : {}}
                         />
                         <span
-                          className={`text-sm font-bold ${
-                            status.isOpen ? "text-green" : "text-red"
-                          }`}
+                          className={`text-sm font-bold ${isOpen ? "text-green" : "text-red"}`}
                         >
-                          {status.isOpen ? "OPEN" : "CLOSED"}
+                          {isOpen ? "OPEN" : "CLOSED"}
                         </span>
                       </div>
                     </div>
-                    <div className="flex gap-4 text-xs text-ink2">
+                    <div className="flex gap-4 text-xs text-muted2">
                       {status.todayHours && (
                         <span>
-                          <span className="font-mono text-ink3">Today:</span>{" "}
+                          <span className="font-mono text-muted">Today:</span>{" "}
                           {status.todayHours}
                         </span>
                       )}
-                      {status.isOpen && status.closesIn && (
+                      {isOpen && status.closesIn && (
                         <span>
-                          <span className="font-mono text-ink3">Closes in:</span>{" "}
+                          <span className="font-mono text-muted">Closes in:</span>{" "}
                           {status.closesIn}
                         </span>
                       )}
@@ -144,13 +146,13 @@ export default async function CategoryPage({ params }: PageProps) {
             </div>
 
             {categoryBrands.length === 0 && (
-              <p className="text-ink3 text-center py-12">
+              <p className="text-muted text-center py-12">
                 No brands found in this category yet.
               </p>
             )}
           </main>
 
-          <aside className="hidden lg:block sticky top-[84px]">
+          <aside className="hidden lg:block sticky top-[72px]">
             <TrendingSidebar />
           </aside>
         </div>

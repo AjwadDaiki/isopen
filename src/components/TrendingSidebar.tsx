@@ -8,13 +8,16 @@ const TRENDING_SLUGS = [
   "costco",
   "stock-market",
   "cvs",
+  "starbucks",
 ];
 
 export default function TrendingSidebar() {
   return (
-    <div className="bg-white border border-ink/10 rounded-xl overflow-hidden shadow-sm mb-4">
-      <div className="px-4 py-3.5 border-b border-ink/10 text-[13px] font-bold flex items-center gap-2">
-        🔥 Trending right now
+    <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+      <div className="card-title-row">
+        <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
+          <span>🔥</span> Trending right now
+        </h3>
       </div>
       <div className="py-2">
         {TRENDING_SLUGS.map((slug, i) => {
@@ -30,18 +33,19 @@ export default function TrendingSidebar() {
             <Link
               key={slug}
               href={`/is-${slug}-open`}
-              className="flex items-center gap-3 px-4 py-2.5 hover:bg-bg transition-colors border-b border-ink/10 last:border-b-0 no-underline"
+              className="flex items-center gap-3 px-5 py-2.5 hover:bg-bg2 transition-colors no-underline"
             >
-              <span className="font-mono text-[11px] text-ink3 w-[18px]">
+              <span className="font-mono text-[11px] text-muted w-4 text-right shrink-0">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="text-[13px] font-semibold flex-1 text-ink">
+              <span className="text-[13px] font-medium flex-1 text-text">
                 {data.brand.name}
               </span>
               <span
-                className={`w-2 h-2 rounded-full shrink-0 ${
+                className={`w-[7px] h-[7px] rounded-full shrink-0 ${
                   status.isOpen ? "bg-green" : "bg-red"
                 }`}
+                style={status.isOpen ? { boxShadow: "0 0 6px var(--color-green-glow)" } : {}}
               />
             </Link>
           );

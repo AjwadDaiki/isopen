@@ -10,6 +10,7 @@ interface Props {
 
 export default function StatusHero({ brand, initialStatus }: Props) {
   const [status, setStatus] = useState(initialStatus);
+  const [localTime, setLocalTime] = useState(initialStatus.localTime);
   const [shareState, setShareState] = useState<"idle" | "done">("idle");
 
   useEffect(() => {
@@ -38,6 +39,22 @@ export default function StatusHero({ brand, initialStatus }: Props) {
     };
   }, [brand.slug]);
 
+  // Update local time every second
+  useEffect(() => {
+    function tick() {
+      setLocalTime(
+        new Date().toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        })
+      );
+    }
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   const isOpen = status.isOpen;
   const canonicalPath = `/is-${brand.slug}-open`;
 
@@ -56,91 +73,120 @@ export default function StatusHero({ brand, initialStatus }: Props) {
       setShareState("done");
       setTimeout(() => setShareState("idle"), 2000);
     } catch {
-      // User canceled sharing or clipboard access is unavailable.
+      // User canceled
     }
   }
 
   return (
     <div
-      className={`rounded-2xl p-8 sm:p-10 mb-6 relative overflow-hidden border-2 transition-colors ${
-        isOpen ? "border-green bg-green-bg" : "border-red bg-red-bg"
+      className={`rounded-[20px] overflow-hidden border relative ${
+        isOpen ? "border-green/25" : "border-red/20"
       }`}
+      style={{
+        boxShadow: isOpen ? "0 0 60px rgba(0,232,122,0.06)" : "none",
+      }}
     >
-      <div
-        className={`absolute -top-[60px] -right-[60px] w-[200px] h-[200px] rounded-full opacity-[0.04] ${
-          isOpen ? "bg-green" : "bg-red"
-        }`}
-      />
+      {/* Main hero area */}
+      <div className="bg-bg1 relative p-8 sm:p-9 flex flex-wrap items-center justify-between gap-6">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: isOpen
+              ? "linear-gradient(135deg, rgba(0,232,122,0.04) 0%, transparent 60%)"
+              : "linear-gradient(135deg, rgba(255,71,87,0.03) 0%, transparent 60%)",
+          }}
+        />
 
-      <div className="flex items-start justify-between mb-5 flex-wrap gap-4 relative z-10">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center text-[28px] shadow-[0_2px_16px_rgba(26,22,18,0.08)] shrink-0">
-            {brand.emoji || "Store"}
+        <div className="flex items-center gap-6 relative z-10">
+          <div className="w-[72px] h-[72px] rounded-2xl bg-bg2 border border-border2 flex items-center justify-center text-4xl shrink-0">
+            {brand.emoji || "🏪"}
           </div>
           <div>
-            <h1 className="text-[28px] font-extrabold tracking-[-0.03em] leading-[1.1]">
+            <h1 className="font-heading font-extrabold text-[32px] tracking-[-0.04em] leading-[1.1] text-text">
               {brand.name}
             </h1>
-            <p className="text-[13px] text-ink3 mt-0.5">
+            <p className="text-[13px] text-muted2 flex items-center gap-2">
               {brand.category}
-              {brand.is24h && " | 24/7 locations available"}
+              {brand.is24h && (
+                <>
+                  <span className="text-border2">&middot;</span>
+                  <span className="text-muted">24/7 locations available</span>
+                </>
+              )}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col items-end gap-3 relative z-10 shrink-0">
           <div
-            className={`w-2.5 h-2.5 rounded-full ${
-              isOpen ? "bg-green animate-breathe" : "bg-red"
+            className={`flex items-center gap-2.5 px-6 py-3 rounded-full font-heading font-extrabold text-xl tracking-[0.04em] border-2 ${
+              isOpen
+                ? "text-green border-green/35"
+                : "text-red border-red/30"
             }`}
-          />
-          <div
-            className={`font-extrabold text-[42px] tracking-[-0.04em] leading-none ${
-              isOpen ? "text-green" : "text-red"
-            }`}
+            style={{
+              background: isOpen
+                ? "rgba(0,232,122,0.12)"
+                : "rgba(255,71,87,0.1)",
+            }}
           >
+            <span
+              className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                isOpen ? "bg-green animate-pulse-dot" : "bg-red"
+              }`}
+              style={isOpen ? { boxShadow: "0 0 12px var(--color-green-glow)" } : {}}
+            />
             {isOpen ? "OPEN" : "CLOSED"}
+          </div>
+          <div className="font-mono text-[13px] text-muted2 text-right">
+            {isOpen && status.closesIn && (
+              <>
+                Closes in{" "}
+                <strong className="text-text text-[15px]">{status.closesIn}</strong>
+              </>
+            )}
+            {!isOpen && status.opensAt && (
+              <>
+                Opens at{" "}
+                <strong className="text-text text-[15px]">{status.opensAt}</strong>
+              </>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="flex gap-8 flex-wrap relative z-10">
-        {isOpen && status.closesIn && (
-          <DetailItem label="Closes in" value={status.closesIn} color="text-green" />
-        )}
-        {!isOpen && status.opensAt && (
-          <DetailItem label="Opens at" value={status.opensAt} color="text-red" />
-        )}
-        {status.todayHours && (
-          <DetailItem label="Today's hours" value={status.todayHours} />
-        )}
-        <DetailItem label="Local time" value={status.localTime} />
-        {status.holidayName ? (
-          <DetailItem label="Holiday today?" value={status.holidayName} color="text-amber" />
-        ) : (
-          <DetailItem label="Holiday today?" value="No" color="text-green" />
-        )}
+      {/* Stats row */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-border bg-bg2">
+        <StatCell label="Today's Hours" value={status.todayHours || "—"} />
+        <StatCell label="Local Time" value={localTime} />
+        <StatCell
+          label="Holiday Today?"
+          value={status.holidayName || "No"}
+          color={status.holidayName ? "text-orange" : "text-green"}
+        />
+        <StatCell label="Updated" value="Feb 2026" muted />
       </div>
 
-      <div className="flex gap-2.5 mt-6 flex-wrap relative z-10">
+      {/* Action buttons */}
+      <div className="flex gap-2.5 px-8 py-4 bg-bg1 border-t border-border flex-wrap">
         <a
           href={brand.website || canonicalPath}
           target={brand.website ? "_blank" : undefined}
           rel={brand.website ? "noopener noreferrer" : undefined}
-          className="bg-ink text-bg rounded-lg px-5 py-2.5 font-semibold text-sm cursor-pointer hover:opacity-90 transition-all hover:-translate-y-px no-underline"
+          className="bg-green text-black rounded-lg px-5 py-2.5 font-semibold text-sm cursor-pointer hover:opacity-90 transition-all no-underline"
         >
           Official website
         </a>
         <a
           href="#user-reports"
-          className="bg-transparent text-ink2 border border-ink/20 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer hover:bg-white/50 transition-all no-underline"
+          className="bg-transparent text-muted2 border border-border2 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer hover:bg-bg2 hover:text-text transition-all no-underline"
         >
           Report hours issue
         </a>
         <button
           type="button"
           onClick={handleShare}
-          className="bg-transparent text-ink2 border border-ink/20 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer hover:bg-white/50 transition-all"
+          className="bg-transparent text-muted2 border border-border2 rounded-lg px-5 py-2.5 font-medium text-sm cursor-pointer hover:bg-bg2 hover:text-text transition-all"
         >
           {shareState === "done" ? "Link copied" : "Share"}
         </button>
@@ -149,23 +195,29 @@ export default function StatusHero({ brand, initialStatus }: Props) {
   );
 }
 
-function DetailItem({
+function StatCell({
   label,
   value,
   color,
+  muted,
 }: {
   label: string;
   value: string;
   color?: string;
+  muted?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-ink3 font-mono">
+    <div className="px-6 py-[18px] border-r border-border last:border-r-0">
+      <div className="font-mono text-[10px] text-muted uppercase tracking-[0.12em] mb-1">
         {label}
-      </span>
-      <span className={`text-lg font-bold tracking-[-0.02em] ${color || "text-ink"}`}>
+      </div>
+      <div
+        className={`font-heading font-bold tracking-[-0.02em] ${
+          muted ? "text-sm text-muted2" : `text-[17px] ${color || "text-text"}`
+        }`}
+      >
         {value}
-      </span>
+      </div>
     </div>
   );
 }

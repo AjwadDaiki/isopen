@@ -3,10 +3,22 @@
 import { useState, useEffect } from "react";
 import type { HoursData } from "@/lib/types";
 
-const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
 interface Props {
   hours: HoursData[];
+}
+
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+function timeToMinutes(t: string): number {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function formatTime(t: string): string {
+  const [h, m] = t.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
 export default function HoursTable({ hours }: Props) {
@@ -16,71 +28,91 @@ export default function HoursTable({ hours }: Props) {
     setToday(new Date().getDay());
   }, []);
 
-  const sortedHours = [1, 2, 3, 4, 5, 6, 0].map((day) => ({
-    day,
-    hours: hours.find((h) => h.dayOfWeek === day),
-  }));
+  // Sort: Mon(1)..Sat(6),Sun(0)
+  const sorted = [...hours].sort((a, b) => {
+    const oa = a.dayOfWeek === 0 ? 7 : a.dayOfWeek;
+    const ob = b.dayOfWeek === 0 ? 7 : b.dayOfWeek;
+    return oa - ob;
+  });
 
   return (
-    <div className="bg-white border border-ink/10 rounded-2xl mb-5 overflow-hidden card-shadow">
-      <div className="px-6 py-4 border-b border-ink/10 flex items-center justify-between">
-        <h2 className="text-[15px] font-bold tracking-tight flex items-center gap-2">
-          🕐 Opening hours
-        </h2>
-        <span className="text-[11px] text-ink3 font-mono">
-          Updated {new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+    <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+      <div className="card-title-row">
+        <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
+          <span>🕐</span> Opening hours
+        </h3>
+        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">
+          Updated Feb 2026
         </span>
       </div>
 
-      <div className="py-1">
-        {sortedHours.map(({ day, hours: h }) => {
-          const isToday = day === today;
-          const isClosed = !h || h.isClosed || !h.openTime || !h.closeTime;
-          const timeStr = isClosed ? "Closed" : `${h!.openTime} – ${h!.closeTime}`;
+      <div className="py-2">
+        {sorted.map((day) => {
+          const isToday = day.dayOfWeek === today;
+          const isClosed = day.isClosed || !day.openTime || !day.closeTime;
 
+          // Calculate bar position (proportional to 24h)
+          let barLeft = 0;
           let barWidth = 0;
-          let barOffset = 0;
-          if (!isClosed && h?.openTime && h?.closeTime) {
-            const [oh, om] = h.openTime.split(":").map(Number);
-            const [ch, cm] = h.closeTime.split(":").map(Number);
-            const openMin = oh * 60 + om;
-            let closeMin = ch * 60 + cm;
-            if (h.spansMidnight) closeMin += 24 * 60;
-            barWidth = ((closeMin - openMin) / (24 * 60)) * 100;
-            barOffset = (openMin / (24 * 60)) * 100;
+          if (!isClosed && day.openTime && day.closeTime) {
+            const open = timeToMinutes(day.openTime);
+            let close = timeToMinutes(day.closeTime);
+            if (day.spansMidnight || close <= open) close += 1440;
+            barLeft = (open / 1440) * 100;
+            barWidth = ((close - open) / 1440) * 100;
           }
 
           return (
             <div
-              key={day}
-              className={`flex items-center px-6 py-3 transition-colors ${
+              key={day.dayOfWeek}
+              className={`flex items-center py-2.5 px-6 gap-4 transition-colors ${
                 isToday
-                  ? "bg-gradient-to-r from-green-bg/80 to-transparent"
-                  : "hover:bg-bg/60"
+                  ? "bg-green-dim border-l-[3px] border-l-green"
+                  : "hover:bg-bg2"
               }`}
             >
-              <span className={`text-[14px] w-[110px] shrink-0 ${
-                isToday ? "text-green font-bold" : "text-ink2"
-              }`}>
-                {DAY_NAMES[day]}{isToday && " ←"}
-              </span>
+              <div
+                className={`text-[13px] w-[90px] shrink-0 ${
+                  isToday
+                    ? "text-green font-bold"
+                    : "text-muted2 font-medium"
+                }`}
+              >
+                {DAY_NAMES[day.dayOfWeek]}
+                {isToday && " ←"}
+              </div>
 
-              <div className="flex-1 mx-5 h-[6px] bg-bg2 rounded-full overflow-hidden hidden sm:block">
-                {barWidth > 0 && (
+              {/* Proportional bar */}
+              <div className="flex-1 h-1 bg-bg3 rounded-sm relative overflow-hidden hidden sm:block">
+                {!isClosed && (
                   <div
-                    className={`h-full rounded-full transition-all ${isToday ? "bg-green" : "bg-ink/20"}`}
-                    style={{ width: `${Math.min(barWidth, 100)}%`, marginLeft: `${barOffset}%` }}
+                    className={`absolute top-0 h-full rounded-sm ${
+                      isToday ? "bg-green opacity-50" : "bg-border2"
+                    }`}
+                    style={{ left: `${barLeft}%`, width: `${barWidth}%` }}
                   />
                 )}
               </div>
 
-              <span className={`font-mono text-[14px] shrink-0 ${
-                isClosed
-                  ? "text-red"
-                  : isToday ? "text-green font-semibold" : "text-ink"
-              }`}>
-                {timeStr}
-              </span>
+              {/* Time */}
+              <div
+                className={`font-mono text-[13px] font-medium whitespace-nowrap text-right w-[140px] shrink-0 ${
+                  isToday ? "text-green" : isClosed ? "text-red" : "text-text"
+                }`}
+              >
+                {isClosed ? (
+                  "Closed"
+                ) : (
+                  <>
+                    {formatTime(day.openTime!)} – {formatTime(day.closeTime!)}
+                    {day.spansMidnight && (
+                      <span className="ml-1.5 text-[11px] text-orange bg-orange-dim rounded px-1.5 py-px font-mono">
+                        +1
+                      </span>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           );
         })}

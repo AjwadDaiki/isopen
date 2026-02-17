@@ -58,7 +58,6 @@ export default async function BrandPage({ params }: PageProps) {
   if (!data) notFound();
 
   const { brand, hours } = data;
-  // SSR default — StatusHero re-fetches immediately with visitor's real timezone
   const ssrTz = "America/New_York";
   const status = computeOpenStatus(hours, ssrTz, brand.is24h);
   const related = getRelatedBrands(slug, brand.category, 6);
@@ -70,71 +69,118 @@ export default async function BrandPage({ params }: PageProps) {
   return (
     <>
       <Navbar />
-      <div className="bg-bg min-h-screen">
-        <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pt-8 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10 items-start">
-          <main className="min-w-0">
-            {/* Breadcrumb */}
-            <nav className="font-mono text-[12px] text-ink3 flex items-center gap-2 mb-6">
-              <Link href="/" className="text-ink3 no-underline hover:text-ink transition-colors">Home</Link>
-              <span className="opacity-30">/</span>
-              <Link href={`/category/${categorySlug}`} className="text-ink3 no-underline hover:text-ink transition-colors">{brand.category}</Link>
-              <span className="opacity-30">/</span>
-              <span className="text-ink font-medium">{brand.name}</span>
-            </nav>
+      <div className="min-h-screen">
+        {/* Breadcrumb */}
+        <nav className="px-6 sm:px-12 pt-4 flex items-center gap-2 text-[13px] text-muted">
+          <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
+          <span className="text-muted">/</span>
+          <Link href={`/category/${categorySlug}`} className="text-muted2 no-underline hover:text-text transition-colors">{brand.category}</Link>
+          <span className="text-muted">/</span>
+          <span className="text-text">{brand.name}</span>
+        </nav>
 
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-            <StatusHero brand={brand} initialStatus={status} />
+        {/* Hero - full width */}
+        <div className="mx-6 sm:mx-12 mt-6">
+          <StatusHero brand={brand} initialStatus={status} />
+        </div>
+
+        {/* Body grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 px-6 sm:px-12 py-6 items-start">
+          {/* Left column */}
+          <div className="flex flex-col gap-4 min-w-0">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
             <AffiliateUnit brandName={brand.name} category={brand.category} isOpen={status.isOpen} />
             <UserReports brandSlug={slug} />
-            <RelatedBrands brands={related} />
 
-            {/* Internal links for SEO */}
-            <section className="bg-white border border-ink/10 rounded-2xl p-6 mb-5 card-shadow">
-              <h2 className="text-base font-bold tracking-tight mb-4">
-                📅 {brand.name} hours by day
-              </h2>
-              <div className="flex flex-wrap gap-2">
+            {/* By day tabs */}
+            <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+              <div className="card-title-row">
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
+                  <span>📅</span> {brand.name} hours by day
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-1.5 p-4">
                 {["monday","tuesday","wednesday","thursday","friday","saturday","sunday"].map((day) => (
-                  <Link key={day} href={`/is-${slug}-open-on-${day}`}
-                    className="text-xs font-mono bg-bg border border-ink/8 rounded-lg px-3.5 py-2 text-ink2 no-underline hover:bg-bg2 hover:text-ink transition-all">
+                  <Link
+                    key={day}
+                    href={`/is-${slug}-open-on-${day}`}
+                    className="text-xs font-medium px-3 py-1.5 rounded-md border border-transparent text-muted2 no-underline hover:bg-bg2 hover:text-text hover:border-border2 transition-all"
+                  >
                     {day.charAt(0).toUpperCase() + day.slice(1)}
                   </Link>
                 ))}
                 {["christmas","thanksgiving","new-years","easter"].map((h) => (
-                  <Link key={h} href={`/is-${slug}-open-on-${h}`}
-                    className="text-xs font-mono bg-amber-bg border border-amber/15 rounded-lg px-3.5 py-2 text-amber no-underline hover:bg-amber/10 transition-all">
+                  <Link
+                    key={h}
+                    href={`/is-${slug}-open-on-${h}`}
+                    className="text-xs font-medium px-3 py-1.5 rounded-md text-orange no-underline hover:bg-orange-dim transition-all"
+                  >
                     {h.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
                   </Link>
                 ))}
               </div>
-            </section>
+            </div>
 
-            {/* FAQ for SEO */}
-            <section className="bg-white border border-ink/10 rounded-2xl p-6 card-shadow">
-              <h2 className="text-base font-bold tracking-tight mb-5">Frequently asked questions</h2>
-              <div className="space-y-5">
-                <FaqItem q={`Is ${brand.name} open right now?`}
+            {/* FAQ */}
+            <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+              <div className="card-title-row">
+                <h3 className="font-heading font-bold text-sm tracking-[-0.01em] flex items-center gap-2 text-text">
+                  <span>❓</span> Frequently asked questions
+                </h3>
+              </div>
+              <div>
+                <FaqItem
+                  q={`Is ${brand.name} open right now?`}
                   a={status.isOpen
                     ? `Yes, ${brand.name} is currently open${status.todayHours ? `. Today's hours are ${status.todayHours}` : ""}.${status.closesIn ? ` It closes in ${status.closesIn}.` : ""}`
-                    : `No, ${brand.name} is currently closed.${status.opensAt ? ` It opens at ${status.opensAt}.` : ""}`} />
-                <FaqItem q={`What are ${brand.name} hours today?`}
-                  a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`} />
-                <FaqItem q={`Is ${brand.name} open on Sunday?`}
+                    : `No, ${brand.name} is currently closed.${status.opensAt ? ` It opens at ${status.opensAt}.` : ""}`}
+                />
+                <FaqItem
+                  q={`What are ${brand.name} hours today?`}
+                  a={status.todayHours ? `${brand.name} is open from ${status.todayHours} today.` : `${brand.name} is closed today.`}
+                />
+                <FaqItem
+                  q={`Is ${brand.name} open on Sunday?`}
                   a={(() => {
                     const sun = hours.find(h => h.dayOfWeek === 0);
                     if (!sun || sun.isClosed) return `${brand.name} is typically closed on Sundays.`;
                     return `Yes, ${brand.name} is typically open on Sundays from ${sun.openTime} to ${sun.closeTime}.`;
-                  })()} />
+                  })()}
+                />
               </div>
-            </section>
-          </main>
+            </div>
+          </div>
 
-          <aside className="hidden lg:flex flex-col gap-4 sticky top-[68px]">
+          {/* Sidebar */}
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px]">
             <TrendingSidebar />
+            <RelatedBrands brands={related} />
+
+            {/* Official website link */}
+            {brand.website && (
+              <div className="bg-bg1 border border-border rounded-2xl overflow-hidden">
+                <div className="p-5">
+                  <a
+                    href={brand.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2.5 no-underline text-text"
+                  >
+                    <span className="text-xl">🌐</span>
+                    <div>
+                      <div className="text-xs text-muted2 mb-0.5">Official website</div>
+                      <div className="font-heading font-bold text-[13px]">
+                        {brand.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} &rarr;
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            )}
           </aside>
         </div>
       </div>
@@ -145,9 +191,9 @@ export default async function BrandPage({ params }: PageProps) {
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <div className="border-b border-ink/5 pb-4 last:border-b-0 last:pb-0">
-      <h3 className="text-[14px] font-semibold text-ink mb-1.5">{q}</h3>
-      <p className="text-[13px] text-ink2 leading-relaxed">{a}</p>
+    <div className="border-b border-border last:border-b-0 px-6 py-4">
+      <h3 className="font-heading font-bold text-[13px] mb-1.5 text-text">{q}</h3>
+      <p className="text-[13px] text-muted2 leading-relaxed">{a}</p>
     </div>
   );
 }

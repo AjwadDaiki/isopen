@@ -10,14 +10,14 @@ export default function PrivacyPage() {
   return (
     <>
       <Navbar />
-      <div className="bg-bg min-h-screen">
+      <div className="min-h-screen">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 py-12">
-          <h1 className="text-3xl font-black tracking-tight mb-8">Privacy Policy</h1>
-          <div className="prose prose-sm text-ink2 space-y-6">
-            <p className="text-ink3 font-mono text-xs">Last updated: February 2026</p>
+          <h1 className="text-3xl font-heading font-extrabold text-text tracking-tight mb-8">Privacy Policy</h1>
+          <div className="prose prose-sm text-muted2 space-y-6">
+            <p className="text-muted font-mono text-xs">Last updated: February 2026</p>
 
             <section>
-              <h2 className="text-lg font-bold text-ink mt-8 mb-3">1. Information We Collect</h2>
+              <h2 className="text-lg font-bold text-text mt-8 mb-3">1. Information We Collect</h2>
               <p>IsItOpen (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) collects minimal information to provide our service:</p>
               <ul className="list-disc pl-5 space-y-1 text-sm">
                 <li><strong>Automatic data:</strong> Timezone, browser type, and general location (country/region) derived from your IP address. We do not store your IP address.</li>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-ink mt-8 mb-3">2. How We Use Information</h2>
+              <h2 className="text-lg font-bold text-text mt-8 mb-3">2. How We Use Information</h2>
               <ul className="list-disc pl-5 space-y-1 text-sm">
                 <li>Display real-time store opening status based on your timezone</li>
                 <li>Improve accuracy of opening hours through community reports</li>
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-ink mt-8 mb-3">3. Third-Party Services</h2>
+              <h2 className="text-lg font-bold text-text mt-8 mb-3">3. Third-Party Services</h2>
               <p className="text-sm">We use the following third-party services:</p>
               <ul className="list-disc pl-5 space-y-1 text-sm">
                 <li><strong>Google Analytics:</strong> For usage analytics. See <a href="https://policies.google.com/privacy" className="text-green underline">Google&apos;s Privacy Policy</a>.</li>
@@ -48,12 +48,12 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-ink mt-8 mb-3">4. Data Retention</h2>
+              <h2 className="text-lg font-bold text-text mt-8 mb-3">4. Data Retention</h2>
               <p className="text-sm">User reports are stored indefinitely to improve service accuracy. Analytics data is retained according to Google Analytics default settings (26 months).</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-ink mt-8 mb-3">5. Your Rights</h2>
+              <h2 className="text-lg font-bold text-text mt-8 mb-3">5. Your Rights</h2>
               <p className="text-sm">You can:</p>
               <ul className="list-disc pl-5 space-y-1 text-sm">
                 <li>Disable cookies in your browser settings</li>
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-ink mt-8 mb-3">6. Contact</h2>
+              <h2 className="text-lg font-bold text-text mt-8 mb-3">6. Contact</h2>
               <p className="text-sm">For privacy-related questions, contact us at: <strong>privacy@isopenow.com</strong></p>
             </section>
           </div>

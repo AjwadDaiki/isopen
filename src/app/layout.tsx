@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
+import { Syne, DM_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
   display: "swap",
+});
+
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -57,7 +64,7 @@ export default function RootLayout({
           })(window,document,'script','dataLayer','GTM-P7FP826D');
         `}</Script>
       </head>
-      <body className={`${bricolage.variable} ${jetbrains.variable} antialiased`}>
+      <body className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}>
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-P7FP826D"

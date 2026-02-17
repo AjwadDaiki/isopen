@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface Props {
   brandName: string;
   category: string | null;
@@ -5,7 +7,6 @@ interface Props {
 }
 
 export default function AffiliateUnit({ brandName, category, isOpen }: Props) {
-  // Show delivery affiliate for food brands when open, shopping when retail
   const isFoodBrand = ["Fast Food", "Pizza", "Coffee", "Fast Casual"].includes(
     category || ""
   );
@@ -16,57 +17,39 @@ export default function AffiliateUnit({ brandName, category, isOpen }: Props) {
     "Pharmacy",
   ].includes(category || "");
 
-  if (isFoodBrand) {
-    return (
-      <div className="bg-ink rounded-xl p-5 mb-4 flex items-center gap-5 cursor-pointer hover:-translate-y-0.5 transition-transform">
-        <div className="w-12 h-12 rounded-xl bg-white/[0.08] flex items-center justify-center text-2xl shrink-0">
-          🛵
-        </div>
-        <div className="flex-1">
-          <div className="text-sm font-bold text-bg mb-0.5">
-            {isOpen
-              ? `${brandName} too far? Order delivery`
-              : `${brandName} is closed — order delivery instead`}
-          </div>
-          <div className="text-xs text-bg/50">
-            Uber Eats · Delivered in 20 min · Free on first order
-          </div>
-          <div className="font-mono text-[8px] text-bg/30 uppercase tracking-wider mt-1">
-            affiliate
-          </div>
-        </div>
-        <button className="bg-green text-white border-none rounded-md px-3.5 py-2 font-semibold text-xs cursor-pointer whitespace-nowrap hover:bg-green/90">
-          Order now →
-        </button>
-      </div>
-    );
-  }
+  if (!isFoodBrand && !isRetailBrand) return null;
 
-  if (isRetailBrand) {
-    return (
-      <div className="bg-ink rounded-xl p-5 mb-4 flex items-center gap-5 cursor-pointer hover:-translate-y-0.5 transition-transform">
-        <div className="w-12 h-12 rounded-xl bg-white/[0.08] flex items-center justify-center text-2xl shrink-0">
-          🛒
-        </div>
-        <div className="flex-1">
-          <div className="text-sm font-bold text-bg mb-0.5">
-            {isOpen
-              ? `Shop ${brandName} online instead`
-              : `${brandName} is closed — shop online now`}
-          </div>
-          <div className="text-xs text-bg/50">
-            Amazon · Same-day delivery available · Millions of products
-          </div>
-          <div className="font-mono text-[8px] text-bg/30 uppercase tracking-wider mt-1">
-            affiliate
-          </div>
-        </div>
-        <button className="bg-green text-white border-none rounded-md px-3.5 py-2 font-semibold text-xs cursor-pointer whitespace-nowrap hover:bg-green/90">
-          Shop now →
-        </button>
-      </div>
-    );
-  }
+  const icon = isFoodBrand ? "🛵" : "🛒";
+  const title = isFoodBrand
+    ? isOpen
+      ? `${brandName} too far? Order delivery`
+      : `${brandName} is closed — order delivery instead`
+    : isOpen
+      ? `Shop ${brandName} online instead`
+      : `${brandName} is closed — shop online now`;
+  const sub = isFoodBrand
+    ? "Uber Eats · Delivered in 20 min · Free on first order"
+    : "Amazon · Same-day delivery available · Millions of products";
+  const cta = isFoodBrand ? "Order now →" : "Shop now →";
 
-  return null;
+  return (
+    <Link
+      href="#"
+      className="bg-bg1 border border-border rounded-[14px] p-[18px] flex items-center gap-4 no-underline cursor-pointer transition-all hover:border-orange hover:-translate-y-px"
+    >
+      <div className="w-11 h-11 rounded-[10px] flex items-center justify-center text-xl shrink-0" style={{ background: "var(--color-orange-dim)" }}>
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-[10px] font-semibold text-orange uppercase tracking-[0.1em] mb-0.5">
+          Affiliate · {isFoodBrand ? "Uber Eats" : "Amazon"}
+        </div>
+        <div className="font-heading font-bold text-sm text-text">{title}</div>
+        <div className="text-xs text-muted2">{sub}</div>
+      </div>
+      <div className="bg-orange text-black font-bold text-xs px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0">
+        {cta}
+      </div>
+    </Link>
+  );
 }

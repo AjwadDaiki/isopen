@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBrandBySlug } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
+import { getStatusFromCacheBySlug } from "@/lib/establishments";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -23,7 +24,8 @@ export async function GET(request: NextRequest) {
   }
 
   const { brand, hours } = data;
-  const status = computeOpenStatus(hours, tz, brand.is24h);
+  const cached = await getStatusFromCacheBySlug(slug, tz);
+  const status = cached?.status || computeOpenStatus(hours, tz, brand.is24h);
 
   return NextResponse.json(
     {
@@ -34,6 +36,7 @@ export async function GET(request: NextRequest) {
         emoji: brand.emoji,
       },
       status,
+      servedBy: cached ? "supabase-cache" : "local-dataset",
     },
     {
       headers: {

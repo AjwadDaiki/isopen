@@ -271,3 +271,51 @@ CREATE POLICY "Public read brand_hours" ON brand_hours FOR SELECT USING (true);
 CREATE POLICY "Public read holidays" ON holidays FOR SELECT USING (true);
 CREATE POLICY "Public read reports" ON user_reports FOR SELECT USING (true);
 CREATE POLICY "Anyone can insert reports" ON user_reports FOR INSERT WITH CHECK (true);
+
+-- =============================================
+-- ZERO-API-WASTE : Cache permanent + logs API
+-- =============================================
+CREATE TABLE IF NOT EXISTS establishments (
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug                VARCHAR(160) UNIQUE NOT NULL,
+  name                VARCHAR(255) NOT NULL,
+  country             VARCHAR(2) DEFAULT 'US',
+  timezone            VARCHAR(64) DEFAULT 'America/New_York',
+  latitude            DECIMAL(10, 8),
+  longitude           DECIMAL(11, 8),
+  google_place_id     VARCHAR(255) UNIQUE,
+  source              VARCHAR(24) NOT NULL DEFAULT 'manual',
+  standard_hours      JSONB NOT NULL DEFAULT '[]'::jsonb,
+  is_24h              BOOLEAN NOT NULL DEFAULT false,
+  is_active           BOOLEAN NOT NULL DEFAULT true,
+  last_verified_at    TIMESTAMPTZ,
+  last_google_sync_at TIMESTAMPTZ,
+  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_establishments_slug ON establishments(slug);
+CREATE INDEX IF NOT EXISTS idx_establishments_source ON establishments(source);
+CREATE INDEX IF NOT EXISTS idx_establishments_verify ON establishments(last_verified_at);
+
+CREATE TABLE IF NOT EXISTS api_logs (
+  id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  provider           VARCHAR(32) NOT NULL, -- google_places | local | public_dataset | nager_date
+  endpoint           VARCHAR(255) NOT NULL,
+  status_code        INT,
+  cache_hit          BOOLEAN NOT NULL DEFAULT false,
+  estimated_cost_usd NUMERIC(10, 6) NOT NULL DEFAULT 0,
+  establishment_id   UUID REFERENCES establishments(id) ON DELETE SET NULL,
+  notes              TEXT,
+  metadata           JSONB,
+  created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_api_logs_created_at ON api_logs(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_api_logs_provider ON api_logs(provider, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_api_logs_establishment ON api_logs(establishment_id, created_at DESC);
+
+ALTER TABLE establishments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE api_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read establishments" ON establishments FOR SELECT USING (true);

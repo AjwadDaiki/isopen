@@ -159,3 +159,25 @@ Ce document liste ce qui est en place dans le projet, avec statut precis pour ve
 - Tracking (GTM): `EN PLACE`
 - Monetisation reelle (ads/affiliate live): `A FINALISER`
 - Donnees temps reel externes (Google Places): `A INTEGRER`
+
+## 14) Zero-API-Waste (nouveau)
+
+- `OK` Strategie cache-first active:
+  - `/api/open-status` lit d'abord Supabase via `getStatusFromCacheBySlug`.
+  - Si present en table `establishments`, statut servi sans appel Google.
+- `OK` Fonction `get_status` implementee:
+  - Fichier: `src/lib/establishments.ts`
+  - Alias explicite `get_status` + logique cache/permanent storage.
+- `OK` Tables d'optimisation cout ajoutees:
+  - `establishments` (cache permanent par etablissement)
+  - `api_logs` (tracking de chaque appel sortant et cout estime)
+  - Definies dans `supabase-schema.sql`.
+- `OK` Cron hebdo en place:
+  - Endpoint: `GET /api/cron/weekly-verify`
+  - Verifie les etablissements non verifies depuis >7 jours.
+- `OK` Dashboard admin conso:
+  - Page: `/admin?token=...`
+  - API: `/api/admin/consumption`
+  - KPIs: calls, cout estime, cache ratio, Supabase vs Google.
+- `OK` Doc architecture dediee:
+  - `ARCHITECTURE_ZERO_API_WASTE.md`

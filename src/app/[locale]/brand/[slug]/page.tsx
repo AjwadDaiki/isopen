@@ -105,15 +105,16 @@ export default async function LocaleBrandPage({ params }: PageProps) {
           <StatusHero brand={brand} initialStatus={status} locale={loc} />
         </div>
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]" style={{ gap: 22, paddingTop: 20, paddingBottom: 52 }}>
-          <main className="min-w-0 flex flex-col gap-4">
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_320px]" style={{ gap: 26, paddingTop: 24, paddingBottom: 56 }}>
+          <main className="min-w-0 flex flex-col gap-5">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
             <UserReports brandSlug={slug} />
             <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
           </main>
 
-          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px] self-start">
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-[82px] self-start">
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={250} />
             <TrendingSidebar />
             <RelatedBrands brands={related} />
           </aside>

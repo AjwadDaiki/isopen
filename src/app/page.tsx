@@ -142,6 +142,10 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="page-pad" style={{ paddingBottom: 32 }}>
+          <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={120} />
+        </section>
+
         <Footer />
       </div>
     </>

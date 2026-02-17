@@ -14,6 +14,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
   const [status, setStatus] = useState(initialStatus);
   const [localTime, setLocalTime] = useState(initialStatus.localTime);
   const [shareState, setShareState] = useState<"idle" | "done">("idle");
+  const [geoPrecise, setGeoPrecise] = useState(false);
 
   useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -44,7 +45,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
   useEffect(() => {
     function tick() {
       setLocalTime(
-        new Date().toLocaleTimeString("en-US", {
+        new Date().toLocaleTimeString(locale === "en" ? "en-US" : locale, {
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
@@ -55,6 +56,25 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
+  }, [locale]);
+
+  useEffect(() => {
+    if (!("permissions" in navigator) || !("geolocation" in navigator)) return;
+
+    void (navigator as Navigator & { permissions: Permissions }).permissions
+      .query({ name: "geolocation" as PermissionName })
+      .then((p) => {
+        if (p.state === "granted") {
+          navigator.geolocation.getCurrentPosition(
+            () => setGeoPrecise(true),
+            () => setGeoPrecise(false),
+            { enableHighAccuracy: false, timeout: 3500 }
+          );
+        }
+      })
+      .catch(() => {
+        // Ignore permission API failures.
+      });
   }, []);
 
   const isOpen = status.isOpen;
@@ -142,12 +162,12 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
             <div className="font-mono text-sm text-muted2 md:text-right">
               {isOpen && status.closesIn && (
                 <>
-                  Closes in <strong className="text-text text-[15px]">{status.closesIn}</strong>
+                  {t(locale, "closesIn")} <strong className="text-text text-[15px]">{status.closesIn}</strong>
                 </>
               )}
               {!isOpen && status.opensAt && (
                 <>
-                  Opens at <strong className="text-text text-[15px]">{status.opensAt}</strong>
+                  {t(locale, "opensAt")} <strong className="text-text text-[15px]">{status.opensAt}</strong>
                 </>
               )}
             </div>
@@ -157,17 +177,20 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         <p className="relative z-[1] mt-4 text-sm md:text-[15px] text-text font-semibold">
           {nearestLine}
         </p>
+        <p className="relative z-[1] mt-1.5 text-[12px] text-muted2">
+          {geoPrecise ? t(locale, "statusBasedOnLocation") : t(locale, "statusBasedOnTimezone")}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 border-t border-border bg-bg2">
-        <StatCell label="Today's Hours" value={status.todayHours || "--"} />
-        <StatCell label="Local Time" value={localTime} />
+        <StatCell label={t(locale, "todayHours")} value={status.todayHours || "--"} />
+        <StatCell label={t(locale, "localTime")} value={localTime} />
         <StatCell
-          label="Holiday Today"
+          label={t(locale, "holidayToday")}
           value={status.holidayName || "No"}
           color={status.holidayName ? "var(--color-orange)" : "var(--color-green)"}
         />
-        <StatCell label="Updated" value="Live" muted />
+        <StatCell label={t(locale, "updated")} value={t(locale, "live")} muted />
       </div>
 
       <div className="px-5 py-4 md:px-7 md:py-5 bg-bg1 border-t border-border flex flex-wrap gap-2.5">
@@ -184,7 +207,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           href="#user-reports"
           className="no-underline rounded-lg px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
-          Report hours issue
+          {t(locale, "reportIssueCta")}
         </a>
 
         <button
@@ -192,7 +215,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           onClick={handleShare}
           className="rounded-lg px-4 py-2.5 text-sm font-medium border border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border transition-colors"
         >
-          {shareState === "done" ? "Link copied" : t(locale, "sharePage")}
+          {shareState === "done" ? t(locale, "linkCopied") : t(locale, "sharePage")}
         </button>
       </div>
     </section>

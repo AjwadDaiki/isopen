@@ -117,8 +117,8 @@ export default async function BrandPage({ params }: PageProps) {
           <StatusHero brand={brand} initialStatus={status} locale="en" />
         </div>
 
-        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_300px]" style={{ gap: 22, paddingTop: 20, paddingBottom: 52 }}>
-          <main className="min-w-0 flex flex-col gap-4">
+        <div className="page-pad grid grid-cols-1 lg:grid-cols-[1fr_320px]" style={{ gap: 26, paddingTop: 24, paddingBottom: 56 }}>
+          <main className="min-w-0 flex flex-col gap-5">
             <HolidayAlert brandName={brand.name} />
             <HoursTable hours={hours} />
             <UserReports brandSlug={slug} />
@@ -128,7 +128,7 @@ export default async function BrandPage({ params }: PageProps) {
                 <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Quick checks</h3>
               </div>
 
-              <div className="px-4 py-4 md:px-6 md:py-5 flex flex-col gap-3">
+              <div className="px-5 py-5 md:px-7 md:py-6 flex flex-col gap-3.5">
                 <div className="flex flex-wrap gap-2">
                   {DAY_SLUGS.map((day) => (
                     <Link
@@ -169,7 +169,8 @@ export default async function BrandPage({ params }: PageProps) {
             <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
           </main>
 
-          <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px] self-start">
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-[82px] self-start">
+            <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={250} />
             <TrendingSidebar />
             <RelatedBrands brands={related} />
           </aside>

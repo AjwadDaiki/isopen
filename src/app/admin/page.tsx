@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getConsumptionDashboard } from "@/lib/establishments";
 import { getMonetizationDashboard } from "@/lib/monetization";
+import { buildRevenueCandidates } from "@/lib/revenue-candidates";
 
 interface Props {
   searchParams: Promise<{ token?: string; days?: string }>;
@@ -36,6 +37,7 @@ export default async function AdminPage({ searchParams }: Props) {
   const days = Number.isFinite(daysRaw) ? Math.min(Math.max(daysRaw, 1), 365) : 30;
   const stats = await getConsumptionDashboard(days);
   const monetization = await getMonetizationDashboard(days);
+  const revenueCandidates = buildRevenueCandidates(monetization);
 
   const supabaseRatio = stats.totalCalls
     ? (stats.sources.supabaseServed / stats.totalCalls) * 100
@@ -122,6 +124,45 @@ export default async function AdminPage({ searchParams }: Props) {
                 )}
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="ui-panel overflow-hidden">
+          <div className="card-title-row">
+            <h2 className="font-heading text-sm font-bold text-text tracking-tight">Revenue Candidates (Auto-ranked)</h2>
+            <span className="font-mono text-[10px] text-muted tracking-[0.08em]">{revenueCandidates.length} candidates</span>
+          </div>
+          <div className="p-4 md:p-6">
+            {revenueCandidates.length === 0 ? (
+              <p className="text-sm text-muted2">No candidates yet. Wait for more traffic signals.</p>
+            ) : (
+              <div className="grid gap-2">
+                {revenueCandidates.map((candidate) => (
+                  <div key={`${candidate.path}-${candidate.template}`} className="bg-bg2 border border-border rounded-lg px-3 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-mono text-xs text-muted2 truncate">{candidate.path}</p>
+                        <p className="text-xs text-text mt-1">{candidate.template}</p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${
+                          candidate.priority === "P0"
+                            ? "text-green border-green/30 bg-green-dim"
+                            : candidate.priority === "P1"
+                              ? "text-orange border-orange/30 bg-orange-dim"
+                              : "text-muted2 border-border2 bg-bg3"
+                        }`}>
+                          {candidate.priority}
+                        </span>
+                        <span className="text-xs text-text font-semibold">{candidate.score}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted2 mt-2">{candidate.rationale}</p>
+                    <p className="text-xs text-text mt-1.5">Action: {candidate.action}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

@@ -6,9 +6,14 @@ import Footer from "@/components/Footer";
 import AdSlot from "@/components/AdSlot";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { brandsData } from "@/data/brands";
-import { getAllCitySlugs, getCityBySlug, getCitiesForCategory } from "@/data/cities";
+import {
+  getAllStateSlugs,
+  getCitiesByStateSlug,
+  getStateCodeFromSlug,
+  getStateName,
+} from "@/data/cities";
 import { computeOpenStatus } from "@/lib/isOpenNow";
-import { buildCityCategoryEditorial } from "@/lib/seo-editorial";
+import { buildStateCategoryEditorial } from "@/lib/seo-editorial";
 import {
   generateBreadcrumbJsonLd,
   generateOrganizationJsonLd,
@@ -36,16 +41,18 @@ function categoryFromSlug(slug: string): string | null {
 export async function generateStaticParams() {
   const params: Array<{ slug: string; category: string }> = [];
 
-  for (const citySlug of getAllCitySlugs()) {
-    const city = getCityBySlug(citySlug);
-    if (!city) continue;
+  for (const stateSlug of getAllStateSlugs()) {
+    const cities = getCitiesByStateSlug(stateSlug);
+    if (cities.length === 0) continue;
 
     const seen = new Set<string>();
-    for (const category of city.focusCategories) {
-      const categorySlug = category.toLowerCase().replace(/\s+/g, "-");
-      if (!CATEGORY_BY_SLUG.has(categorySlug) || seen.has(categorySlug)) continue;
-      seen.add(categorySlug);
-      params.push({ slug: citySlug, category: categorySlug });
+    for (const city of cities) {
+      for (const focusCategory of city.focusCategories) {
+        const focusSlug = focusCategory.toLowerCase().replace(/\s+/g, "-");
+        if (!CATEGORY_BY_SLUG.has(focusSlug) || seen.has(focusSlug)) continue;
+        seen.add(focusSlug);
+        params.push({ slug: stateSlug, category: focusSlug });
+      }
     }
   }
 
@@ -54,62 +61,104 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, category: categorySlug } = await params;
-  const city = getCityBySlug(slug);
+  const stateCode = getStateCodeFromSlug(slug);
   const category = categoryFromSlug(categorySlug);
-  if (!city || !category) return { title: "Not Found" };
+  if (!stateCode || !category) return { title: "Not Found" };
 
-  const canonicalPath = `/city/${city.slug}/category/${categorySlug}`;
+  const stateName = getStateName(stateCode);
+  const canonicalPath = `/state/${slug}/category/${categorySlug}`;
 
   return {
-    title: `${category} Open Now in ${city.name}, ${city.state}?`,
-    description: `Check which ${category.toLowerCase()} options are open now in ${city.name}, ${city.state}. Real-time status and fast local brand links.`,
-    alternates: { canonical: absoluteUrl(canonicalPath) },
+    title: `${category} Open Now in ${stateName}?`,
+    description: `Check which ${category.toLowerCase()} options are open now across ${stateName}. Live state-level status with city shortcuts.`,
+    alternates: {
+      canonical: absoluteUrl(canonicalPath),
+    },
     openGraph: {
       type: "website",
       url: absoluteUrl(canonicalPath),
-      title: `${category} Open Now in ${city.name}, ${city.state}`,
-      description: `Live ${category.toLowerCase()} status for ${city.name}.`,
+      title: `${category} Open Now in ${stateName}`,
+      description: `State-level ${category.toLowerCase()} checks for ${stateName}.`,
     },
   };
 }
 
-export default async function CityCategoryPage({ params }: PageProps) {
+export default async function StateCategoryPage({ params }: PageProps) {
   const { slug, category: categorySlug } = await params;
-  const city = getCityBySlug(slug);
+  const stateCode = getStateCodeFromSlug(slug);
   const category = categoryFromSlug(categorySlug);
-  if (!city || !category) notFound();
+  if (!stateCode || !category) notFound();
 
-  const featuredInCategory = city.featuredBrandSlugs
-    .map((brandSlug) => brandsData.find((entry) => entry.brand.slug === brandSlug))
-    .filter((entry): entry is (typeof brandsData)[number] => Boolean(entry))
-    .filter((entry) => entry.brand.category === category);
+  const stateName = getStateName(stateCode);
+  const cities = getCitiesByStateSlug(slug);
+  if (cities.length === 0) notFound();
 
-  const fallback = brandsData.filter((entry) => entry.brand.category === category).slice(0, 14);
-  const cards = featuredInCategory.length > 0 ? featuredInCategory : fallback;
+  const cityBySlug = new Map(cities.map((city) => [city.slug, city]));
+  const brandToCity = new Map<string, string>();
+  for (const city of cities) {
+    for (const brandSlug of city.featuredBrandSlugs) {
+      if (brandToCity.has(brandSlug)) continue;
+      const entry = brandsData.find((b) => b.brand.slug === brandSlug);
+      if (!entry || entry.brand.category !== category) continue;
+      brandToCity.set(brandSlug, city.slug);
+    }
+  }
+
+  const featured = [...brandToCity.entries()]
+    .map(([brandSlug, citySlug]) => {
+      const entry = brandsData.find((b) => b.brand.slug === brandSlug);
+      if (!entry) return null;
+      return { ...entry, citySlug };
+    })
+    .filter((entry): entry is ((typeof brandsData)[number] & { citySlug: string }) => Boolean(entry))
+    .slice(0, 24);
+
+  const fallback = brandsData
+    .filter((entry) => entry.brand.category === category)
+    .slice(0, 24)
+    .map((entry) => ({ ...entry, citySlug: null as string | null }));
+
+  const cards = featured.length > 0 ? featured : fallback;
   if (cards.length === 0) notFound();
 
-  const statuses = cards.map((entry) => ({
-    ...entry,
-    status: computeOpenStatus(entry.hours, city.timezone, entry.brand.is24h),
-  }));
+  const statuses = cards.map((entry) => {
+    const tz = entry.citySlug ? cityBySlug.get(entry.citySlug)?.timezone || cities[0].timezone : cities[0].timezone;
+    return {
+      ...entry,
+      status: computeOpenStatus(entry.hours, tz, entry.brand.is24h),
+    };
+  });
   const openCount = statuses.filter((entry) => entry.status.isOpen).length;
 
-  const otherCategorySlugs = city.focusCategories
-    .map((c) => c.toLowerCase().replace(/\s+/g, "-"))
-    .filter((s) => s !== categorySlug)
-    .filter((s, i, arr) => CATEGORY_BY_SLUG.has(s) && arr.indexOf(s) === i)
-    .slice(0, 6);
+  const otherCategorySlugs = [...new Set(
+    cities
+      .flatMap((city) => city.focusCategories)
+      .map((focusCategory) => focusCategory.toLowerCase().replace(/\s+/g, "-"))
+      .filter((focusSlug) => focusSlug !== categorySlug && CATEGORY_BY_SLUG.has(focusSlug))
+  )].slice(0, 8);
 
-  const otherCities = getCitiesForCategory(category, 12).filter((entry) => entry.slug !== city.slug).slice(0, 10);
-  const editorial = buildCityCategoryEditorial(city.name, city.state, category, openCount, statuses.length);
-  const categoryGlobalSlug = category.toLowerCase().replace(/\s+/g, "-");
-  const stateSlug = city.state.toLowerCase();
+  const otherStates = getAllStateSlugs()
+    .filter((stateSlug) => stateSlug !== slug)
+    .map((stateSlug) => {
+      const stateCities = getCitiesByStateSlug(stateSlug);
+      const hasCategory = stateCities.some((city) => city.focusCategories.includes(category));
+      const code = getStateCodeFromSlug(stateSlug);
+      if (!hasCategory || !code) return null;
+      return {
+        slug: stateSlug,
+        name: getStateName(code),
+      };
+    })
+    .filter((entry): entry is { slug: string; name: string } => Boolean(entry))
+    .slice(0, 10);
 
-  const canonicalPath = `/city/${city.slug}/category/${categorySlug}`;
+  const editorial = buildStateCategoryEditorial(stateName, category, openCount, statuses.length, cities.length);
+
+  const canonicalPath = `/state/${slug}/category/${categorySlug}`;
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", item: absoluteUrl("/") },
-    { name: "Cities", item: absoluteUrl("/city") },
-    { name: `${city.name}, ${city.state}`, item: absoluteUrl(`/city/${city.slug}`) },
+    { name: "States", item: absoluteUrl("/state") },
+    { name: stateName, item: absoluteUrl(`/state/${slug}`) },
     { name: category, item: absoluteUrl(canonicalPath) },
   ]);
   const websiteJsonLd = generateWebsiteJsonLd();
@@ -117,12 +166,16 @@ export default async function CityCategoryPage({ params }: PageProps) {
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `${category} open now in ${city.name}`,
+    name: `${category} open now in ${stateName}`,
     itemListElement: statuses.map((entry, index) => ({
       "@type": "ListItem",
       position: index + 1,
       name: entry.brand.name,
-      url: absoluteUrl(`/city/${city.slug}/is-${entry.brand.slug}-open`),
+      url: absoluteUrl(
+        entry.citySlug
+          ? `/city/${entry.citySlug}/is-${entry.brand.slug}-open`
+          : `/is-${entry.brand.slug}-open`
+      ),
     })),
   };
 
@@ -139,11 +192,9 @@ export default async function CityCategoryPage({ params }: PageProps) {
           <nav className="breadcrumb-row">
             <Link href="/" className="text-muted2 no-underline hover:text-text transition-colors">Home</Link>
             <span>/</span>
-            <Link href="/city" className="text-muted2 no-underline hover:text-text transition-colors">Cities</Link>
+            <Link href="/state" className="text-muted2 no-underline hover:text-text transition-colors">States</Link>
             <span>/</span>
-            <Link href={`/city/${city.slug}`} className="text-muted2 no-underline hover:text-text transition-colors">
-              {city.name}, {city.state}
-            </Link>
+            <Link href={`/state/${slug}`} className="text-muted2 no-underline hover:text-text transition-colors">{stateName}</Link>
             <span>/</span>
             <span className="text-text">{category}</span>
           </nav>
@@ -154,12 +205,12 @@ export default async function CityCategoryPage({ params }: PageProps) {
             <main className="min-w-0 content-stack">
               <section className="ui-panel overflow-hidden">
                 <div className="panel-body-lg">
-                  <p className="font-mono uppercase tracking-[0.12em] text-[11px] text-muted mb-3">City + category page</p>
+                  <p className="font-mono uppercase tracking-[0.12em] text-[11px] text-muted mb-3">State + category page</p>
                   <h1 className="font-heading font-extrabold text-[30px] sm:text-[42px] tracking-[-0.04em] leading-[0.95] text-text">
-                    {category} Open Now in {city.name}, {city.state}?
+                    {category} Open Now in {stateName}?
                   </h1>
                   <p className="text-muted2 text-[15px] leading-relaxed mt-5 max-w-[68ch]">
-                    Live status using {city.timezone}. Designed for quick local decisions before you leave.
+                    Live state-level checks connected to {cities.length} city pages in {stateName}.
                   </p>
                   <div className="mt-6 inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 border ui-border-green-30 bg-green-dim text-[12px] text-green font-semibold">
                     <span className="w-[7px] h-[7px] rounded-full bg-green animate-pulse-dot" />
@@ -170,15 +221,14 @@ export default async function CityCategoryPage({ params }: PageProps) {
 
               <section className="ui-panel overflow-hidden">
                 <div className="card-title-row">
-                  <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Top {category} checks in {city.name}</h2>
+                  <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Top {category} checks in {stateName}</h2>
                   <span className="font-mono text-[10px] text-muted tracking-[0.08em]">Live status</span>
                 </div>
-
                 <div className="panel-body grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {statuses.map(({ brand, status }, i) => (
+                  {statuses.map(({ brand, status, citySlug }, i) => (
                     <Link
                       key={brand.slug}
-                      href={`/city/${slug}/is-${brand.slug}-open`}
+                      href={citySlug ? `/city/${citySlug}/is-${brand.slug}-open` : `/is-${brand.slug}-open`}
                       className={`brand-card-link brand-card-premium p-6 no-underline ${status.isOpen ? "brand-card-open" : "brand-card-closed"}`}
                       style={{ animationDelay: `${Math.min(i * 0.03, 0.25)}s` }}
                     >
@@ -186,7 +236,9 @@ export default async function CityCategoryPage({ params }: PageProps) {
                         <span className="text-2xl">{brand.emoji || "Store"}</span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[16px] font-heading font-bold text-text leading-tight truncate">{brand.name}</p>
-                          <p className="text-[12px] text-muted2 truncate">{brand.category}</p>
+                          <p className="text-[12px] text-muted2 truncate">
+                            {citySlug ? cityBySlug.get(citySlug)?.name : stateName}
+                          </p>
                         </div>
                         <span className={`brand-status-pill ${status.isOpen ? "brand-status-pill-open" : "brand-status-pill-closed"}`}>
                           <span className="status-led" />
@@ -231,71 +283,63 @@ export default async function CityCategoryPage({ params }: PageProps) {
                 </div>
                 <div className="panel-body flex flex-wrap gap-3">
                   <Link
-                    href={`/city/${city.slug}`}
+                    href={`/state/${slug}`}
                     className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                   >
-                    All brands in {city.name}
+                    All in {stateName}
                   </Link>
                   <Link
-                    href={`/category/${categoryGlobalSlug}`}
+                    href={`/category/${categorySlug}`}
                     className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                   >
                     Global {category}
                   </Link>
                   <Link
-                    href={`/near-me/${categoryGlobalSlug}`}
+                    href={`/near-me/${categorySlug}`}
                     className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                   >
                     {category} near me
                   </Link>
-                  <Link
-                    href={`/state/${stateSlug}/category/${categorySlug}`}
-                    className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
-                  >
-                    {category} in {city.state}
-                  </Link>
                 </div>
               </section>
 
-              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={100} />
+              <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={110} />
             </main>
 
             <aside className="sidebar-stack">
-              <TrendingSidebar />
-
               {otherCategorySlugs.length > 0 && (
                 <section className="ui-panel overflow-hidden">
                   <div className="card-title-row">
-                    <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Other categories in {city.name}</h2>
+                    <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Other categories in {stateName}</h2>
                   </div>
                   <div className="panel-body flex flex-col gap-3">
                     {otherCategorySlugs.map((otherSlug) => (
                       <Link
                         key={otherSlug}
-                        href={`/city/${city.slug}/category/${otherSlug}`}
+                        href={`/state/${slug}/category/${otherSlug}`}
                         className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-5 py-4"
                       >
                         <p className="text-[14px] font-semibold text-text leading-tight">{categoryFromSlug(otherSlug)}</p>
-                        <p className="text-[12px] text-muted2 mt-1">Open now in {city.name}</p>
+                        <p className="text-[12px] text-muted2 mt-1">Open now in {stateName}</p>
                       </Link>
                     ))}
                   </div>
                 </section>
               )}
 
-              {otherCities.length > 0 && (
+              {otherStates.length > 0 && (
                 <section className="ui-panel overflow-hidden">
                   <div className="card-title-row">
-                    <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">{category} in other cities</h2>
+                    <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">{category} in other states</h2>
                   </div>
                   <div className="panel-body flex flex-col gap-3">
-                    {otherCities.map((entry) => (
+                    {otherStates.map((state) => (
                       <Link
-                        key={entry.slug}
-                        href={`/city/${entry.slug}/category/${categorySlug}`}
+                        key={state.slug}
+                        href={`/state/${state.slug}/category/${categorySlug}`}
                         className="no-underline rounded-xl border border-border ui-bg-2-55 hover:bg-bg2 hover:border-border2 transition-colors px-5 py-4"
                       >
-                        <p className="text-[14px] font-semibold text-text leading-tight">{entry.name}, {entry.state}</p>
+                        <p className="text-[14px] font-semibold text-text leading-tight">{state.name}</p>
                         <p className="text-[12px] text-muted2 mt-1">Live {category.toLowerCase()} checks</p>
                       </Link>
                     ))}
@@ -303,6 +347,7 @@ export default async function CityCategoryPage({ params }: PageProps) {
                 </section>
               )}
 
+              <TrendingSidebar />
               <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={220} />
             </aside>
           </div>

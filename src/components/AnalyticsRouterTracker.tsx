@@ -31,10 +31,13 @@ function inferTemplate(pathname: string): string {
   if (segments[0] === "city") {
     if (segments.length === 1) return "city_index";
     if (segments.length === 2) return "city_page";
+    if (segments[2] === "category") return hasLocalePrefix ? "locale_city_category" : "city_category";
     return "city_brand";
   }
   if (segments[0] === "state") {
-    return segments.length === 1 ? "state_index" : "state_page";
+    if (segments.length === 1) return "state_index";
+    if (segments[2] === "category") return "state_category";
+    return "state_page";
   }
   if (segments[0] === "near-me") {
     return segments.length === 1 ? "near_me_index" : "near_me_category";

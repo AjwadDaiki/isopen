@@ -212,10 +212,10 @@ export default async function StatePage({ params }: PageProps) {
                     return (
                       <Link
                         key={category}
-                        href={`/category/${categorySlug}`}
+                        href={`/state/${slug}/category/${categorySlug}`}
                         className="no-underline text-[12px] font-medium text-muted2 border border-border rounded-xl px-4 py-2.5 hover:text-text hover:border-border2 transition-colors bg-bg1"
                       >
-                        {category}
+                        {category} in {stateName}
                       </Link>
                     );
                   })}

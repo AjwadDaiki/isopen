@@ -339,3 +339,56 @@ export function buildCityCategoryEditorial(
     ],
   };
 }
+
+export function buildStateCategoryEditorial(
+  stateName: string,
+  category: string,
+  openCount: number,
+  totalCount: number,
+  cityCount: number
+): EditorialContent {
+  const seed = hashSeed(`${stateName}-${category}`);
+  const angle = pick(
+    [
+      `State-level ${category.toLowerCase()} pages capture users comparing several cities before choosing where to go now.`,
+      `Users searching "${category.toLowerCase()} open now in ${stateName}" usually need immediate, decision-ready answers.`,
+      `Combining state and category intent helps rank for high-value queries with strong commercial intent.`,
+      `State + category pages work as strategic hubs connecting city pages, brand pages, and near-me intent.`,
+    ],
+    seed
+  );
+  const qualityNote = pick(
+    [
+      "Use this page to narrow options quickly, then confirm exact branch details on the linked city/brand pages.",
+      "Schedules are based on brand-level patterns and can vary by branch, staffing, and local operations.",
+      "Holiday periods can change hours, so near-departure checks remain important.",
+      "This page is best used as a fast filter before final route planning.",
+    ],
+    seed,
+    1
+  );
+
+  return {
+    kicker: "State + category intent",
+    intro: `${angle} Right now, ${openCount} of ${totalCount} tracked ${category.toLowerCase()} brands appear open across ${cityCount} city pages in ${stateName}.`,
+    sections: [
+      {
+        title: `${category} Open Now in ${stateName}`,
+        body: `This page groups high-priority ${category.toLowerCase()} brands connected to major cities in ${stateName}, making local comparisons faster.`,
+      },
+      {
+        title: "How to Use This Hub",
+        body: "Start with open/closed badges, open city-category pages for local context, then check brand detail pages for countdown and weekly schedule signals.",
+      },
+      {
+        title: "Accuracy Notes",
+        body: qualityNote,
+      },
+    ],
+    bullets: [
+      `${cityCount} city pages connected`,
+      `${totalCount} tracked ${category.toLowerCase()} brands`,
+      `${openCount} open right now`,
+    ],
+  };
+}

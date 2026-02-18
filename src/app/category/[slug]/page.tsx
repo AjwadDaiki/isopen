@@ -6,7 +6,13 @@ import Footer from "@/components/Footer";
 import AdSlot from "@/components/AdSlot";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { brandsData } from "@/data/brands";
-import { getCitiesForCategory } from "@/data/cities";
+import {
+  getAllStateSlugs,
+  getCitiesByStateSlug,
+  getCitiesForCategory,
+  getStateCodeFromSlug,
+  getStateName,
+} from "@/data/cities";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import { buildCategoryEditorial } from "@/lib/seo-editorial";
 import { generateBreadcrumbJsonLd } from "@/lib/schema";
@@ -63,6 +69,21 @@ export default async function CategoryPage({ params }: PageProps) {
 
   const categoryBrands = brandsData.filter((b) => b.brand.category === category);
   const categoryCities = getCitiesForCategory(category, 8);
+  const categoryStates = getAllStateSlugs()
+    .map((stateSlug) => {
+      const stateCities = getCitiesByStateSlug(stateSlug);
+      const matching = stateCities.filter((city) => city.focusCategories.includes(category));
+      const code = getStateCodeFromSlug(stateSlug);
+      if (matching.length === 0 || !code) return null;
+      return {
+        slug: stateSlug,
+        name: getStateName(code),
+        cityCount: matching.length,
+      };
+    })
+    .filter((entry): entry is { slug: string; name: string; cityCount: number } => Boolean(entry))
+    .sort((a, b) => b.cityCount - a.cityCount)
+    .slice(0, 12);
   const editorial = buildCategoryEditorial(category, categoryBrands.map((entry) => entry.brand));
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", item: "https://isopenow.com/" },
@@ -156,6 +177,25 @@ export default async function CategoryPage({ params }: PageProps) {
                         className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                       >
                         {city.name}, {city.state}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {categoryStates.length > 0 && (
+                <section className="ui-panel overflow-hidden">
+                  <div className="card-title-row">
+                    <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Top state pages for {category}</h2>
+                  </div>
+                  <div className="panel-body flex flex-wrap gap-3">
+                    {categoryStates.map((state) => (
+                      <Link
+                        key={state.slug}
+                        href={`/state/${state.slug}/category/${slug}`}
+                        className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                      >
+                        {state.name} ({state.cityCount} cities)
                       </Link>
                     ))}
                   </div>

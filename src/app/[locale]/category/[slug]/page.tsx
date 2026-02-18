@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AdSlot from "@/components/AdSlot";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import { brandsData } from "@/data/brands";
+import { getCitiesForCategory } from "@/data/cities";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import { t, LOCALES, type Locale } from "@/lib/i18n/translations";
 import { buildBrandUrl } from "@/lib/i18n/url-patterns";
@@ -74,6 +75,8 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
   if (!category) notFound();
 
   const categoryBrands = brandsData.filter((b) => b.brand.category === category);
+  const categoryCities = getCitiesForCategory(category, 8);
+  const hasLocaleCityCategory = loc === "fr" || loc === "es" || loc === "de";
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: t(loc, "home"), item: absoluteUrl(`/${loc}`) },
     { name: category, item: absoluteUrl(`/${loc}/category/${slug}`) },
@@ -140,6 +143,27 @@ export default async function LocaleCategoryPage({ params }: PageProps) {
                   );
                 })}
               </div>
+
+              {categoryCities.length > 0 && (
+                <section className="ui-panel overflow-hidden">
+                  <div className="card-title-row">
+                    <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">
+                      {t(loc, "cityNav")} - {category}
+                    </h2>
+                  </div>
+                  <div className="panel-body flex flex-wrap gap-3">
+                    {categoryCities.map((city) => (
+                      <Link
+                        key={city.slug}
+                        href={hasLocaleCityCategory ? `/${loc}/city/${city.slug}/category/${slug}` : `/city/${city.slug}`}
+                        className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
+                      >
+                        {city.name}, {city.state}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={92} />
             </main>

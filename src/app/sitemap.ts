@@ -40,6 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const categories = uniqueCategorySlugs();
   const brandSlugs = brandsData.map((item) => item.brand.slug);
   const stateSlugs = getAllStateSlugs();
+  const cityCategoryLocales = ["fr", "es", "de"] as const;
 
   urls.push(item("/", "daily", 1.0));
   urls.push(item("/about", "monthly", 0.5));
@@ -62,7 +63,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const focusSlug = focusCategory.toLowerCase().replace(/\s+/g, "-");
       if (categories.includes(focusSlug)) {
         urls.push(item(`/city/${city.slug}/category/${focusSlug}`, "daily", 0.83));
+        for (const locale of cityCategoryLocales) {
+          urls.push(item(`/${locale}/city/${city.slug}/category/${focusSlug}`, "daily", 0.75));
+        }
       }
+    }
+  }
+
+  for (const stateSlug of stateSlugs) {
+    const stateCities = cityData.filter((city) => city.state.toLowerCase() === stateSlug);
+    const stateCategorySlugs = [...new Set(
+      stateCities
+        .flatMap((city) => city.focusCategories)
+        .map((focusCategory) => focusCategory.toLowerCase().replace(/\s+/g, "-"))
+        .filter((focusSlug) => categories.includes(focusSlug))
+    )];
+
+    for (const stateCategorySlug of stateCategorySlugs) {
+      urls.push(item(`/state/${stateSlug}/category/${stateCategorySlug}`, "daily", 0.81));
     }
   }
 

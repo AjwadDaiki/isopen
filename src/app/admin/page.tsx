@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getConsumptionDashboard } from "@/lib/establishments";
+import { getMonetizationDashboard } from "@/lib/monetization";
 
 interface Props {
   searchParams: Promise<{ token?: string; days?: string }>;
@@ -7,7 +8,7 @@ interface Props {
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Admin Dashboard - IsItOpen",
+  title: "Business Dashboard - IsItOpen",
   robots: {
     index: false,
     follow: false,
@@ -34,6 +35,7 @@ export default async function AdminPage({ searchParams }: Props) {
   const daysRaw = Number(params.days || 30);
   const days = Number.isFinite(daysRaw) ? Math.min(Math.max(daysRaw, 1), 365) : 30;
   const stats = await getConsumptionDashboard(days);
+  const monetization = await getMonetizationDashboard(days);
 
   const supabaseRatio = stats.totalCalls
     ? (stats.sources.supabaseServed / stats.totalCalls) * 100
@@ -44,10 +46,10 @@ export default async function AdminPage({ searchParams }: Props) {
       <div className="max-w-5xl mx-auto flex flex-col gap-5">
         <section className="ui-panel p-6">
           <h1 className="font-heading text-3xl font-extrabold text-text tracking-tight">
-            API Cost Dashboard
+            Business Dashboard
           </h1>
           <p className="text-muted2 mt-2 text-sm">
-            Strategy: single-fetch bootstrap, local status compute, weekly verification.
+            Revenue signals + API cost controls for monetization-first decisions.
           </p>
         </section>
 
@@ -60,6 +62,67 @@ export default async function AdminPage({ searchParams }: Props) {
             value={`${supabaseRatio.toFixed(1)}%`}
             tone={supabaseRatio >= 95 ? "good" : "warn"}
           />
+        </section>
+
+        <section className="ui-panel overflow-hidden">
+          <div className="card-title-row">
+            <h2 className="font-heading text-sm font-bold text-text tracking-tight">Revenue Signals ({days}d)</h2>
+          </div>
+          <div className="p-4 md:p-6 flex flex-col gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <StatCard label="Template views" value={String(monetization.templateViews)} />
+              <StatCard label="Ad slot views" value={String(monetization.adSlotViews)} />
+              <StatCard label="Affiliate clicks" value={String(monetization.affiliateClicks)} tone="good" />
+              <StatCard label="CTA clicks" value={String(monetization.ctaClicks)} />
+              <StatCard
+                label="Ad views / page view"
+                value={`${monetization.adViewsPerPageView.toFixed(2)}x`}
+                tone={monetization.adViewsPerPageView >= 1 ? "good" : "warn"}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="bg-bg2 border border-border rounded-lg p-4">
+                <h3 className="font-heading text-sm font-bold text-text mb-3">Top templates</h3>
+                {monetization.byTemplate.length === 0 ? (
+                  <p className="text-xs text-muted2">No monetization events yet.</p>
+                ) : (
+                  <div className="grid gap-2">
+                    {monetization.byTemplate.slice(0, 10).map((row) => (
+                      <div
+                        key={row.template}
+                        className="flex items-center justify-between rounded-md border border-border px-3 py-2"
+                      >
+                        <span className="font-mono text-xs text-muted2">{row.template}</span>
+                        <span className="text-xs text-text">
+                          pv:{row.pageViews} | ad:{row.adSlotViews} | aff:{row.affiliateClicks}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-bg2 border border-border rounded-lg p-4">
+                <h3 className="font-heading text-sm font-bold text-text mb-3">Top paths by views</h3>
+                {monetization.topPaths.length === 0 ? (
+                  <p className="text-xs text-muted2">No path-level events yet.</p>
+                ) : (
+                  <div className="grid gap-2">
+                    {monetization.topPaths.slice(0, 10).map((row) => (
+                      <div
+                        key={row.path}
+                        className="flex items-center justify-between rounded-md border border-border px-3 py-2 gap-2"
+                      >
+                        <span className="font-mono text-xs text-muted2 truncate">{row.path}</span>
+                        <span className="text-xs text-text shrink-0">{row.views}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="ui-panel overflow-hidden">

@@ -1,9 +1,11 @@
 /**
- * Lightweight GA4 event tracking for monetization.
- * Runs only in the browser and only when gtag is available.
+ * Lightweight tracking for monetization.
+ * Sends events to GA4 (if loaded) and to an internal endpoint for dashboarding.
  */
 
-type GtagFn = (command: string, action: string, params?: Record<string, string | number | boolean>) => void;
+type Primitive = string | number | boolean;
+type EventParams = Record<string, Primitive>;
+type GtagFn = (command: string, action: string, params?: EventParams) => void;
 
 declare global {
   interface Window {
@@ -11,10 +13,43 @@ declare global {
   }
 }
 
-function fire(eventName: string, params: Record<string, string | number | boolean>) {
+const INTERNAL_TRACK_PATH = "/api/event";
+
+function sendInternalEvent(eventName: string, params: EventParams) {
+  if (typeof window === "undefined") return;
+
+  const payload = {
+    eventName,
+    params,
+    path: window.location.pathname,
+    referrer: document.referrer || null,
+    ts: Date.now(),
+  };
+
+  try {
+    const body = JSON.stringify(payload);
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: "application/json" });
+      navigator.sendBeacon(INTERNAL_TRACK_PATH, blob);
+      return;
+    }
+
+    void fetch(INTERNAL_TRACK_PATH, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: true,
+    });
+  } catch {
+    // Keep tracking non-blocking.
+  }
+}
+
+function fire(eventName: string, params: EventParams) {
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag("event", eventName, params);
   }
+  sendInternalEvent(eventName, params);
 }
 
 /** User clicks an affiliate link (Uber Eats, Amazon, etc.) */

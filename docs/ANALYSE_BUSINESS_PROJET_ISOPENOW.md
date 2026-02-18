@@ -497,6 +497,8 @@ Ce qui vient d'etre renforce pour l'objectif argent:
 - cache memoire court sur `/api/open-status` pour reduire cout DB/API et latence
 - polling client optimise (moins d'appels inutiles en onglet cache/hors ligne)
 - lisibilite UI amelioree (contraste, typo, rendu moins "hardcore geek")
+- collecte serveur des events monetisation (`/api/event`) + dashboard admin revenu par template
+- deeplinks affiliate parametrables via env (Uber Eats / Amazon) avec UTM attribution
 
 Backlog business prioritaire (ordre d'execution):
 1. P0: branch-level data coverage top 30 brands x top 50 cities (gain SEO + trust le plus fort)

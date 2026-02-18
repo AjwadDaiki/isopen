@@ -4,18 +4,37 @@ import { trackAffiliateClick } from "@/lib/track";
 
 interface Props {
   brandName: string;
+  brandSlug: string;
   category: string | null;
   isOpen: boolean;
 }
 
-export default function AffiliateUnit({ brandName, category, isOpen }: Props) {
+function withUtm(url: string, provider: string, brandSlug: string, isOpen: boolean): string {
+  try {
+    const u = new URL(url);
+    u.searchParams.set("utm_source", "isopenow");
+    u.searchParams.set("utm_medium", "affiliate");
+    u.searchParams.set("utm_campaign", `brand-${brandSlug}`);
+    u.searchParams.set("utm_content", isOpen ? "open-state" : "closed-state");
+    u.searchParams.set("utm_term", provider.toLowerCase());
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+export default function AffiliateUnit({ brandName, brandSlug, category, isOpen }: Props) {
   const isFoodBrand = ["Fast Food", "Pizza", "Coffee", "Fast Casual"].includes(category || "");
   const isRetailBrand = ["Retail", "Wholesale", "Home Improvement", "Pharmacy"].includes(category || "");
 
   if (!isFoodBrand && !isRetailBrand) return null;
 
   const provider = isFoodBrand ? "Uber Eats" : "Amazon";
-  const href = isFoodBrand ? "https://www.ubereats.com/" : "https://www.amazon.com/";
+  const defaultUrl = isFoodBrand ? "https://www.ubereats.com/" : "https://www.amazon.com/";
+  const configuredUrl = isFoodBrand
+    ? process.env.NEXT_PUBLIC_AFFILIATE_UBER_EATS_URL
+    : process.env.NEXT_PUBLIC_AFFILIATE_AMAZON_URL;
+  const href = withUtm(configuredUrl || defaultUrl, provider, brandSlug, isOpen);
   const iconLabel = isFoodBrand ? "DLV" : "WEB";
   const title = isFoodBrand
     ? isOpen
@@ -33,7 +52,7 @@ export default function AffiliateUnit({ brandName, category, isOpen }: Props) {
     <a
       href={href}
       target="_blank"
-      rel="noopener noreferrer sponsored"
+      rel="noopener noreferrer nofollow sponsored"
       onClick={() => trackAffiliateClick(provider, brandName, isOpen)}
       className="ui-panel no-underline overflow-hidden block transition-[border-color,transform,box-shadow] duration-200 hover:border-orange hover:-translate-y-px"
     >

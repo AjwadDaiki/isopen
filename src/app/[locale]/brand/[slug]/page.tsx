@@ -137,7 +137,12 @@ export default async function LocaleBrandPage({ params }: PageProps) {
               <HolidayAlert brandName={brand.name} />
               <HoursTable hours={hours} />
 
-              <AffiliateUnit brandName={brand.name} category={brand.category || null} isOpen={status.isOpen} />
+              <AffiliateUnit
+                brandName={brand.name}
+                brandSlug={brand.slug}
+                category={brand.category || null}
+                isOpen={status.isOpen}
+              />
 
               {!status.isOpen && (
                 <AlternativesOpen

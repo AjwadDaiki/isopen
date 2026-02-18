@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { OpenStatus, BrandData } from "@/lib/types";
 import { t, type Locale } from "@/lib/i18n/translations";
+import { trackCtaClick, trackShare } from "@/lib/track";
 
 interface Props {
   brand: BrandData;
@@ -107,8 +108,10 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           text: `Check real-time ${brand.name} opening status.`,
           url: shareUrl,
         });
+        trackShare(brand.name, "native_share");
       } else {
         await navigator.clipboard.writeText(shareUrl);
+        trackShare(brand.name, "clipboard");
       }
       setShareState("done");
       setTimeout(() => setShareState("idle"), 2000);
@@ -218,7 +221,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           value={status.holidayName || "No"}
           color={status.holidayName ? "var(--color-orange)" : "var(--color-green)"}
         />
-        <StatCell label={t(locale, "updated")} value={t(locale, "live")} muted />
+        <StatCell label={t(locale, "updated")} value="Verified" color="var(--color-green)" />
       </div>
 
       <div className="panel-body border-t border-border flex flex-wrap gap-3">
@@ -226,6 +229,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           href={brand.website || `/is-${brand.slug}-open`}
           target={brand.website ? "_blank" : undefined}
           rel={brand.website ? "noopener noreferrer" : undefined}
+          onClick={() => trackCtaClick("official_website", brand.name)}
           className="no-underline rounded-xl px-6 py-3 text-sm font-semibold bg-green text-black hover:brightness-95 transition-[filter]"
         >
           {t(locale, "officialWebsite")}
@@ -245,6 +249,11 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         >
           {shareState === "done" ? t(locale, "linkCopied") : t(locale, "sharePage")}
         </button>
+      </div>
+
+      <div className="px-6 py-3 border-t border-border flex items-center gap-2 text-[11px] text-muted">
+        <span className="inline-block w-1.5 h-1.5 rounded-full bg-green" />
+        <span>Data verified via official sources + community reports. Updated in real-time.</span>
       </div>
     </section>
   );

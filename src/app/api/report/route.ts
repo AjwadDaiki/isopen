@@ -1,7 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 5 reports per minute per IP
+  const ip = getClientIp(request);
+  const { limited, remaining, resetAt } = checkRateLimit(`report:${ip}`, 5, 60_000);
+  if (limited) {
+    return NextResponse.json(
+      { error: "Too many reports. Please try again later." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil((resetAt - Date.now()) / 1000)),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
+
   try {
     const body = await request.json();
     const { brandSlug, reportType, message } = body;
@@ -31,7 +48,10 @@ export async function POST(request: NextRequest) {
       }).select().single();
 
       if (!error && data) {
-        return NextResponse.json({ success: true, report: data }, { status: 201 });
+        return NextResponse.json(
+          { success: true, report: data },
+          { status: 201, headers: { "X-RateLimit-Remaining": String(remaining) } }
+        );
       }
       if (error) console.error("Supabase insert error:", error);
     }
@@ -49,7 +69,7 @@ export async function POST(request: NextRequest) {
           upvotes: 0,
         },
       },
-      { status: 201 }
+      { status: 201, headers: { "X-RateLimit-Remaining": String(remaining) } }
     );
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });

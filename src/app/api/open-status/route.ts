@@ -3,6 +3,7 @@ import { getBrandBySlug } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import { getStatusFromCacheBySlug } from "@/lib/establishments";
 import { createServerClient } from "@/lib/supabase";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import type { HoursData } from "@/lib/types";
 
 interface NearestLocation {
@@ -96,6 +97,19 @@ async function getNearestLocationWithHours(
 }
 
 export async function GET(request: NextRequest) {
+  // Rate limit: 30 requests per minute per IP
+  const ip = getClientIp(request);
+  const { limited, resetAt } = checkRateLimit(`open-status:${ip}`, 30, 60_000);
+  if (limited) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil((resetAt - Date.now()) / 1000)) },
+      }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const slug = searchParams.get("brand");
   const tz = searchParams.get("timezone") || "America/New_York";

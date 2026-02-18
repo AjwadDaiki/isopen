@@ -11,6 +11,7 @@ import UserReports from "@/components/UserReports";
 import RelatedBrands from "@/components/RelatedBrands";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import AffiliateUnit from "@/components/AffiliateUnit";
+import AlternativesOpen from "@/components/AlternativesOpen";
 import { getBrandBySlug, getRelatedBrands, getAllBrandSlugs } from "@/data/brands";
 import { computeOpenStatus } from "@/lib/isOpenNow";
 import {
@@ -137,6 +138,14 @@ export default async function LocaleBrandPage({ params }: PageProps) {
               <HoursTable hours={hours} />
 
               <AffiliateUnit brandName={brand.name} category={brand.category || null} isOpen={status.isOpen} />
+
+              {!status.isOpen && (
+                <AlternativesOpen
+                  currentSlug={slug}
+                  category={brand.category || ""}
+                  brands={related}
+                />
+              )}
 
               <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={100} />
 

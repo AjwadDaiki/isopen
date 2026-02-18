@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function AdminPage({ searchParams }: Props) {
   const params = await searchParams;
   const configuredToken = process.env.ADMIN_DASHBOARD_TOKEN;
-  const authorized = !configuredToken || params.token === configuredToken;
+  const authorized = !!configuredToken && params.token === configuredToken;
 
   if (!authorized) {
     return (

@@ -3,7 +3,7 @@ import { runWeeklyVerification } from "@/lib/establishments";
 
 function isCronAuthorized(request: NextRequest): boolean {
   const configured = process.env.CRON_SECRET;
-  if (!configured) return true;
+  if (!configured) return false; // DENY by default when no secret configured
   const auth = request.headers.get("authorization");
   return auth === `Bearer ${configured}`;
 }

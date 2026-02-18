@@ -1,3 +1,7 @@
+"use client";
+
+import { trackAffiliateClick } from "@/lib/track";
+
 interface Props {
   brandName: string;
   category: string | null;
@@ -30,6 +34,7 @@ export default function AffiliateUnit({ brandName, category, isOpen }: Props) {
       href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
+      onClick={() => trackAffiliateClick(provider, brandName, isOpen)}
       className="ui-panel no-underline overflow-hidden block transition-[border-color,transform,box-shadow] duration-200 hover:border-orange hover:-translate-y-px"
     >
       <div className="panel-body flex items-center gap-5">

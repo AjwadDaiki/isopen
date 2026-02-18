@@ -3,7 +3,7 @@ import { getConsumptionDashboard } from "@/lib/establishments";
 
 function isAuthorized(request: NextRequest): boolean {
   const configured = process.env.ADMIN_DASHBOARD_TOKEN;
-  if (!configured) return true;
+  if (!configured) return false; // DENY by default when no token configured
   const bearer = request.headers.get("authorization");
   const token = bearer?.startsWith("Bearer ") ? bearer.slice(7) : null;
   return token === configured;

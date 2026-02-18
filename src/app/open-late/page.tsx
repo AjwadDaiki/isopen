@@ -10,9 +10,9 @@ import { absoluteUrl } from "@/lib/i18n/alternates";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Stores Open Late Near Me | Open After 10PM",
+  title: "Stores Open Late Right Now → After 10PM & Midnight Hours",
   description:
-    "Find stores, restaurants and services open late tonight. Real-time status for all major brands open after 10PM, midnight and 24 hours.",
+    "Which stores are still open? Live status for every major brand open after 10PM tonight — fast food, pharmacies, grocery, and 24h locations near you.",
   alternates: {
     canonical: absoluteUrl("/open-late"),
   },

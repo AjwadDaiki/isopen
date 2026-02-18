@@ -18,12 +18,12 @@ const SILOS = [
   {
     title: "Hours Hub",
     links: [
+      { href: "/hours", label: "All Store Hours" },
+      { href: "/stores", label: "Brand Directory A-Z" },
       { href: "/brand/mcdonalds", label: "McDonald's Hours" },
       { href: "/brand/walmart", label: "Walmart Hours" },
       { href: "/brand/starbucks", label: "Starbucks Hours" },
       { href: "/brand/cvs", label: "CVS Hours" },
-      { href: "/brand/walgreens", label: "Walgreens Hours" },
-      { href: "/brand/target", label: "Target Hours" },
       { href: "/category/fast-food", label: "Fast Food Hours" },
       { href: "/near-me", label: "Open Near Me" },
     ],
@@ -31,9 +31,9 @@ const SILOS = [
   {
     title: "Late Night & 24h",
     links: [
+      { href: "/open-now", label: "What's Open Now" },
       { href: "/open-late", label: "Stores Open Late" },
       { href: "/open-late/fast-food", label: "Fast Food Open Late" },
-      { href: "/open-late/pharmacy", label: "Pharmacy Open Late" },
       { href: "/open-24h", label: "24 Hour Stores" },
       { href: "/near-me/pharmacy", label: "Pharmacy Near Me" },
       { href: "/near-me/grocery", label: "Grocery Near Me" },
@@ -62,12 +62,14 @@ const SILOS = [
     ],
   },
   {
-    title: "Guides & Blog",
+    title: "Guides & Tools",
     links: [
       { href: "/blog", label: "Store Hours Blog" },
       { href: "/blog/top-10-stores-open-late", label: "Top 10 Late Night Stores" },
       { href: "/blog/24h-stores-near-you", label: "24h Stores Guide" },
-      { href: "/blog/holiday-opening-hours", label: "Holiday Hours Guide" },
+      { href: "/widget", label: "Free Hours Widget" },
+      { href: "/open-on/sunday", label: "Stores Open on Sunday" },
+      { href: "/open-on/christmas", label: "Stores Open on Christmas" },
     ],
   },
 ] as const;

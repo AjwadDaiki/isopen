@@ -57,8 +57,20 @@ function hashIp(ip: string): string {
   return crypto.createHash("sha256").update(ip).digest("hex");
 }
 
+function looksLikeBot(userAgent: string | null): boolean {
+  if (!userAgent) return false;
+  return /(bot|crawl|spider|slurp|bingpreview|lighthouse|headless)/i.test(userAgent);
+}
+
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
+  const userAgent = request.headers.get("user-agent");
+
+  // Ignore crawler traffic to keep monetization signals clean and DB costs low.
+  if (looksLikeBot(userAgent)) {
+    return NextResponse.json({ ok: true, ignored: "bot" });
+  }
+
   const { limited, resetAt } = checkRateLimit(`event:${ip}`, 180, 60_000);
   if (limited) {
     return NextResponse.json(
@@ -84,6 +96,25 @@ export async function POST(request: NextRequest) {
 
   const rawParams = (body as { params?: Record<string, unknown> })?.params || {};
   const safePath = asSafePath((body as { path?: unknown })?.path);
+  const dedupeSignature = [
+    eventName,
+    safePath || "",
+    asSafeString(rawParams.ad_slot) || "",
+    asSafeString(rawParams.template_type) || "",
+    asSafeString(rawParams.cta_type) || "",
+    asSafeString(rawParams.affiliate_provider) || "",
+  ].join("|");
+
+  // Prevent duplicate high-frequency events from overcounting and overspending.
+  const dedupeWindowMs =
+    eventName === "page_template_view" ? 30_000 :
+    eventName === "ad_slot_view" ? 20_000 :
+    10_000;
+  const dedupe = checkRateLimit(`event-dedupe:${ip}:${dedupeSignature}`, 1, dedupeWindowMs);
+  if (dedupe.limited) {
+    return NextResponse.json({ ok: true, deduped: true });
+  }
+
   const payload = {
     event_name: eventName,
     template_type: asSafeString(rawParams.template_type) || inferTemplateFromPath(safePath),
@@ -100,7 +131,7 @@ export async function POST(request: NextRequest) {
     brand_is_open: asSafeBoolean(rawParams.brand_is_open),
     content_type: asSafeString(rawParams.content_type),
     ip_hash: hashIp(ip),
-    user_agent: asSafeString(request.headers.get("user-agent"), 220),
+    user_agent: asSafeString(userAgent, 220),
     metadata: {
       ts: typeof (body as { ts?: unknown })?.ts === "number" ? (body as { ts: number }).ts : Date.now(),
     },

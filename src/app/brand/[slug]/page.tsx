@@ -62,8 +62,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   );
 
   return {
-    title: `Is ${brand.name} Open Right Now? [${year} Hours]`,
-    description: `Check if ${brand.name} is open right now. Live status, today's schedule and weekly hours.`,
+    title: `Is ${brand.name} Open Right Now? → Live Status & ${year} Hours`,
+    description: `Live check: Is ${brand.name} open now? Today's hours, closing-time countdown, and full ${year} weekly schedule — updated every 45 seconds.`,
     alternates: {
       canonical: absoluteUrl(buildBrandUrl("en", slug)),
       languages: alternates,

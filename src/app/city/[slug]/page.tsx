@@ -34,8 +34,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonicalPath = `/city/${city.slug}`;
 
   return {
-    title: `What's Open Now in ${city.name}, ${city.state}?`,
-    description: `Check what is open now in ${city.name}, ${city.state}. Live status for popular stores, restaurants, pharmacies, and services.`,
+    title: `What's Open Right Now in ${city.name}, ${city.state}? → Live Status`,
+    description: `Is it open? Live status for every major store, restaurant, pharmacy, and service in ${city.name}, ${city.state} — real-time hours updated every 45 seconds.`,
     alternates: {
       canonical: absoluteUrl(canonicalPath),
     },

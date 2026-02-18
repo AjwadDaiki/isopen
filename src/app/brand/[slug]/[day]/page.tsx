@@ -57,8 +57,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   );
 
   return {
-    title: `Is ${data.brand.name} Open on ${DAY_LABELS[canonicalDay]}? [${year} Hours]`,
-    description: `Check ${data.brand.name} hours on ${DAY_LABELS[canonicalDay]}. Opening time, closing time, and whether it's typically open.`,
+    title: `Is ${data.brand.name} Open on ${DAY_LABELS[canonicalDay]}? ${year} Hours + Live Check`,
+    description: `${data.brand.name} ${DAY_LABELS[canonicalDay]} hours ${year}. Is it open right now? Opening time, closing time, and holiday exceptions — updated live.`,
     alternates: {
       canonical: absoluteUrl(buildDayUrl("en", slug, canonicalDay)),
       languages: alternates,

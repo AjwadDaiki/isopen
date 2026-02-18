@@ -48,8 +48,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!category) return { title: "Not Found" };
 
   return {
-    title: `${category} Open Now - Check Real-Time Hours`,
-    description: `See which ${category.toLowerCase()} places are open right now. Real-time status for major ${category.toLowerCase()} brands.`,
+    title: `${category} Open Right Now → Live ${new Date().getFullYear()} Hours`,
+    description: `Is your nearest ${category.toLowerCase()} open? Live status for every major ${category.toLowerCase()} brand — hours, closings, and real-time updates.`,
     alternates: {
       canonical: `https://isopenow.com/category/${slug}`,
     },

@@ -10,9 +10,9 @@ import { absoluteUrl } from "@/lib/i18n/alternates";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "24 Hour Stores Open Now | Always Open Near Me",
+  title: "24 Hour Stores Open Right Now → Always Open Near Me",
   description:
-    "Complete list of stores, restaurants and services open 24 hours a day, 7 days a week. Real-time status for all 24/7 locations near you.",
+    "Complete list of stores open 24/7 near you. Live status for all major always-open brands — pharmacies, fast food, grocery, and gas stations.",
   alternates: {
     canonical: absoluteUrl("/open-24h"),
   },

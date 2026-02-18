@@ -39,8 +39,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonicalPath = `/near-me/${slug}`;
 
   return {
-    title: `${category} Near Me Open Now`,
-    description: `Find ${category.toLowerCase()} places open near you right now with live status and fast city shortcuts.`,
+    title: `${category} Near Me Open Right Now → Live Status`,
+    description: `Find ${category.toLowerCase()} open near you right now. Live hours, real-time status, and city-by-city shortcuts — updated every 45 seconds.`,
     alternates: {
       canonical: absoluteUrl(canonicalPath),
     },

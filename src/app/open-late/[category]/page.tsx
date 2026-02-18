@@ -54,8 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!cat) return { title: "Not Found" };
 
   return {
-    title: `${cat} Open Late Near Me | After 10PM`,
-    description: `Find ${cat.toLowerCase()} places open late tonight. Real-time hours and status for ${cat.toLowerCase()} open after 10PM in your area.`,
+    title: `${cat} Open Late Right Now → After 10PM Hours Tonight`,
+    description: `Which ${cat.toLowerCase()} places are still open? Live closing times for every major ${cat.toLowerCase()} brand open after 10PM tonight — updated in real time.`,
     alternates: { canonical: absoluteUrl(`/open-late/${category}`) },
     openGraph: {
       type: "website",

@@ -98,12 +98,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
   urls.push(item("/near-me", "daily", 0.8));
   urls.push(item("/open-late", "daily", 0.85));
   urls.push(item("/open-24h", "daily", 0.85));
+  urls.push(item("/open-now", "daily", 0.9));
+  urls.push(item("/stores", "weekly", 0.82));
+  urls.push(item("/hours", "weekly", 0.82));
+  urls.push(item("/widget", "monthly", 0.65));
   urls.push(item("/holiday", "weekly", 0.8));
   urls.push(item("/blog", "weekly", 0.75));
 
   // ─── Holiday pages ────────────────────────────────────────────────────────
   for (const slug of HOLIDAY_SLUGS) {
     urls.push(item(`/holiday/${slug}`, "weekly", 0.82));
+  }
+
+  // ─── Open-on day pages (7 weekdays + 4 holidays = 11 pages) ─────────────
+  const OPEN_ON_DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday","christmas","thanksgiving","new-years","easter"] as const;
+  for (const day of OPEN_ON_DAYS) {
+    urls.push(item(`/open-on/${day}`, "weekly", 0.78));
   }
 
   // ─── Blog posts ───────────────────────────────────────────────────────────

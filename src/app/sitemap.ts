@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { brandsData } from "@/data/brands";
-import { cityData } from "@/data/cities";
+import { cityData, getAllStateSlugs } from "@/data/cities";
 import { LOCALES } from "@/lib/i18n/translations";
 import { buildBrandUrl, buildDayUrl, CANONICAL_DAYS } from "@/lib/i18n/url-patterns";
 
@@ -39,6 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const urls: MetadataRoute.Sitemap = [];
   const categories = uniqueCategorySlugs();
   const brandSlugs = brandsData.map((item) => item.brand.slug);
+  const stateSlugs = getAllStateSlugs();
 
   urls.push(item("/", "daily", 1.0));
   urls.push(item("/about", "monthly", 0.5));
@@ -46,7 +47,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   urls.push(item("/privacy", "yearly", 0.3));
   urls.push(item("/terms", "yearly", 0.3));
   urls.push(item("/city", "daily", 0.8));
+  urls.push(item("/state", "daily", 0.75));
+  urls.push(item("/near-me", "daily", 0.8));
   urls.push(...cityData.map((city) => item(`/city/${city.slug}`, "daily", 0.75)));
+  urls.push(...stateSlugs.map((stateSlug) => item(`/state/${stateSlug}`, "daily", 0.72)));
+  urls.push(...categories.map((categorySlug) => item(`/near-me/${categorySlug}`, "daily", 0.82)));
 
   // Brand x City pages (high money intent)
   for (const city of cityData) {

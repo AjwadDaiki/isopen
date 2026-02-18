@@ -15,6 +15,7 @@ import { computeOpenStatus } from "@/lib/isOpenNow";
 import { buildBrandCityEditorial } from "@/lib/seo-editorial";
 import {
   generateJsonLd,
+  generateFaqJsonLd,
   generateBreadcrumbJsonLd,
   generateWebsiteJsonLd,
   generateOrganizationJsonLd,
@@ -80,6 +81,7 @@ export default async function BrandCityPage({ params }: PageProps) {
   const currentUrl = absoluteUrl(canonicalPath);
 
   const jsonLd = generateJsonLd(brand, hours, currentUrl);
+  const faqJsonLd = generateFaqJsonLd(brand, hours, status, "en");
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", item: absoluteUrl("/") },
     { name: "Cities", item: absoluteUrl("/city") },
@@ -118,6 +120,7 @@ export default async function BrandCityPage({ params }: PageProps) {
       <Navbar />
       <div className="min-h-screen">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />

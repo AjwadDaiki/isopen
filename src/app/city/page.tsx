@@ -84,6 +84,26 @@ export default function CityIndexPage() {
               </div>
             </section>
 
+            <section className="ui-panel overflow-hidden">
+              <div className="card-title-row">
+                <h2 className="font-heading font-bold text-[15px] text-text tracking-[-0.01em]">Expand your search</h2>
+              </div>
+              <div className="panel-body flex flex-wrap gap-3">
+                <Link
+                  href="/state"
+                  className="no-underline text-[12px] font-medium text-muted2 border border-border rounded-xl px-4 py-2.5 hover:text-text hover:border-border2 transition-colors bg-bg1"
+                >
+                  Browse by state
+                </Link>
+                <Link
+                  href="/near-me"
+                  className="no-underline text-[12px] font-medium text-muted2 border border-border rounded-xl px-4 py-2.5 hover:text-text hover:border-border2 transition-colors bg-bg1"
+                >
+                  Open now near me
+                </Link>
+              </div>
+            </section>
+
             <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} label="Sponsored" minHeight={120} />
           </div>
         </div>

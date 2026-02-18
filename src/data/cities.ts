@@ -7,6 +7,48 @@ export interface CityData {
   focusCategories: string[];
 }
 
+export interface StateSummary {
+  code: string;
+  slug: string;
+  name: string;
+  cityCount: number;
+}
+
+const STATE_NAME_BY_CODE: Record<string, string> = {
+  AK: "Alaska",
+  AZ: "Arizona",
+  CA: "California",
+  CO: "Colorado",
+  DC: "District of Columbia",
+  FL: "Florida",
+  GA: "Georgia",
+  HI: "Hawaii",
+  IL: "Illinois",
+  IN: "Indiana",
+  KY: "Kentucky",
+  LA: "Louisiana",
+  MA: "Massachusetts",
+  MD: "Maryland",
+  MI: "Michigan",
+  MN: "Minnesota",
+  MO: "Missouri",
+  NC: "North Carolina",
+  NE: "Nebraska",
+  NM: "New Mexico",
+  NV: "Nevada",
+  NY: "New York",
+  OH: "Ohio",
+  OK: "Oklahoma",
+  OR: "Oregon",
+  PA: "Pennsylvania",
+  TN: "Tennessee",
+  TX: "Texas",
+  UT: "Utah",
+  VA: "Virginia",
+  WA: "Washington",
+  WI: "Wisconsin",
+};
+
 export const cityData: CityData[] = [
   {
     slug: "new-york-ny",
@@ -197,7 +239,7 @@ export const cityData: CityData[] = [
     name: "Oklahoma City",
     state: "OK",
     timezone: "America/Chicago",
-    featuredBrandSlugs: ["walmart", "sonic-drive-in", "taco-bell", "mcdonalds", "dollar-general", "autozone", "lowes", "braums"],
+    featuredBrandSlugs: ["walmart", "sonic-drive-in", "taco-bell", "mcdonalds", "dollar-general", "autozone", "lowes", "whataburger"],
     focusCategories: ["Fast Food", "Retail", "Auto", "Home Improvement", "Convenience"],
   },
   {
@@ -373,7 +415,7 @@ export const cityData: CityData[] = [
     name: "Salt Lake City",
     state: "UT",
     timezone: "America/Denver",
-    featuredBrandSlugs: ["walmart", "costco", "starbucks", "target", "smith's", "cvs", "home-depot", "chipotle"],
+    featuredBrandSlugs: ["walmart", "costco", "starbucks", "target", "winco-foods", "cvs", "home-depot", "chipotle"],
     focusCategories: ["Retail", "Wholesale", "Coffee", "Home Improvement", "Fast Casual"],
   },
   {
@@ -424,4 +466,43 @@ export function getCitiesForBrand(brandSlug: string, limit = 6): CityData[] {
 
 export function getCitiesForCategory(category: string, limit = 6): CityData[] {
   return cityData.filter((city) => city.focusCategories.includes(category)).slice(0, limit);
+}
+
+export function getStateName(code: string): string {
+  return STATE_NAME_BY_CODE[code] || code;
+}
+
+export function getAllStateSlugs(): string[] {
+  return [...new Set(cityData.map((city) => city.state.toLowerCase()))].sort();
+}
+
+export function getStateCodeFromSlug(slug: string): string | null {
+  const code = slug.toUpperCase();
+  return cityData.some((city) => city.state === code) ? code : null;
+}
+
+export function getCitiesByStateCode(code: string): CityData[] {
+  return cityData.filter((city) => city.state === code);
+}
+
+export function getCitiesByStateSlug(slug: string): CityData[] {
+  const code = getStateCodeFromSlug(slug);
+  if (!code) return [];
+  return getCitiesByStateCode(code);
+}
+
+export function getStateSummaries(): StateSummary[] {
+  const byState = new Map<string, number>();
+  for (const city of cityData) {
+    byState.set(city.state, (byState.get(city.state) || 0) + 1);
+  }
+
+  return [...byState.entries()]
+    .map(([code, cityCount]) => ({
+      code,
+      slug: code.toLowerCase(),
+      name: getStateName(code),
+      cityCount,
+    }))
+    .sort((a, b) => (b.cityCount - a.cityCount) || a.name.localeCompare(b.name));
 }

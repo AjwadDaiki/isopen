@@ -165,6 +165,30 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="page-pad" style={{ paddingBottom: 64 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Link href="/state" className="brand-card-link brand-card-premium no-underline p-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">New layer</p>
+              <h2 className="font-heading font-bold text-[20px] text-text tracking-[-0.02em] mt-2">
+                Open now by state
+              </h2>
+              <p className="text-[13px] text-muted2 mt-2">
+                Compare city coverage and top open-now brands across major US states.
+              </p>
+            </Link>
+
+            <Link href="/near-me" className="brand-card-link brand-card-premium no-underline p-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">High intent</p>
+              <h2 className="font-heading font-bold text-[20px] text-text tracking-[-0.02em] mt-2">
+                Open now near me
+              </h2>
+              <p className="text-[13px] text-muted2 mt-2">
+                Fast local-intent pages for queries like pharmacy, coffee, and grocery near me.
+              </p>
+            </Link>
+          </div>
+        </section>
+
         <section className="page-pad" style={{ paddingBottom: 48 }}>
           <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_TOP} label="Sponsored" minHeight={92} />
         </section>

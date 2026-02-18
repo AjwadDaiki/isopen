@@ -10,7 +10,7 @@ export interface HolidayData {
 // ── Helper: compute Nth weekday of a month ──
 function nthWeekday(year: number, month: number, weekday: number, n: number): Date {
   const first = new Date(year, month - 1, 1);
-  let diff = (weekday - first.getDay() + 7) % 7;
+  const diff = (weekday - first.getDay() + 7) % 7;
   const day = 1 + diff + (n - 1) * 7;
   return new Date(year, month - 1, day);
 }

@@ -134,7 +134,7 @@ export default async function CityPage({ params }: PageProps) {
                   {statuses.map(({ brand, status }, i) => (
                     <Link
                       key={brand.slug}
-                      href={`/is-${brand.slug}-open`}
+                      href={`/city/${slug}/is-${brand.slug}-open`}
                       className={`brand-card-link brand-card-premium p-6 no-underline ${status.isOpen ? "brand-card-open" : "brand-card-closed"}`}
                       style={{ animationDelay: `${Math.min(i * 0.03, 0.25)}s` }}
                     >

@@ -34,6 +34,11 @@ const nextConfig: NextConfig = {
     });
 
     return [
+      // Brand x City: /city/{city}/is-{brand}-open → /city/{city}/{brand}
+      {
+        source: "/city/:city/is-:brand-open",
+        destination: "/city/:city/:brand",
+      },
       ...englishDayRewrites,
       ...localizedDayRewrites,
       ...localizedBrandRewrites,

@@ -184,13 +184,13 @@ export default async function BrandPage({ params }: PageProps) {
               {cityLinks.length > 0 && (
                 <section className="ui-panel overflow-hidden">
                   <div className="card-title-row">
-                    <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Top city pages for {brand.name}</h3>
+                    <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">{brand.name} by city</h3>
                   </div>
                   <div className="panel-body flex flex-wrap gap-3">
                     {cityLinks.map((city) => (
                       <Link
                         key={city.slug}
-                        href={`/city/${city.slug}`}
+                        href={`/city/${city.slug}/is-${slug}-open`}
                         className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                       >
                         {city.name}, {city.state}

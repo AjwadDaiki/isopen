@@ -187,6 +187,63 @@ export function buildCategoryEditorial(
   };
 }
 
+export function buildBrandCityEditorial(
+  brandName: string,
+  cityName: string,
+  state: string,
+  timezone: string,
+  category: string,
+  isOpen: boolean,
+  todayHours: string | null
+): EditorialContent {
+  const seed = hashSeed(`${brandName}-${cityName}-${state}`);
+  const angle = pick(
+    [
+      `Looking for ${brandName} in ${cityName}? This page provides real-time opening status using ${timezone}.`,
+      `Before heading to ${brandName} in ${cityName}, ${state}, confirm the current status here.`,
+      `${brandName} operates on ${timezone} time in ${cityName}. Check the live status below before visiting.`,
+      `Planning a visit to ${brandName} in the ${cityName} area? We track live hours and status for quick decisions.`,
+    ],
+    seed
+  );
+  const localAngle = pick(
+    [
+      `${cityName} has multiple ${brandName} locations. Hours shown are the most common brand-level schedule.`,
+      `Branch hours can differ across ${cityName}, especially in suburban vs. downtown areas.`,
+      `Most ${brandName} in ${cityName}, ${state} follow the national schedule, with minor local variations possible.`,
+      `If you need exact branch hours in ${cityName}, confirm with the nearest location after checking here.`,
+    ],
+    seed,
+    1
+  );
+
+  return {
+    kicker: `${brandName} in ${cityName} — Live Check`,
+    intro: angle,
+    sections: [
+      {
+        title: `Is ${brandName} Open Now in ${cityName}?`,
+        body: isOpen
+          ? `Yes, ${brandName} is currently open in the ${cityName} area. Today's typical hours: ${todayHours || "check below"}.`
+          : `${brandName} is currently closed in ${cityName}. Check below for the next opening time.`,
+      },
+      {
+        title: `${brandName} Hours in ${cityName}, ${state}`,
+        body: localAngle,
+      },
+      {
+        title: `Other ${category} Options in ${cityName}`,
+        body: `If ${brandName} doesn't fit your schedule, explore other ${category.toLowerCase()} brands open now in ${cityName} using our city page.`,
+      },
+    ],
+    bullets: [
+      `Real-time status for ${cityName}, ${state}`,
+      `Timezone: ${timezone}`,
+      isOpen ? "Currently open" : "Currently closed",
+    ],
+  };
+}
+
 export function buildCityEditorial(
   cityName: string,
   state: string,

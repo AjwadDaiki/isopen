@@ -48,6 +48,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   urls.push(item("/city", "daily", 0.8));
   urls.push(...cityData.map((city) => item(`/city/${city.slug}`, "daily", 0.75)));
 
+  // Brand x City pages (high money intent)
+  for (const city of cityData) {
+    for (const brandSlug of city.featuredBrandSlugs) {
+      urls.push(item(`/city/${city.slug}/is-${brandSlug}-open`, "daily", 0.85));
+    }
+  }
+
   for (const locale of LOCALES) {
     if (locale !== "en") {
       urls.push(item(`/${locale}`, "daily", 0.9));

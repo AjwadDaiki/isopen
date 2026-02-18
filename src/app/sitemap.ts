@@ -58,6 +58,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const brandSlug of city.featuredBrandSlugs) {
       urls.push(item(`/city/${city.slug}/is-${brandSlug}-open`, "daily", 0.85));
     }
+    for (const focusCategory of city.focusCategories) {
+      const focusSlug = focusCategory.toLowerCase().replace(/\s+/g, "-");
+      if (categories.includes(focusSlug)) {
+        urls.push(item(`/city/${city.slug}/category/${focusSlug}`, "daily", 0.83));
+      }
+    }
   }
 
   for (const locale of LOCALES) {

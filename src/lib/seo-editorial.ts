@@ -286,3 +286,56 @@ export function buildCityEditorial(
     ],
   };
 }
+
+export function buildCityCategoryEditorial(
+  cityName: string,
+  state: string,
+  category: string,
+  openCount: number,
+  totalCount: number
+): EditorialContent {
+  const seed = hashSeed(`${cityName}-${state}-${category}`);
+  const angle = pick(
+    [
+      `Searches like "${category.toLowerCase()} open now in ${cityName}" are highly time-sensitive and usually happen before a physical visit.`,
+      `This page targets urgent local intent for ${category.toLowerCase()} checks in ${cityName}, ${state}.`,
+      `Users often compare several ${category.toLowerCase()} options within minutes before deciding where to go.`,
+      `City + category pages help reduce wasted trips when schedules change during evenings and weekends.`,
+    ],
+    seed
+  );
+  const qualityNote = pick(
+    [
+      "Use this page for quick decisions, then confirm the nearest branch when timing is tight.",
+      "Brand-level schedules are strong baselines, but local branch exceptions can still happen.",
+      "Holiday periods and local events can affect availability even when weekly patterns are stable.",
+      "For high-stakes visits, always verify address-level details before departure.",
+    ],
+    seed,
+    1
+  );
+
+  return {
+    kicker: "City + category intent",
+    intro: `${angle} Right now, ${openCount} of ${totalCount} tracked ${category.toLowerCase()} brands appear open in ${cityName}.`,
+    sections: [
+      {
+        title: `${category} Open Now in ${cityName}, ${state}`,
+        body: `This page groups top ${category.toLowerCase()} brands relevant to ${cityName} so users can compare open/closed status instantly.`,
+      },
+      {
+        title: `How to Use This ${cityName} ${category} Page`,
+        body: "Start with open status badges, then open a brand page for countdown, weekly schedule, and holiday notes.",
+      },
+      {
+        title: "Accuracy and Freshness Notes",
+        body: qualityNote,
+      },
+    ],
+    bullets: [
+      `${totalCount} tracked ${category.toLowerCase()} brands`,
+      `${openCount} currently open now`,
+      "Direct links to brand + city detail pages",
+    ],
+  };
+}

@@ -152,7 +152,7 @@ export default async function CategoryPage({ params }: PageProps) {
                     {categoryCities.map((city) => (
                       <Link
                         key={city.slug}
-                        href={`/city/${city.slug}`}
+                        href={`/city/${city.slug}/category/${slug}`}
                         className="text-[12px] font-medium px-4 py-2.5 rounded-xl border border-border2 bg-bg2 text-muted2 no-underline hover:text-text hover:border-border transition-colors"
                       >
                         {city.name}, {city.state}

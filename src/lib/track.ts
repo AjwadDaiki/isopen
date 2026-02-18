@@ -1,6 +1,6 @@
 /**
  * Lightweight GA4 event tracking for monetization.
- * Fires gtag events — works only client-side when GA is loaded.
+ * Runs only in the browser and only when gtag is available.
  */
 
 type GtagFn = (command: string, action: string, params?: Record<string, string | number | boolean>) => void;
@@ -57,5 +57,14 @@ export function trackPageView(templateType: string, brandSlug?: string) {
   fire("page_template_view", {
     template_type: templateType,
     ...(brandSlug ? { brand_slug: brandSlug } : {}),
+  });
+}
+
+/** Track when a display ad slot is actually viewable. */
+export function trackAdSlotView(slot: string, label: string) {
+  fire("ad_slot_view", {
+    ad_slot: slot,
+    ad_label: label,
+    content_type: "display_ad",
   });
 }

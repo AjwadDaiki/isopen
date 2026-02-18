@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { headers } from "next/headers";
-import { Inter, Manrope, DM_Mono } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import { LOCALES, type Locale } from "@/lib/i18n/translations";
+import AnalyticsRouterTracker from "@/components/AnalyticsRouterTracker";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,13 +16,6 @@ const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
   display: "swap",
-});
-
-const dmMono = DM_Mono({
-  variable: "--font-dm-mono",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500"],
 });
 
 const languageAlternates = Object.fromEntries(
@@ -122,7 +116,7 @@ export default async function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className={`${inter.variable} ${manrope.variable} ${dmMono.variable}`}>
+      <body className={`${inter.variable} ${manrope.variable}`}>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8MWJB8TTNY"
           strategy="afterInteractive"
@@ -133,6 +127,7 @@ export default async function RootLayout({
           gtag('js', new Date());
           gtag('config', 'G-8MWJB8TTNY');
         `}</Script>
+        <AnalyticsRouterTracker />
         {children}
       </body>
     </html>

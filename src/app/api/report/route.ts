@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { hasCaptchaSecret, isCaptchaRequired, verifyTurnstileToken } from "@/lib/captcha";
 
 export async function POST(request: NextRequest) {
   // Rate limit: 5 reports per minute per IP
@@ -21,13 +22,42 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { brandSlug, reportType, message } = body;
+    const { brandSlug, reportType, message, captchaToken, website } = body;
 
     if (!brandSlug || !reportType) {
       return NextResponse.json(
         { error: "Missing required fields: brandSlug, reportType" },
         { status: 400 }
       );
+    }
+
+    // Honeypot field: bots tend to fill this hidden field.
+    if (typeof website === "string" && website.trim().length > 0) {
+      return NextResponse.json({ error: "Invalid submission." }, { status: 400 });
+    }
+
+    // Captcha is required in production and optional in dev/staging.
+    const captchaRequired = isCaptchaRequired();
+    const captchaSecretAvailable = hasCaptchaSecret();
+    if (captchaRequired && !captchaSecretAvailable) {
+      return NextResponse.json(
+        { error: "Report protection misconfigured. Please try again later." },
+        { status: 503 }
+      );
+    }
+
+    if (captchaSecretAvailable) {
+      if (typeof captchaToken !== "string" || !captchaToken.trim()) {
+        return NextResponse.json({ error: "Captcha validation is required." }, { status: 400 });
+      }
+
+      const captcha = await verifyTurnstileToken(captchaToken, ip);
+      if (!captcha.success) {
+        return NextResponse.json(
+          { error: "Captcha check failed.", code: captcha.errors[0] || "captcha_failed" },
+          { status: 400 }
+        );
+      }
     }
 
     const validTypes = ["confirmed_open", "confirmed_closed", "wrong_hours"];
@@ -38,13 +68,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedMessage =
+      typeof message === "string" && message.trim().length > 0
+        ? message.trim().slice(0, 400)
+        : null;
+
     const supabase = createServerClient();
 
     if (supabase) {
       const { data, error } = await supabase.from("user_reports").insert({
         brand_slug: brandSlug,
         report_type: reportType,
-        message: message || null,
+        message: normalizedMessage,
       }).select().single();
 
       if (!error && data) {
@@ -64,7 +99,7 @@ export async function POST(request: NextRequest) {
           id: crypto.randomUUID(),
           brand_slug: brandSlug,
           report_type: reportType,
-          message: message || null,
+          message: normalizedMessage,
           reported_at: new Date().toISOString(),
           upvotes: 0,
         },

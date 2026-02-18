@@ -200,7 +200,7 @@ function localStatus(row: EstablishmentRow, timezone: string): OpenStatus {
 export async function getStatusFromCacheBySlug(
   slug: string,
   timezone: string
-): Promise<{ status: OpenStatus; source: "supabase" } | null> {
+): Promise<{ status: OpenStatus; source: "supabase"; verifiedAt: string | null } | null> {
   const row = await fetchEstablishmentBySlug(slug);
   if (!row || !row.standard_hours || row.standard_hours.length === 0) return null;
 
@@ -212,7 +212,7 @@ export async function getStatusFromCacheBySlug(
     establishment_id: row.id,
     metadata: { slug },
   });
-  return { status: localStatus(row, timezone), source: "supabase" };
+  return { status: localStatus(row, timezone), source: "supabase", verifiedAt: row.last_verified_at };
 }
 
 export async function getStatus(

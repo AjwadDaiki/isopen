@@ -18,12 +18,22 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
   const [locationMode, setLocationMode] = useState<"gps" | "ip" | "none">("none");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [nearest, setNearest] = useState<{ city: string | null; distanceKm: number } | null>(null);
+  const [verifiedAt, setVerifiedAt] = useState<string | null>(null);
+  const [checkedAt, setCheckedAt] = useState<string | null>(null);
+  const [servedBy, setServedBy] = useState<string>("local-dataset");
 
   useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     let cancelled = false;
+    let activeController: AbortController | null = null;
 
     async function refresh() {
+      if (typeof document !== "undefined" && document.hidden) return;
+      if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+
+      activeController?.abort();
+      activeController = new AbortController();
+
       try {
         const qs = new URLSearchParams({
           brand: brand.slug,
@@ -35,11 +45,16 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           qs.set("lng", String(coords.lng));
         }
 
-        const res = await fetch(`/api/open-status?${qs.toString()}`);
+        const res = await fetch(`/api/open-status?${qs.toString()}`, {
+          signal: activeController.signal,
+        });
         if (res.ok && !cancelled) {
           const data = await res.json();
           setStatus(data.status);
           setLocationMode(data.locationSource || "none");
+          setServedBy(data.servedBy || "local-dataset");
+          setVerifiedAt(data.verifiedAt || null);
+          setCheckedAt(data.checkedAt || null);
           setNearest(
             data.nearestLocation
               ? { city: data.nearestLocation.city ?? null, distanceKm: data.nearestLocation.distanceKm }
@@ -52,9 +67,10 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
     }
 
     refresh();
-    const id = setInterval(refresh, 30_000);
+    const id = setInterval(refresh, 45_000);
     return () => {
       cancelled = true;
+      activeController?.abort();
       clearInterval(id);
     };
   }, [brand.slug, coords]);
@@ -98,6 +114,12 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
   const nearestLine = isOpen
     ? t(locale, "nearestOpen", { brand: brand.name })
     : t(locale, "nearestClosed", { brand: brand.name });
+  const freshnessLabel = formatFreshnessLabel(verifiedAt, checkedAt, locale);
+  const sourceLabel = servedBy === "supabase-cache"
+    ? "Verified cache"
+    : servedBy === "memory-cache"
+      ? "Edge memory cache"
+      : "Local dataset";
 
   async function handleShare() {
     const shareUrl = window.location.href;
@@ -140,7 +162,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           }}
         />
 
-        <div className="relative z-[1] flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="relative z-1 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-5 md:gap-6 min-w-0">
             <div
               className="w-[68px] h-[68px] md:w-[74px] md:h-[74px] rounded-2xl border border-border2 bg-bg2 flex items-center justify-center shrink-0"
@@ -196,7 +218,7 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           </div>
         </div>
 
-        <div className="relative z-[1] mt-6 flex flex-col gap-2">
+        <div className="relative z-1 mt-6 flex flex-col gap-2">
           <p className="text-[13px] md:text-[14px] text-text font-semibold">{nearestLine}</p>
           <p className="text-[12px] text-muted">
             {locationMode === "gps"
@@ -221,7 +243,11 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
           value={status.holidayName || "No"}
           color={status.holidayName ? "var(--color-orange)" : "var(--color-green)"}
         />
-        <StatCell label={t(locale, "updated")} value="Verified" color="var(--color-green)" />
+        <StatCell
+          label={t(locale, "updated")}
+          value={freshnessLabel}
+          color={freshnessLabel === "Live" ? "var(--color-green)" : "var(--color-text)"}
+        />
       </div>
 
       <div className="panel-body border-t border-border flex flex-wrap gap-3">
@@ -253,10 +279,26 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
 
       <div className="px-6 py-3 border-t border-border flex items-center gap-2 text-[11px] text-muted">
         <span className="inline-block w-1.5 h-1.5 rounded-full bg-green" />
-        <span>Data verified via official sources + community reports. Updated in real-time.</span>
+        <span>Source: {sourceLabel}. Verified via official sources + community reports.</span>
       </div>
     </section>
   );
+}
+
+function formatFreshnessLabel(
+  verifiedAt: string | null,
+  checkedAt: string | null,
+  locale: Locale
+): string {
+  const target = verifiedAt || checkedAt;
+  if (!target) return "Live";
+  const d = new Date(target);
+  if (Number.isNaN(d.getTime())) return "Live";
+  return d.toLocaleTimeString(locale === "en" ? "en-US" : locale, {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
 }
 
 function StatCell({

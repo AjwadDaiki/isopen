@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { trackAdSlotView } from "@/lib/track";
 
 declare global {
   interface Window {
@@ -26,6 +27,9 @@ export default function AdSlot({
   minHeight = 120,
   showPlaceholder = false,
 }: Props) {
+  const containerRef = useRef<HTMLElement | null>(null);
+  const trackedView = useRef(false);
+
   useEffect(() => {
     if (!slot) return;
     try {
@@ -34,6 +38,29 @@ export default function AdSlot({
       // Ignore failed ad push in preview/local builds.
     }
   }, [slot]);
+
+  useEffect(() => {
+    if (!slot || !containerRef.current) return;
+
+    const node = containerRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (trackedView.current) return;
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            trackedView.current = true;
+            trackAdSlotView(slot, label);
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: [0.5] }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [label, slot]);
 
   if (!slot && !showPlaceholder) return null;
 
@@ -56,7 +83,7 @@ export default function AdSlot({
   }
 
   return (
-    <section className={`ui-panel overflow-hidden ${className}`}>
+    <section ref={containerRef} className={`ui-panel overflow-hidden ${className}`}>
       <div className="px-4 py-2.5 border-b border-border ui-bg-1-60">
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
           {label}

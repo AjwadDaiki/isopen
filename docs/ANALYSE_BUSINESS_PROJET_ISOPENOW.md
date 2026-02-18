@@ -477,3 +477,35 @@ Objectif long terme:
 En clair:
 - Oui, le projet peut scaler fort.
 - Mais le levier principal sera: qualite data + discipline SEO + instrumentation revenu.
+
+## 22) Execution revenue-first (etat courant)
+
+Mise a jour du 18 fevrier 2026 apres implementation technique:
+
+Ce qui est deja execute:
+- securite ops: endpoints admin/cron verrouilles par token (deny by default)
+- anti-abus API: rate limiting actif sur `/api/report` et `/api/open-status`
+- tracking revenu: events GA4 pour affiliate/CTA/share + vues des templates + vues des slots ads
+- retention monetisable: bloc "alternatives open now" sur pages brand
+- SEO expansion: pages brand x city + pages state + pages near-me + sitemap et maillage internes
+- inventaire: extension dataset brands/cities (120 brands, 50 cities)
+- qualite data: holidays calcules dynamiquement (pas limite a 2026)
+- trust: badge verification/source visible sur hero status
+
+Ce qui vient d'etre renforce pour l'objectif argent:
+- captcha anti-spam sur user reports (Turnstile, requis en production)
+- cache memoire court sur `/api/open-status` pour reduire cout DB/API et latence
+- polling client optimise (moins d'appels inutiles en onglet cache/hors ligne)
+- lisibilite UI amelioree (contraste, typo, rendu moins "hardcore geek")
+
+Backlog business prioritaire (ordre d'execution):
+1. P0: branch-level data coverage top 30 brands x top 50 cities (gain SEO + trust le plus fort)
+2. P0: dashboard RPM/CTR/revenu par template (home/brand/city/category/state/near-me)
+3. P0: affiliate mature avec deeplinks trackes et attribution par template
+4. P1: city x category pages "money intent" + variantes editoriales anti-thin
+5. P1: localisation qualitative sur 3-5 langues prioritaires (pas extension brute)
+6. P1: verification data pipeline hebdo + changelog public de corrections
+7. P2: offres B2B API/widget pour diversifier revenus hors AdSense
+
+Regle de pilotage:
+- toute nouvelle page doit prouver 1) utilite utilisateur 2) potentiel RPM 3) cout crawl/data acceptable.

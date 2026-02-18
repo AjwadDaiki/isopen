@@ -1,6 +1,26 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { trackReport } from "@/lib/track";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          theme?: "light" | "dark" | "auto";
+          callback?: (token: string) => void;
+          "error-callback"?: () => void;
+          "expired-callback"?: () => void;
+        }
+      ) => string;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId?: string) => void;
+    };
+  }
+}
 
 interface Report {
   id: string;
@@ -13,6 +33,8 @@ interface Report {
 interface Props {
   brandSlug: string;
 }
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 function timeAgo(dateStr: string): string {
   const now = Date.now();
@@ -36,11 +58,19 @@ function reportText(type: string) {
 }
 
 export default function UserReports({ brandSlug }: Props) {
+  const captchaEnabled = Boolean(turnstileSiteKey);
+  const captchaRef = useRef<HTMLDivElement | null>(null);
+  const captchaWidgetId = useRef<string | null>(null);
+
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [reportType, setReportType] = useState<string>("confirmed_open");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaError, setCaptchaError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -62,8 +92,69 @@ export default function UserReports({ brandSlug }: Props) {
     fetchReports();
   }, [fetchReports]);
 
+  useEffect(() => {
+    if (!showForm || !captchaEnabled || !turnstileSiteKey) return;
+
+    let cancelled = false;
+
+    const renderTurnstile = () => {
+      if (cancelled || !captchaRef.current || !window.turnstile || captchaWidgetId.current) return;
+      captchaWidgetId.current = window.turnstile.render(captchaRef.current, {
+        sitekey: turnstileSiteKey,
+        theme: "dark",
+        callback: (token: string) => {
+          setCaptchaToken(token);
+          setCaptchaError(null);
+        },
+        "expired-callback": () => {
+          setCaptchaToken("");
+          setCaptchaError("Captcha expired. Please verify again.");
+        },
+        "error-callback": () => {
+          setCaptchaToken("");
+          setCaptchaError("Captcha could not load. Please reload the page.");
+        },
+      });
+    };
+
+    if (window.turnstile) {
+      renderTurnstile();
+    } else {
+      const existingScript = document.querySelector<HTMLScriptElement>('script[data-turnstile="1"]');
+      if (existingScript) {
+        existingScript.addEventListener("load", renderTurnstile, { once: true });
+      } else {
+        const script = document.createElement("script");
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        script.defer = true;
+        script.dataset.turnstile = "1";
+        script.addEventListener("load", renderTurnstile, { once: true });
+        document.head.appendChild(script);
+      }
+    }
+
+    return () => {
+      cancelled = true;
+      if (captchaWidgetId.current && window.turnstile) {
+        window.turnstile.remove(captchaWidgetId.current);
+      }
+      captchaWidgetId.current = null;
+      setCaptchaToken("");
+      setCaptchaError(null);
+    };
+  }, [captchaEnabled, showForm]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitError(null);
+
+    if (captchaEnabled && !captchaToken) {
+      setSubmitError("Please complete the captcha before submitting.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -74,18 +165,27 @@ export default function UserReports({ brandSlug }: Props) {
           brandSlug,
           reportType,
           message: message.trim() || null,
+          captchaToken: captchaToken || null,
+          website: website || "",
         }),
       });
 
-      if (res.ok) {
-        setSubmitted(true);
-        setShowForm(false);
-        setMessage("");
-        setTimeout(() => setSubmitted(false), 4000);
-        fetchReports();
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        setSubmitError(body?.error || "Could not submit your report. Please try again.");
+        return;
       }
+
+      trackReport(brandSlug, reportType);
+      setSubmitted(true);
+      setShowForm(false);
+      setMessage("");
+      setWebsite("");
+      setCaptchaToken("");
+      setTimeout(() => setSubmitted(false), 4000);
+      fetchReports();
     } catch {
-      // Silent fail
+      setSubmitError("Could not submit your report. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -108,7 +208,19 @@ export default function UserReports({ brandSlug }: Props) {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="panel-body border-b border-border ui-bg-1-60">
+        <form onSubmit={handleSubmit} className="relative panel-body border-b border-border ui-bg-1-60">
+          <div className="absolute -left-[9999px]" aria-hidden="true">
+            <label htmlFor={`website-${brandSlug}`}>Website</label>
+            <input
+              id={`website-${brandSlug}`}
+              type="text"
+              autoComplete="off"
+              tabIndex={-1}
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+            />
+          </div>
+
           <div className="flex flex-wrap gap-2.5 mb-4">
             {(
               [
@@ -134,14 +246,28 @@ export default function UserReports({ brandSlug }: Props) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Optional: Add details about what you found..."
+            maxLength={400}
             className="w-full bg-bg2 border border-border rounded-xl px-4 py-3.5 text-[14px] text-text resize-none h-24 outline-none ui-focus-border-green-40 transition-colors font-sans placeholder:text-muted"
           />
+
+          {captchaEnabled && (
+            <div className="mt-4">
+              <div ref={captchaRef} />
+              {captchaError && <p className="mt-2 text-[12px] text-red">{captchaError}</p>}
+            </div>
+          )}
+
+          {submitError && (
+            <div className="mt-4 rounded-xl border border-red/35 bg-red-dim px-3.5 py-2.5 text-[12px] text-red">
+              {submitError}
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center justify-between gap-3 mt-4">
             <p className="text-[12px] text-muted">Your report helps keep hours accurate in real time.</p>
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || (captchaEnabled && !captchaToken)}
               className="bg-green text-black rounded-xl px-4 py-2.5 text-[13px] font-semibold cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {submitting ? "Submitting..." : "Submit report"}
@@ -199,6 +325,7 @@ export default function UserReports({ brandSlug }: Props) {
             onClick={() => {
               setShowForm(true);
               setReportType(type);
+              setSubmitError(null);
             }}
             className="py-3 px-4 rounded-xl border border-border2 bg-bg2 text-muted2 font-medium text-[13px] cursor-pointer transition-colors hover:border-green hover:text-green hover:bg-green-dim"
           >

@@ -241,6 +241,28 @@ export default async function BrandPage({ params }: PageProps) {
               </section>
 
               <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BRAND_INLINE} label="Sponsored" minHeight={110} />
+
+              <section className="ui-panel overflow-hidden">
+                <div className="card-title-row">
+                  <h3 className="font-heading font-bold text-sm tracking-[-0.01em] text-text">Embed this widget</h3>
+                </div>
+                <div className="panel-body flex flex-col gap-3">
+                  <p className="text-[13px] text-muted2 leading-relaxed">
+                    Add a live {brand.name} open/closed badge to your website. Updates automatically.
+                  </p>
+                  <pre className="text-[11px] text-muted2 bg-bg2 border border-border rounded-xl p-4 overflow-x-auto whitespace-pre-wrap break-all">
+{`<iframe src="https://isopenow.com/embed/${slug}" width="320" height="80" frameborder="0" style="border-radius:12px;"></iframe>`}
+                  </pre>
+                  <Link
+                    href={`/embed/${slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="no-underline text-[12px] text-muted2 hover:text-text transition-colors"
+                  >
+                    Preview widget →
+                  </Link>
+                </div>
+              </section>
             </main>
 
             <aside className="sidebar-stack">

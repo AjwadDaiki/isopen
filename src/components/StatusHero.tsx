@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { OpenStatus, BrandData } from "@/lib/types";
 import { t, type Locale } from "@/lib/i18n/translations";
 import { trackCtaClick, trackShare } from "@/lib/track";
@@ -10,6 +10,8 @@ interface Props {
   initialStatus: OpenStatus;
   locale?: Locale;
 }
+
+type NotifyState = "idle" | "subscribed" | "unsupported";
 
 export default function StatusHero({ brand, initialStatus, locale = "en" }: Props) {
   const [status, setStatus] = useState(initialStatus);
@@ -21,6 +23,8 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
   const [verifiedAt, setVerifiedAt] = useState<string | null>(null);
   const [checkedAt, setCheckedAt] = useState<string | null>(null);
   const [servedBy, setServedBy] = useState<string>("local-dataset");
+  const [notifyState, setNotifyState] = useState<NotifyState>("idle");
+  const [closingCountdown, setClosingCountdown] = useState<string | null>(null);
 
   useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -109,6 +113,74 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
       })
       .catch(() => {});
   }, []);
+
+  // Closing countdown: parse closesIn "Xh Ym" into minutes and count down
+  useEffect(() => {
+    if (!status.closesIn) { setClosingCountdown(null); return; }
+
+    function parseMinutes(s: string): number {
+      const hMatch = s.match(/(\d+)h/);
+      const mMatch = s.match(/(\d+)m/);
+      return (hMatch ? parseInt(hMatch[1]) * 60 : 0) + (mMatch ? parseInt(mMatch[1]) : 0);
+    }
+
+    let remaining = parseMinutes(status.closesIn) * 60; // seconds
+    if (remaining <= 0) { setClosingCountdown(null); return; }
+
+    function fmt(secs: number): string {
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      if (h > 0) return `${h}h ${m}m`;
+      if (m > 0) return `${m}m ${s.toString().padStart(2, "0")}s`;
+      return `${s}s`;
+    }
+
+    setClosingCountdown(fmt(remaining));
+    const id = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) { setClosingCountdown(null); clearInterval(id); return; }
+      setClosingCountdown(fmt(remaining));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [status.closesIn]);
+
+  // Notification: subscribe to be notified when store opens
+  const handleNotify = useCallback(async () => {
+    if (!("Notification" in window)) { setNotifyState("unsupported"); return; }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+
+    setNotifyState("subscribed");
+    // Store subscription in localStorage; poll every 45s for status change
+    const key = `notify_${brand.slug}`;
+    localStorage.setItem(key, "1");
+
+    // Fire once if it's now open (edge case)
+    if (status.isOpen) {
+      new Notification(`${brand.name} is open now!`, {
+        body: `${brand.name} is currently open. ${status.todayHours ? `Today: ${status.todayHours}` : ""}`,
+        icon: "/favicon.ico",
+      });
+      localStorage.removeItem(key);
+      setNotifyState("idle");
+    }
+  }, [brand.name, brand.slug, status.isOpen, status.todayHours]);
+
+  // Poll for open status change and fire notification
+  useEffect(() => {
+    const key = `notify_${brand.slug}`;
+    if (notifyState !== "subscribed") return;
+    if (status.isOpen) {
+      new Notification(`${brand.name} is open now!`, {
+        body: `${brand.name} just opened. ${status.todayHours ? `Today: ${status.todayHours}` : ""}`,
+        icon: "/favicon.ico",
+      });
+      localStorage.removeItem(key);
+      setNotifyState("idle");
+    }
+  }, [status.isOpen, notifyState, brand.name, brand.slug, status.todayHours]);
 
   const isOpen = status.isOpen;
   const nearestLine = isOpen
@@ -203,11 +275,34 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
               {isOpen ? t(locale, "openNowLabel") : t(locale, "closedNowLabel")}
             </span>
 
-            <div className="font-mono text-[13px] text-muted2 md:text-right">
-              {isOpen && status.closesIn && (
-                <>
-                  {t(locale, "closesIn")} <strong className="text-text text-[15px]">{status.closesIn}</strong>
-                </>
+            <div className="font-mono text-[13px] text-muted2 md:text-right flex flex-col items-start md:items-end gap-1">
+              {isOpen && closingCountdown && (
+                <div className="flex flex-col items-start md:items-end gap-1.5">
+                  <span>
+                    {t(locale, "closesIn")}{" "}
+                    <strong className="text-orange-400 text-[16px] tabular-nums">{closingCountdown}</strong>
+                  </span>
+                  {/* Urgency bar when less than 60 minutes */}
+                  {(() => {
+                    const parts = closingCountdown.match(/^(\d+)m/);
+                    const mins = parts ? parseInt(parts[1]) : 999;
+                    if (mins < 60 && !closingCountdown.includes("h")) {
+                      const pct = Math.min(100, Math.round((mins / 60) * 100));
+                      return (
+                        <div className="w-28 h-1 rounded-full bg-bg2 overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-1000"
+                            style={{
+                              width: `${pct}%`,
+                              background: pct < 20 ? "var(--color-red)" : pct < 50 ? "var(--color-orange)" : "var(--color-green)",
+                            }}
+                          />
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
               )}
               {!isOpen && status.opensAt && (
                 <>
@@ -267,6 +362,20 @@ export default function StatusHero({ brand, initialStatus, locale = "en" }: Prop
         >
           {t(locale, "reportIssueCta")}
         </a>
+
+        {!isOpen && notifyState !== "unsupported" && (
+          <button
+            type="button"
+            onClick={handleNotify}
+            className={`rounded-xl px-5 py-3 text-sm font-medium border transition-colors ${
+              notifyState === "subscribed"
+                ? "border-green/40 bg-green/10 text-green cursor-default"
+                : "border-border2 bg-bg2 text-muted2 hover:text-text hover:border-border"
+            }`}
+          >
+            {notifyState === "subscribed" ? "🔔 Notif. activée" : "🔔 Prévenir si ouvert"}
+          </button>
+        )}
 
         <button
           type="button"

@@ -24,6 +24,7 @@ import {
 import { t, getNonEnglishLocales, LOCALES, type Locale } from "@/lib/i18n/translations";
 import { buildBrandUrl, buildDayUrl, type CanonicalDay } from "@/lib/i18n/url-patterns";
 import { buildLocaleAlternates, absoluteUrl } from "@/lib/i18n/alternates";
+import { getLocaleRobots } from "@/lib/seo-index-control";
 
 export const revalidate = 300;
 
@@ -61,9 +62,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     Object.fromEntries(LOCALES.map((l) => [l, buildBrandUrl(l, slug)])) as Record<Locale, string>
   );
 
+  const robotsDirective = getLocaleRobots(locale);
+
   return {
     title: t(loc, "titleWithYear", { brand: brand.name, year }),
     description: t(loc, "description", { brand: brand.name }),
+    robots: robotsDirective,
     alternates: {
       canonical: absoluteUrl(buildBrandUrl(loc, slug)),
       languages: alternates,

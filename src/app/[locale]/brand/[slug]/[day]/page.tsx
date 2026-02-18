@@ -18,6 +18,7 @@ import { computeOpenStatus } from "@/lib/isOpenNow";
 import { t, getNonEnglishLocales, LOCALES, type Locale } from "@/lib/i18n/translations";
 import { CANONICAL_DAYS, type CanonicalDay, buildBrandUrl, buildDayUrl } from "@/lib/i18n/url-patterns";
 import { buildLocaleAlternates, absoluteUrl } from "@/lib/i18n/alternates";
+import { getLocaleDayRobots } from "@/lib/seo-index-control";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -60,12 +61,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     Object.fromEntries(LOCALES.map((l) => [l, buildDayUrl(l, slug, canonicalDay)])) as Record<Locale, string>
   );
 
+  const robotsDirective = getLocaleDayRobots(locale, slug);
+
   return {
     title: `${t(loc, "onDay", { brand: data.brand.name, day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never) })} [${year}]`,
     description: t(loc, "onDayDesc", {
       brand: data.brand.name,
       day: t(loc, DAY_NAME_BY_KEY[canonicalDay] as never),
     }),
+    robots: robotsDirective,
     alternates: {
       canonical: absoluteUrl(buildDayUrl(loc, slug, canonicalDay)),
       languages: alternates,

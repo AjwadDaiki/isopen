@@ -96,6 +96,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   urls.push(item("/city", "daily", 0.8));
   urls.push(item("/state", "daily", 0.75));
   urls.push(item("/near-me", "daily", 0.8));
+  urls.push(item("/compare", "daily", 0.82));
   urls.push(item("/open-late", "daily", 0.85));
   urls.push(item("/open-24h", "daily", 0.85));
   urls.push(item("/open-now", "daily", 0.9));
@@ -154,6 +155,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
       if (!TOP_BRANDS.includes(brandSlug)) continue;
       urls.push(item(`/city/${city.slug}/is-${brandSlug}-open`, "daily", 0.85));
     }
+  }
+
+  // ─── Compare pages (brand A vs brand B) ──────────────────────────────────
+  const compareByCategory = new Map<string, string[]>();
+  for (const entry of brandsData) {
+    const cat = entry.brand.category || "Other";
+    if (!compareByCategory.has(cat)) compareByCategory.set(cat, []);
+    compareByCategory.get(cat)!.push(entry.brand.slug);
+  }
+  const comparePairs = new Set<string>();
+  for (const [, slugs] of compareByCategory) {
+    const top = slugs.filter((s) => TOP_BRANDS.includes(s));
+    for (let i = 0; i < top.length; i++) {
+      for (let j = i + 1; j < top.length; j++) {
+        comparePairs.add(`${top[i]}-vs-${top[j]}`);
+      }
+    }
+  }
+  const topTen = TOP_BRANDS.slice(0, 10);
+  for (let i = 0; i < topTen.length; i++) {
+    for (let j = i + 1; j < topTen.length; j++) {
+      comparePairs.add(`${topTen[i]}-vs-${topTen[j]}`);
+    }
+  }
+  for (const pair of comparePairs) {
+    urls.push(item(`/compare/${pair}`, "daily", 0.80));
   }
 
   // ─── State pages + state×category ────────────────────────────────────────

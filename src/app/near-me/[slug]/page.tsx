@@ -108,7 +108,7 @@ export default async function NearMeCategoryPage({ params }: PageProps) {
                     {category} Near Me - Open Now
                   </h1>
                   <p className="text-muted2 text-[15px] leading-relaxed mt-5 max-w-[68ch]">
-                    Fast local-intent page for users searching &quot;{category.toLowerCase()} near me open now&quot;.
+                    Real-time open/closed status for {category.toLowerCase()} near you. Compare hours across all major brands and find who&apos;s open right now — no calls needed.
                   </p>
                   <div className="mt-6 inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 border ui-border-green-30 bg-green-dim text-[12px] text-green font-semibold">
                     <span className="w-[7px] h-[7px] rounded-full bg-green animate-pulse-dot" />

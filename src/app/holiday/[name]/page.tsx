@@ -477,7 +477,7 @@ export default async function HolidayPage({ params }: PageProps) {
                     {closedBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-closed brand-card-premium no-underline p-4 flex items-center gap-3"
                       >
                         <span className="text-xl">{brand.emoji}</span>
@@ -507,7 +507,7 @@ export default async function HolidayPage({ params }: PageProps) {
                     {reducedBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-premium no-underline p-4 flex items-center gap-3"
                       >
                         <span className="text-xl">{brand.emoji}</span>
@@ -536,7 +536,7 @@ export default async function HolidayPage({ params }: PageProps) {
                     {openBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-open brand-card-premium no-underline p-4 flex items-center gap-3"
                       >
                         <span className="text-xl">{brand.emoji}</span>
@@ -603,7 +603,7 @@ export default async function HolidayPage({ params }: PageProps) {
                     {otherBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link no-underline p-3 flex items-center gap-2"
                       >
                         <span className="text-base">{brand.emoji}</span>
@@ -649,8 +649,8 @@ export default async function HolidayPage({ params }: PageProps) {
                     { href: "/open-24h", label: "24 Hour Stores" },
                     { href: "/open-late", label: "Stores Open Late" },
                     { href: "/near-me", label: "Open Near Me" },
-                    { href: "/brand/cvs", label: "CVS Hours" },
-                    { href: "/brand/walgreens", label: "Walgreens Hours" },
+                    { href: "/is-cvs-open", label: "CVS Hours" },
+                    { href: "/is-walgreens-open", label: "Walgreens Hours" },
                   ].map((link) => (
                     <Link
                       key={link.href}

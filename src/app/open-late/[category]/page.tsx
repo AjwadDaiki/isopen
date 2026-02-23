@@ -170,7 +170,7 @@ export default async function OpenLateCategoryPage({ params }: PageProps) {
                       return (
                         <Link
                           key={brand.slug}
-                          href={`/brand/${brand.slug}`}
+                          href={`/is-${brand.slug}-open`}
                           className="brand-card-link brand-card-premium no-underline p-4 flex items-center gap-4"
                         >
                           <span className="text-2xl">{brand.emoji || "🏪"}</span>
@@ -219,7 +219,7 @@ export default async function OpenLateCategoryPage({ params }: PageProps) {
                     {catBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link no-underline p-3 flex items-center gap-2"
                       >
                         <span className="text-lg">{brand.emoji}</span>

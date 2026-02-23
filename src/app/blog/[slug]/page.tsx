@@ -261,8 +261,8 @@ export default async function BlogPostPage({ params }: PageProps) {
                     { href: "/open-24h", label: "24 Hour Stores", emoji: "🔁" },
                     { href: "/holiday", label: "Holiday Hours 2026", emoji: "🎄" },
                     { href: "/near-me", label: "Open Near Me", emoji: "📍" },
-                    { href: "/brand/mcdonalds", label: "McDonald's Hours", emoji: "🍟" },
-                    { href: "/brand/walgreens", label: "Walgreens Hours", emoji: "💊" },
+                    { href: "/is-mcdonalds-open", label: "McDonald's Hours", emoji: "🍟" },
+                    { href: "/is-walgreens-open", label: "Walgreens Hours", emoji: "💊" },
                   ].map((link) => (
                     <Link
                       key={link.href}

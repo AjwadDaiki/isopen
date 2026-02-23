@@ -56,7 +56,7 @@ export default function Open24hPage() {
       "@type": "ListItem",
       position: i + 1,
       name: e.brand.name,
-      url: absoluteUrl(`/brand/${e.brand.slug}`),
+      url: absoluteUrl(`/is-${e.brand.slug}-open`),
     })),
   };
 
@@ -151,7 +151,7 @@ export default function Open24hPage() {
                   {brands24h.map(({ brand }) => (
                     <Link
                       key={brand.slug}
-                      href={`/brand/${brand.slug}`}
+                      href={`/is-${brand.slug}-open`}
                       className="brand-card-link brand-card-open brand-card-premium no-underline p-4 flex items-center gap-3"
                     >
                       <span className="text-xl">{brand.emoji || "🏪"}</span>
@@ -181,7 +181,7 @@ export default function Open24hPage() {
                           {entries.map(({ brand }) => (
                             <Link
                               key={brand.slug}
-                              href={`/brand/${brand.slug}`}
+                              href={`/is-${brand.slug}-open`}
                               className="no-underline text-[12px] font-medium text-muted2 hover:text-text border border-border rounded-xl px-3 py-1.5 hover:border-border2 transition-colors flex items-center gap-1.5"
                             >
                               <span>{brand.emoji}</span>
@@ -208,7 +208,7 @@ export default function Open24hPage() {
                     {lateNightBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link no-underline p-3 flex items-center gap-2"
                       >
                         <span>{brand.emoji}</span>

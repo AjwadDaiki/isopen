@@ -76,7 +76,7 @@ export default function OpenNowPage() {
       "@type": "ListItem",
       position: index + 1,
       name: brand.name,
-      url: absoluteUrl(`/brand/${brand.slug}`),
+      url: absoluteUrl(`/is-${brand.slug}-open`),
     })),
   };
 
@@ -142,7 +142,7 @@ export default function OpenNowPage() {
                     {brands.map(({ brand, status }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-premium brand-card-open p-4 no-underline flex items-center gap-3"
                       >
                         <span className="text-2xl shrink-0">{brand.emoji || "🏪"}</span>
@@ -173,7 +173,7 @@ export default function OpenNowPage() {
                       .map(({ brand, status }) => (
                         <Link
                           key={brand.slug}
-                          href={`/brand/${brand.slug}`}
+                          href={`/is-${brand.slug}-open`}
                           className="brand-card-link brand-card-premium brand-card-open p-4 no-underline flex items-center gap-3"
                         >
                           <span className="text-2xl shrink-0">{brand.emoji || "🏪"}</span>
@@ -202,7 +202,7 @@ export default function OpenNowPage() {
                     {closedSoon.slice(0, 12).map(({ brand, status }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-premium p-4 no-underline flex items-center gap-3"
                       >
                         <span className="text-2xl shrink-0">{brand.emoji || "🏪"}</span>

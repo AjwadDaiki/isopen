@@ -82,7 +82,7 @@ export default function OpenLateIndexPage() {
       "@type": "ListItem",
       position: idx + 1,
       name: entry.brand.name,
-      url: absoluteUrl(`/brand/${entry.brand.slug}`),
+      url: absoluteUrl(`/is-${entry.brand.slug}-open`),
     })),
   };
 
@@ -162,7 +162,7 @@ export default function OpenLateIndexPage() {
                     return (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-premium no-underline p-4 flex items-center gap-3"
                       >
                         <span className="text-xl">{brand.emoji || "🏪"}</span>
@@ -222,7 +222,7 @@ export default function OpenLateIndexPage() {
                   {brandsData.filter((e) => e.brand.is24h).slice(0, 8).map(({ brand }) => (
                     <Link
                       key={brand.slug}
-                      href={`/brand/${brand.slug}`}
+                      href={`/is-${brand.slug}-open`}
                       className="no-underline flex items-center gap-3 rounded-xl border border-border px-4 py-3 hover:border-border2 transition-colors"
                     >
                       <span className="text-lg">{brand.emoji}</span>

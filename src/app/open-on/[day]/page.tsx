@@ -149,7 +149,7 @@ export default async function OpenOnDayPage({ params }: PageProps) {
                     {openBrands.map(({ brand, hoursStr }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-premium brand-card-open p-4 no-underline flex items-center gap-3"
                       >
                         <span className="text-2xl shrink-0">{brand.emoji || "🏪"}</span>
@@ -176,7 +176,7 @@ export default async function OpenOnDayPage({ params }: PageProps) {
                     {unknownBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-premium p-4 no-underline flex items-center gap-3"
                       >
                         <span className="text-2xl shrink-0">{brand.emoji || "🏪"}</span>
@@ -203,7 +203,7 @@ export default async function OpenOnDayPage({ params }: PageProps) {
                     {closedBrands.map(({ brand }) => (
                       <Link
                         key={brand.slug}
-                        href={`/brand/${brand.slug}`}
+                        href={`/is-${brand.slug}-open`}
                         className="brand-card-link brand-card-premium brand-card-closed p-4 no-underline flex items-center gap-3 opacity-70"
                       >
                         <span className="text-2xl shrink-0 grayscale">{brand.emoji || "🏪"}</span>

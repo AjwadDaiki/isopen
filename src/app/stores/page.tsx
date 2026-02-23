@@ -63,7 +63,7 @@ export default function StoresPage() {
       "@type": "ListItem",
       position: i + 1,
       name: `${entry.brand.name} Hours`,
-      url: absoluteUrl(`/brand/${entry.brand.slug}`),
+      url: absoluteUrl(`/is-${entry.brand.slug}-open`),
     })),
   };
 
@@ -145,7 +145,7 @@ export default function StoresPage() {
                   {entries.sort((a, b) => a.brand.name.localeCompare(b.brand.name)).map(({ brand }) => (
                     <Link
                       key={brand.slug}
-                      href={`/brand/${brand.slug}`}
+                      href={`/is-${brand.slug}-open`}
                       className="no-underline flex items-center gap-2.5 text-[13px] text-muted2 hover:text-text transition-colors px-3.5 py-2.5 rounded-xl border border-border hover:border-border2 hover:bg-bg2"
                     >
                       <span className="shrink-0 text-base">{brand.emoji || "🏪"}</span>

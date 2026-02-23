@@ -33,16 +33,16 @@ const TOP_BRANDS = [
 ];
 
 const POPULAR_SEARCHES = [
-  { label: "McDonald's Hours", href: "/brand/mcdonalds" },
-  { label: "Walmart Hours Today", href: "/brand/walmart" },
-  { label: "Starbucks Hours", href: "/brand/starbucks" },
-  { label: "CVS Hours Today", href: "/brand/cvs" },
-  { label: "Walgreens Hours", href: "/brand/walgreens" },
-  { label: "Target Hours Today", href: "/brand/target" },
-  { label: "Costco Hours", href: "/brand/costco" },
-  { label: "Home Depot Hours", href: "/brand/home-depot" },
-  { label: "Chick-fil-A Hours", href: "/brand/chick-fil-a" },
-  { label: "Dollar General Hours", href: "/brand/dollar-general" },
+  { label: "McDonald's Hours", href: "/is-mcdonalds-open" },
+  { label: "Walmart Hours Today", href: "/is-walmart-open" },
+  { label: "Starbucks Hours", href: "/is-starbucks-open" },
+  { label: "CVS Hours Today", href: "/is-cvs-open" },
+  { label: "Walgreens Hours", href: "/is-walgreens-open" },
+  { label: "Target Hours Today", href: "/is-target-open" },
+  { label: "Costco Hours", href: "/is-costco-open" },
+  { label: "Home Depot Hours", href: "/is-home-depot-open" },
+  { label: "Chick-fil-A Hours", href: "/is-chick-fil-a-open" },
+  { label: "Dollar General Hours", href: "/is-dollar-general-open" },
   { label: "Christmas Day Hours", href: "/holiday/christmas" },
   { label: "Thanksgiving Hours", href: "/holiday/thanksgiving" },
 ];
@@ -130,7 +130,7 @@ export default function HoursPage() {
                 {topBrands.map((brand) => (
                   <Link
                     key={brand.slug}
-                    href={`/brand/${brand.slug}`}
+                    href={`/is-${brand.slug}-open`}
                     className="no-underline flex items-center gap-2 text-[13px] text-muted2 hover:text-text transition-colors px-3 py-2.5 rounded-xl border border-border hover:border-border2 hover:bg-bg2"
                   >
                     <span className="shrink-0">{brand.emoji || "🏪"}</span>

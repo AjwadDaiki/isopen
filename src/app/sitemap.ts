@@ -123,8 +123,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   // ─── EN brand pages (all 121) + day pages ─────────────────────────────────
+  // NOTE: canonical URL is /is-{slug}-open (from buildBrandUrl("en")), NOT /brand/{slug}
   for (const slug of allBrandSlugs) {
-    urls.push(item(`/brand/${slug}`, "daily", 0.9));
+    urls.push(item(buildBrandUrl("en", slug), "daily", 0.9));
     for (const day of CANONICAL_DAYS) {
       urls.push(item(buildDayUrl("en", slug, day), "daily", 0.8));
     }

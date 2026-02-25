@@ -61,9 +61,11 @@ export const metadata: Metadata = {
   category: "business",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
   formatDetection: {
     email: false,

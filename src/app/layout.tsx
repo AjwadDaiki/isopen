@@ -89,6 +89,10 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
+  other: {
+    // AdSense site verification — must appear in <head> for AdSense crawler
+    "google-adsense-account": "ca-pub-9657496359488658",
+  },
 };
 
 export default async function RootLayout({
@@ -108,15 +112,14 @@ export default async function RootLayout({
 
   return (
     <html lang={htmlLang}>
-      <head>
-        <meta name="google-adsense-account" content={adsClient} />
-        <script
+      <body className={`${inter.variable} ${manrope.variable}`}>
+        {/* AdSense — strategy="afterInteractive" is Next.js recommended approach */}
+        <Script
           async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsClient}`}
           crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
-      </head>
-      <body className={`${inter.variable} ${manrope.variable}`}>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8MWJB8TTNY"
           strategy="afterInteractive"
